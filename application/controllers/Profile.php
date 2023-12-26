@@ -36,21 +36,15 @@ class Profile extends CI_Controller {
 
 	  
 	}
-    public function sup_profile()
-	{
-		
+    public function sup_profile(){
 		$data['page_title'] = 'Profile';
 		$data['page_name'] = "Profile Edit";
 		$this->load->view('header',$data);
 		$this->load->view('include/sidebar',$data);
 		$this->load->view('include/topbar',$data);
-        $id = $this->session->userdata('userid');
-		$data['city'] = $this->Commonmodel->getCiti();
-       
+        $id = $this->session->userdata('userid');       
 	    $data['subs_data'] = $this->Subscribersmodel->get_subscriber($id);
 		$data['user']= $this->Usermodel->get_user($id);
-
-	
 		$this->load->view('superadmin/profile',$data);
 		$this->load->view('include/admin-footer');
 	}

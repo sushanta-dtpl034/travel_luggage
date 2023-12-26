@@ -825,7 +825,82 @@ class Qrcode extends CI_Controller {
 		echo json_encode(['status' =>200]);
 		//print_r($scanned_data);
 	}
+	function airline(){
+		$data['page_title'] = 'Airline List';
+		$data['page_name'] = "Airline List";
+		$this->load->view('include/admin-header',$data);
+		$this->load->view('include/sidebar');
+		$this->load->view('include/topbar');
+		$this->load->view('superadmin/airline_list',$data);
+		$this->load->view('include/admin-footer');
+	}
+	public function getAirlineList(){
+		$IsAdmin = $this->session->userdata('userisadmin');
+		$data['data'] = $this->Qrcodemodel->getAirlineList();
+		echo  json_encode($data);
+	}
+	function getOneAirline(){
+		$id =$this->input->post('id');
+		$data = $this->Qrcodemodel->getAirlineById($id);
+		echo  json_encode(["status" => 200,"data"=>$data]);
 
+	}
+	function update_airline(){
+		$this->form_validation->set_rules('up_Name', 'Name', 'required|trim');
+		if ($this->form_validation->run() == FALSE){
+			return FALSE;
+		}else{
+			$up_Name =$this->input->post('up_Name');
+			$up_AutoID =$this->input->post('up_AutoID');
+			$data = array(
+				'Name'=>strip_tags($up_Name),
+				'ModifiedBy'=>$this->session->userdata('userid'),
+				'ModifiedDate'=>date('Y-m-d'),
+			);
+			$where = array(
+				'AutoID'=>$up_AutoID,
+			);
+			$resultId = $this->Commonmodel->common_update('AirlineMst',$where,$data);
+			if($resultId){
+				echo json_encode(array('status' => 1));
+			}else{
+				echo json_encode(array('status' => 0));
+			}
+
+		}
+	}
+	function save_airline(){
+		$this->form_validation->set_rules('airline_name', 'Name', 'required|trim');
+		if ($this->form_validation->run() == FALSE){
+			return FALSE;
+		}else{
+			$airline_name =$this->input->post('airline_name');
+			$data = array(
+				'Name'=>strip_tags($airline_name),
+				'CreatedBy'=>$this->session->userdata('userid'),
+				'CreatedDate'=>date('Y-m-d'),
+			);
+			$resultId = $this->Commonmodel->common_insert('AirlineMst',$data);
+			if($resultId){
+				echo json_encode(array('status' => 1));
+			}else{
+				echo json_encode(array('status' => 0));
+			}
+
+		}
+	}
+	function delete_airline(){
+		$id = $this->input->post('id');
+		$this->db->where('AutoID', $id);
+		$this->db->delete('AirlineMst');
+		$response =$this->db->affected_rows();
+		if($response){
+			echo TRUE;
+		}else{
+			echo FALSE;
+		}
+		
+	}
 
 
 

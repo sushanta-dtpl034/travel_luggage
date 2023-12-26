@@ -18,8 +18,7 @@ class Login extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see https://codeigniter.com/user_guide/general/urls.html
 	 */
-	public function __construct()
-	{
+	public function __construct(){
 	  parent::__construct();
 	  $username = $this->session->userdata('username');
 	  $userid = $this->session->userdata('userid');
@@ -35,41 +34,32 @@ class Login extends CI_Controller {
 	  $this->load->model('Mastermodel');
 	  $this->load->library('phpmailer_lib');
 	  $this->load->helper("Common");
-	  
 	}
-	public function index()
-	{
+	public function index(){
 		$page_data['page_title'] = 'Login';
 		$page_data['page_name'] = "Signin to Your Account";
 		$this->load->view('header',$page_data);
         $this->load->view('login',$page_data);
         $this->load->view('footer');
-     
 	}
-	public function forgot()
-	{
+	public function forgot(){
 		$page_data['page_title'] = 'Forgot Password';
 		$this->load->view('header',$page_data);
         $this->load->view('forgot');
         $this->load->view('footer');
-     
 	}
 	public function sendResetlink(){
-
 		$email = $this->input->post('email');
 		$validate=$this->Loginmodel->validateUserforpasswordreset($email);
-		if(is_array($validate))
-		{
-					
+		if(is_array($validate)){
 			foreach( $validate['result'] as $res_reset){
                 $userautoid = $res_reset['AutoID'];
 				
 			}
-
-		$parentid = $res_reset['AutoID'];
-		if($res_reset['GroupID']!='1'){
-		 $parentid = $res_reset['ParentID'];
-		}
+			$parentid = $res_reset['AutoID'];
+			if($res_reset['GroupID']!='1'){
+				$parentid = $res_reset['ParentID'];
+			}
 			$logodata = $this->Mastermodel->getsystemsetting($parentid);
 			if($logodata){
 				$fromaddress = $logodata->RecieveEmailAddress;
@@ -133,139 +123,90 @@ class Login extends CI_Controller {
 				// $mail->clear();
 	
 			}else{
-	
-				 $response = array("status"=>2);
-				 echo json_encode($response);
-	
+				$response = array("status"=>2);
+				echo json_encode($response);
 			}
 		}
-		
 	}
-	public function reset()
-	{
+	public function reset(){
 		$this->load->view('header');
         $this->load->view('reset');
         $this->load->view('footer');
-     
 	}
 	public function validateOTP(){
-
 	    $otp = $this->input->post('otp');
 	    $oldOTP = $this->session->userdata('otp');
-	
 		if($otp==$oldOTP){
 			echo 1;
 			$this->session->set_userdata('emailStatus','Verified');
 			return true;
 		}else{
-          return false;
+         	return false;
 		}
 	}
 	
 	public function validateUser(){
-      
 		$username = $this->input->post('username');
 		$password = $this->input->post('passwoord');
 		$this->form_validation->set_rules('username', 'Username', 'required');
 		$this->form_validation->set_rules('passwoord', 'Password', 'required');
 		if($this->form_validation->run() == FALSE){
-			// redirect('Login/2');
-				$status=200;
-				$this->output
-				->set_status_header($status)
-				->set_content_type('application/json', 'utf-8')
-				->set_output(json_encode("error"));
+			$status=200;
+			$this->output
+			->set_status_header($status)
+			->set_content_type('application/json', 'utf-8')
+			->set_output(json_encode("error"));
 		}else{
-			
 			$result = $this->Loginmodel->validateUser($username);
-			if(count($result)==1){
-				  	foreach($result as $res ){
-					  $res['Password'];
-					}
-					if(password_verify($password,$res['Password'])){
-						$this->session->set_userdata('userid',$res['AutoID']);
-						$this->session->set_userdata('username',$res['UserName']);
-						$this->session->set_userdata('userrole',$res['UserRole']);
-						$this->session->set_userdata('GroupID',$res['GroupID']);
-						$this->session->set_userdata('profile',$res['ProfileIMG']);
-						$this->session->set_userdata('CompanyName',$res['CompanyName']);
-						$this->session->set_userdata('parentid',$res['ParentID']);
-						$this->session->set_userdata('userdata',$res);
-						
-						/*logo setting*/
-						$parentid = $res['AutoID'];
-						if($res['GroupID']!='1'){
-						  $parentid = $res['ParentID'];
-						}
-						$logodata = $this->Mastermodel->getsystemsetting($parentid);
+			if($result){
+				if(password_verify($password,$result->Password)){  // Authentication successful - redirect or proceed to the authenticated area
+					$this->session->set_userdata('userid',$result->AutoID);
+					$this->session->set_userdata('username',$result->UserName);
+					$this->session->set_userdata('userisadmin',$result->IsAdmin);
+					$this->session->set_userdata('name',$result->Name);
+					$this->session->set_userdata('profile',$result->ProfileIMG);
+					$this->session->set_userdata('mobile',$result->Mobile);
+					$this->session->set_userdata('Suffix',$result->Suffix);
+					$this->session->set_userdata('userdata',$result);
+					
+					/*logo setting*/
+					if($result->IsAdmin == 1){
+						$logodata = $this->Mastermodel->getsystemsetting($result->AutoID);
 						if($logodata){
 							$this->session->set_userdata('height',$logodata->Height);
 							$this->session->set_userdata('width',$logodata->Width);
 							$this->session->set_userdata('logo',$logodata->Logoname);
-							$this->session->set_userdata('placeapi',$logodata->googlePlaces);
-						}
-						if($res['UserRole']==1){
-							// redirect('Dashboard/superadmin_dasboard');
-							$status=200;
-							$this->output
-						->set_status_header($status)
-						->set_content_type('application/json', 'utf-8')
-						->set_output(json_encode("success"));
-						}else if($res['UserRole']==3){
-							$status=200;
-							$this->output
-							->set_status_header($status)
-							->set_content_type('application/json', 'utf-8')
-							->set_output(json_encode("usersuccess"));
 						}else{
-							if($res['isApprove']==1){
-                                // redirect('Dashboard/superadmin_success');
-								$status=200;
-							$this->output
-						->set_status_header($status)
-						->set_content_type('application/json', 'utf-8')
-						->set_output(json_encode("success"));
-							}elseif($res['isApprove']==2){
-                                // redirect('Dashboard/superadmin_dasboard');
-								$status=200;
-							$this->output
-						->set_status_header($status)
-						->set_content_type('application/json', 'utf-8')
-						->set_output(json_encode("success"));
-							}
-							else{
-								//redirect('Invoice');
-								// redirect('Dashboard/superadmin_dasboard');
-								$status=200;
-							$this->output
-						->set_status_header($status)
-						->set_content_type('application/json', 'utf-8')
-						->set_output(json_encode("success"));
-							}
-                            
+							$this->session->set_userdata('height',80);
+							$this->session->set_userdata('width',80);
+							$this->session->set_userdata('logo','assets/img/logo3.png');
 						}
-						
-					}else{
-					//    redirect('Login/index/2');
-						$status=200;
-						$this->output
-				->set_status_header($status)
-				->set_content_type('application/json', 'utf-8')
-				->set_output(json_encode("error"));
 					}
-			}else{
-				// redirect('/Login/index/2');
+					$status=200;
+						$this->output
+						->set_status_header($status)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode(["status" => 200, "isadmin" =>$result->IsAdmin]));
+				
+					
+				}else{  // Authentication failed - display an error message
 					$status=200;
 					$this->output
+					->set_status_header($status)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode(["status" => 500, "error" =>"Incorrect username or password. Please try again."]));
+				}
+			}else{  // Authentication failed - display an error message
+				$status=200;
+				$this->output
 				->set_status_header($status)
 				->set_content_type('application/json', 'utf-8')
-				->set_output(json_encode("error"));
+				->set_output(json_encode(["status" => 500, "error" =>"Incorrect username or password. Please try again."]));
 			}
 		}
 
 	}
 	public function resetPassword(){
-
 		$password = $this->input->post('password');
 		$hashed_password = password_hash($password,PASSWORD_DEFAULT);
 		$email = $this->session->userdata('email');

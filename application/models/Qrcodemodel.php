@@ -169,5 +169,20 @@ class Qrcodemodel extends CI_Model{
 			return false;
 		}
 	}
+  
+    function getAirlineList(){
+        $query = $this->db->get('AirlineMst');
+        if($query){
+            return $query->result_array();
+        }
+    }
+    function getAirlineById($id){
+        $this->db->where('AutoID',$id);
+        $query = $this->db->get('AirlineMst');
+        if($query){
+            return $query->row_array();
+        }
+    }
+
 
 }

@@ -1,10 +1,10 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- Jquery js-->
 <script src="<?php echo base_url(); ?>assets/plugins/jquery/jquery.min.js"></script>
 
 <!-- Bootstrap js-->
 <script src="<?php echo base_url(); ?>assets/plugins/bootstrap/js/popper.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-
 <!-- Internal Parsley js-->
 <script src="<?php echo base_url(); ?>assets/plugins/parsleyjs/parsley.min.js"></script>
 
@@ -16,18 +16,14 @@
 
 
 <script src="<?php echo base_url(); ?>assets/plugins/dist/js/dropify.min.js"></script>
-        <script>
-            $(document).ready(function(){
-                // Basic
-                $('.dropify').dropify();
-              
-            });
+<script>
+    $(document).ready(function(){
+        // Basic
+        $('.dropify').dropify();
+    });
 
-            
-        </script>
-
-
-
+    
+</script>
 
 
 <!-- Internal Form-wizard js-->
@@ -37,41 +33,48 @@
 <script>
   var status = '<?php echo $this->uri->segment('3'); ?>';
 
-    if(status=='s2'){
+if(status=='s2'){
     setInterval(function(){ location.href="<?php echo base_url('login'); ?>"; }, 3000);
-  }
-  if(status=='s3' || status=='s4'){
-    setInterval(function(){ location.href="<?php echo base_url('Register'); ?>"; }, 3000);
-  }
+}
+if(status=='s3' || status=='s4'){
+	setInterval(function(){ location.href="<?php echo base_url('Register'); ?>"; }, 3000);
+}
 
- $(document).ready(function() {
+$(document).ready(function() {
     $("#signin").click(function(){
         if($('#login').parsley().validate()){
-              
-			// $("#signin").prop("type", "submit");
-			// e.preventDefault();
 			$.ajax({
-					url: '<?php echo base_url(); ?>Login/validateUser',
-					type: 'post',
-					data: $('#login').serialize(),
-					dataType: 'json',
-					success: function(response){
-						console.log(response);
-						
-						if(response == "success"){
-							window.location= "<?php echo base_url('Dashboard/superadmin_dasboard'); ?>";
-						}else if(response == "usersuccess"){
-							const returnurl=sessionStorage.getItem("returnurl")
-							if(returnurl == null){
-								window.location= "<?php echo base_url('Qrcode/luggag_details'); ?>";
-							}else{
-								window.location=returnurl
-							}
-						}else{
-							$("#login_error_alert").removeClass("d-none");
-						// alert("Invalid ID.");
-						}
+				url: '<?php echo base_url(); ?>Login/validateUser',
+				type: 'post',
+				data: $('#login').serialize(),
+				dataType: 'json',
+				success: function(response){
+					console.log(response);
+					if(response.status == 200){
+						window.location= "<?php echo base_url('Dashboard/superadmin_dasboard'); ?>";
+					}else{
+						Swal.fire({
+							title: 'Error!',
+							text: response.error,
+							icon: 'error',
+						})
 					}
+					// if(response == "success"){
+					// 	window.location= "<?php echo base_url('Dashboard/superadmin_dasboard'); ?>";
+					// }else if(response == "usersuccess"){
+					// 	const returnurl=sessionStorage.getItem("returnurl")
+					// 	if(returnurl == null){
+					// 		window.location= "<?php echo base_url('Qrcode/luggag_details'); ?>";
+					// 	}else{
+					// 		window.location=returnurl
+					// 	}
+					// }else{
+					// 	$("#login_error_alert").removeClass("d-none");
+					// }
+				},
+				error:function(xhr, status, errors){
+					console.log(xhr.responseText);
+				}
 			});
 
 		}

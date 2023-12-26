@@ -74,8 +74,6 @@
 
 		<!-- Peity js-->
 		<script src="<?php echo base_url(); ?>assets/plugins/peity/jquery.peity.min.js"></script>
-
-		
 		
 
 		<!-- Internal Morris js -->
@@ -124,6 +122,7 @@
 		<script src="<?php echo base_url(); ?>assets/js/custom/assetremovelist.js"></script>
 		<script src="<?php echo base_url(); ?>assets/js/custom/assettransfer.js"></script>
 		<script src="<?php echo base_url(); ?>assets/js/custom/luggage.js"></script>
+		<script src="<?php echo base_url(); ?>assets/js/custom/airline.js"></script>
 
 		<script src="<?php echo base_url(); ?>assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 		<script  src="<?php echo base_url(); ?>assets/plugins/jquery-ui/ui/widgets/datepicker.js"></script>

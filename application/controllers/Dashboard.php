@@ -41,53 +41,20 @@ class Dashboard extends CI_Controller {
 		$this->load->view('include/admin-footer');
 	}
 	public function superadmin_dasboard(){
-		$Isauditor=$this->session->userdata("userdata")['Isauditor'];
-		$issupervisor=$this->session->userdata("userdata")['issupervisor'];
-		$IsAdmin=$this->session->userdata("userdata")['IsAdmin'];
-		// $serviceID =$this->session->set_userdata('serviceID',1);
+		$userid = $this->session->userdata('userid');
+		$IsAdmin = $this->session->userdata('userisadmin');
+		//get dashboard data count
+		$data['dashboard_data'] = $this->Assetmodel->get_dashboard_data();
+
 		$data['page_title'] = 'Dashboard';
 		$data['page_name'] = "Welcome To Dashboard";
 		$this->load->view('header',$data);
 		$this->load->view('include/sidebar');
 		$this->load->view('include/topbar');
-
-		$parenid = $this->session->userdata('userid');
-		$myasset_id = $parenid;	
-	    if($this->session->userdata('userrole')=='3' || $this->session->userdata('userrole')=='4' || $this->session->userdata('userrole')=='2'){
-	       $parenid = $this->session->userdata('parentid');
-		}
-		
-		// if($IsAdmin==1 || $issupervisor==1 || $Isauditor==1){
-		//  $data['asset'] = $this->Assetmodel->getasset_list($parenid);
-		// }else{
-		//  $data['asset'] = $this->Assetmodel->getmyasset_list($myasset_id);
-		// }
-
-		if($IsAdmin==1){
-			$data['asset'] = $this->Assetmodel->getasset_list($parenid);
-		}else{
-			$data['asset'] = $this->Assetmodel->getmyasset_list($myasset_id);
-		}
-
-		$data['total'] = $this->Usermodel->get_users($parenid);
-		$data['active'] = $this->Usermodel->get_activecount($parenid);
-		$data['inactive'] = $this->Usermodel->get_inactivecount($parenid);
-
-		$from =  date('Y-m-d');
-		$to = date('Y-m-d', strtotime("+7 days", strtotime($from)));
-		$data['pending'] = $this->Assetmodel->getassetlist_notify($from,$to,$parenid);
-		$data['remove'] = $this->Assetmodel->getremoveassest_dash($parenid);
-		
-
-		//get dashboard data count
-		$data['dashboard_data'] = $this->Assetmodel->get_dashboard_data();
-
 		$this->load->view('superadmin_dashboard',$data);
 		$this->load->view('include/admin-footer');		
 	}
-	public function commingsoon(){
-
-		
+	public function commingsoon(){		
         $data['page_title'] = 'Coming soon';
 		$data['page_name'] = "List of Asset Type";
 		$this->load->view('include/admin-header',$data);
@@ -96,10 +63,7 @@ class Dashboard extends CI_Controller {
 		$this->load->view('comming');
 		$this->load->view('include/admin-footer');
 	}
-	public function assetcontroller()
-	{
-
-		
+	public function assetcontroller(){		
         $data['page_title'] = 'Coming soon';
 		$data['page_name'] = "List of Asset Type";
 		$this->load->view('include/admin-header',$data);
@@ -108,9 +72,7 @@ class Dashboard extends CI_Controller {
 		$this->load->view('comming');
 		$this->load->view('include/admin-footer');
 	}
-	public function superadmin_success()
-	{
-	
+	public function superadmin_success(){
 		$this->load->view('header');
 		$this->load->view('include/sidebar');
 		$this->load->view('include/topbar');
@@ -118,16 +80,14 @@ class Dashboard extends CI_Controller {
 		$this->load->view('include/invoice-footer');
 	}
 	
-	public function productDashboard()
-	{
+	public function productDashboard(){
 		$this->load->view('header');
 		$this->load->view('include/sidebar');
 		$this->load->view('include/topbar');
 		$this->load->view('product-dashboard');
 		$this->load->view('include/admin-footer');
 	}
-	public function list()
-	{
+	public function list(){
 		$this->load->view('include/admin-header');
 		$this->load->view('include/sidebar');
 		$this->load->view('include/topbar');
@@ -135,8 +95,7 @@ class Dashboard extends CI_Controller {
 		$this->load->view('include/admin-footer');
 	}
 	
-	public function form()
-	{
+	public function form(){
 		$this->load->view('header');
 		$this->load->view('include/sidebar');
 		$this->load->view('include/topbar');
@@ -144,8 +103,7 @@ class Dashboard extends CI_Controller {
 		$this->load->view('include/admin-footer');
 	}
 	
-	public function set_service()
-	{
+	public function set_service(){
 		$service = $this->input->post('id');
 		$this->session->set_userdata('serviceID',$service);
 		echo  true;
