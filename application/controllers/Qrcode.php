@@ -194,14 +194,14 @@ class Qrcode extends CI_Controller {
 		$inner_html='';
 		if($noof_copy ==1){
 			for($i=0; $i < count($qrcodes_data); $i++){
-				$usedUserName="";//QrCodeUsesUserName($qrcodes_data[$i]->QRCodeText);
+				$usedUserName=QrCodeUsesUserName($qrcodes_data[$i]->QRCodeText);
 				if($i %2 === 0){
 					if($i == 0 && count($qrcodes_data) == 1){
 						$inner_html.='<tr><td>
 							<table style="width:100%">
 								<tr>
 									<td width="30%">
-										<img src="'.base_url('upload/qr-code/'.$qrcodes_data[$i]->QRCodeImage).'" style="height:300px;width:300px;" >
+										<img src="'.base_url('api/upload/qr-code/'.$qrcodes_data[$i]->QRCodeImage).'" style="height:300px;width:300px;" >
 									</td>
 									<td width="70%">
 										<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
@@ -230,7 +230,7 @@ class Qrcode extends CI_Controller {
 					$inner_html.='<tr><td>
 						<table style="width:100%">
 							<tr>
-								<td width="30%"><img src="'.base_url('upload/qr-code/'.$qrcodes_data[$i]->QRCodeImage).'" style="height:300px;width:300px;" ></td>
+								<td width="30%"><img src="'.base_url('api/upload/qr-code/'.$qrcodes_data[$i]->QRCodeImage).'" style="height:300px;width:300px;" ></td>
 								<td width="70%">
 									<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
 									<p>&nbsp;</p>
@@ -245,7 +245,7 @@ class Qrcode extends CI_Controller {
 					$inner_html.='<td>
 						<table style="width:100%">
 							<tr>
-								<td width="30%"><img src="'.base_url('upload/qr-code/'.$qrcodes_data[$i]->QRCodeImage).'" style="height:300px;width:300px;" ></td>
+								<td width="30%"><img src="'.base_url('api/upload/qr-code/'.$qrcodes_data[$i]->QRCodeImage).'" style="height:300px;width:300px;" ></td>
 								<td width="70%">
 									<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
 									<p>&nbsp;</p>
@@ -260,13 +260,13 @@ class Qrcode extends CI_Controller {
 			
 		}else if($noof_copy == 2){
 			foreach($qrcodes_data as $data){
-				$usedUserName=""; //QrCodeUsesUserName($data->QRCodeText);
+				$usedUserName=QrCodeUsesUserName($data->QRCodeText);
 				$inner_html.='
 					<tr >
 						<td>
 							<table style="width:100%">
 								<tr>
-									<td width="30%"><img src="'.base_url('upload/qr-code/'.$data->QRCodeImage).'" style="height:300px;width:300px;" ></td>
+									<td width="30%"><img src="'.base_url('api/upload/qr-code/'.$data->QRCodeImage).'" style="height:300px;width:300px;" ></td>
 									<td width="70%">
 										<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
 										<p>&nbsp;</p>
@@ -279,7 +279,7 @@ class Qrcode extends CI_Controller {
 						<td>
 							<table style="width:100%">
 								<tr>
-									<td width="30%"><img src="'.base_url('upload/qr-code/'.$data->QRCodeImage).'" style="height:300px;width:300px;" ></td>
+									<td width="30%"><img src="'.base_url('api/upload/qr-code/'.$data->QRCodeImage).'" style="height:300px;width:300px;" ></td>
 									<td width="70%">
 										<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
 										<p>&nbsp;</p>
@@ -293,14 +293,14 @@ class Qrcode extends CI_Controller {
 			}
 		}else{
 			foreach($qrcodes_data as $data){
-				$usedUserName="";//QrCodeUsesUserName($data->QRCodeText);
+				$usedUserName=QrCodeUsesUserName($data->QRCodeText);
 				for($i=0; $i < $noof_copy; $i++){
 					$inner_html.='
 					<tr >
 						<td>
 							<table style="width:100%">
 								<tr>
-									<td width="30%"><img src="'.base_url('upload/qr-code/'.$data->QRCodeImage).'" style="height:300px;width:300px;" ></td>
+									<td width="30%"><img src="'.base_url('api/upload/qr-code/'.$data->QRCodeImage).'" style="height:300px;width:300px;" ></td>
 									<td width="70%">
 										<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
 										<p>&nbsp;</p>
@@ -313,7 +313,7 @@ class Qrcode extends CI_Controller {
 						<td>
 							<table style="width:100%">
 								<tr>
-									<td width="30%"><img src="'.base_url('upload/qr-code/'.$data->QRCodeImage).'" style="height:300px;width:300px;" ></td>
+									<td width="30%"><img src="'.base_url('api/upload/qr-code/'.$data->QRCodeImage).'" style="height:300px;width:300px;" ></td>
 									<td width="70%">
 										<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
 										<p>&nbsp;</p>
@@ -392,7 +392,7 @@ class Qrcode extends CI_Controller {
 		$inner_html='';
 		if($noof_copy ==1){
 			for($i=0; $i < count($qrcodes_data); $i++){
-				$usedUserName="";//QrCodeUsesUserName($qrcodes_data[$i]->QRCodeText);
+				$usedUserName=QrCodeUsesUserName($qrcodes_data[$i]->QRCodeText);
 				if($i %2 === 0){
 					if($i == 0 && count($qrcodes_data) == 1){ 
 						$inner_html.='<tr><td>
@@ -457,7 +457,7 @@ class Qrcode extends CI_Controller {
 			
 		}else if($noof_copy == 2){
 			foreach($qrcodes_data as $data){
-				$usedUserName="";//QrCodeUsesUserName($data->QRCodeText);
+				$usedUserName=QrCodeUsesUserName($data->QRCodeText);
 				$inner_html.='
 					<tr >
 						<td>
@@ -488,7 +488,7 @@ class Qrcode extends CI_Controller {
 			}
 		}else{
 			foreach($qrcodes_data as $data){
-				$usedUserName="";//QrCodeUsesUserName($data->QRCodeText);
+				$usedUserName=QrCodeUsesUserName($data->QRCodeText);
 				for($i=0; $i < $noof_copy/2; $i++){
 					$inner_html.='
 					<tr >
@@ -595,8 +595,16 @@ class Qrcode extends CI_Controller {
 	 * Luggage QR Code
 	 */
 	function luggag_details(){
-		$data['page_title'] = 'Itinerary List';
-		$data['page_name'] = "Itinerary List";
+		//$this->db->query("INSERT INTO  AirlineMst (Name) values ('Vietnam Airlines'),('Vetjet'),('Bamboo Airlines'),('Euro Wings')");
+		//$this->db->query("delete from TravelDetails where AutoID IN (3,4,5,6)");
+		//$this->db->query("delete from TravelHead where AutoID IN (3,4,5,6)");
+		//$resultData = $this->db->query('select * from AirlineMst')->result();
+		//$this->db->query("ALTER TABLE TravelDetails ADD HotelAddress varchar(255) NULL");
+		//$this->db->query("ALTER TABLE TravelDetails ADD TravelStartDateTime datetime DEFAULT NULL");
+		//$resultData = $this->db->query("select * from TravelHead")->result(); 
+		//print_r($resultData);exit;
+		$data['page_title'] = 'Luggage List';
+		$data['page_name'] = "Luggage List"; 
 		$this->load->view('include/admin-header',$data);
 		$this->load->view('include/sidebar');
 		$this->load->view('include/topbar');
@@ -675,10 +683,8 @@ class Qrcode extends CI_Controller {
 			<td>
 				<table style="width:100%">
 					<tr>
-						<td width="30%"><img src="'.base_url('upload/qr-code/'.$qrcodes_data->QrCodeNo).'.png" style="height:300px;width:300px;" ></td>
+						<td width="30%"><img src="'.base_url('api/upload/qr-code/'.$qrcodes_data->QrCodeNo).'.png" style="height:300px;width:300px;" ></td>
 						<td width="60%">
-							<p style="font-size:22px;letter-spacing:3px;"><b>'.$qrcodes_data->Name.'</b></p>
-							<p>&nbsp;</p>
 							<p style="font-size:22px;letter-spacing:3px"><b>'.$qrcodes_data->QrCodeNo.'</b></p>
 						</td>
 					</tr>
@@ -705,10 +711,9 @@ class Qrcode extends CI_Controller {
 				<td>
 					<table style="width:100%">
 						<tr>
-							<td width="30%"><img src="'.base_url('upload/qr-code/'.$qrcodes_data->QrCodeNo).'.png" style="height:300px;width:300px;" ></td>
+							<td width="30%"><img src="'.base_url('api/upload/qr-code/'.$qrcodes_data->QrCodeNo).'.png" style="height:300px;width:300px;" ></td>
 							<td width="70%">
-								<p style="font-size:18px;letter-spacing:3px;"><b>'.$qrcodes_data->Name.'</b></p>
-								<p>&nbsp;</p>
+								
 								<p style="font-size:18px;letter-spacing:3px"><b>'.$qrcodes_data->QrCodeNo.'</b></p>
 							</td>
 						</tr>
@@ -717,10 +722,9 @@ class Qrcode extends CI_Controller {
 				<td>
 					<table style="width:100%">
 						<tr>
-							<td width="30%"><img src="'.base_url('upload/qr-code/'.$qrcodes_data->QrCodeNo).'.png" style="height:300px;width:300px;" ></td>
+							<td width="30%"><img src="'.base_url('api/upload/qr-code/'.$qrcodes_data->QrCodeNo).'.png" style="height:300px;width:300px;" ></td>
 							<td width="70%">
-								<p style="font-size:18px;letter-spacing:3px;"><b>'.$qrcodes_data->Name.'</b></p>
-								<p>&nbsp;</p>
+								
 								<p style="font-size:18px;letter-spacing:3px"><b>'.$qrcodes_data->QrCodeNo.'</b></p>
 							</td>
 						</tr>
@@ -734,10 +738,9 @@ class Qrcode extends CI_Controller {
 					<td>
 						<table style="width:100%">
 							<tr>
-								<td width="30%"><img src="'.base_url('upload/qr-code/'.$qrcodes_data->QrCodeNo).'.png" style="height:300px;width:300px;" ></td>
+								<td width="30%"><img src="'.base_url('api/upload/qr-code/'.$qrcodes_data->QrCodeNo).'.png" style="height:300px;width:300px;" ></td>
 								<td width="60%">
-									<p style="font-size:18px;letter-spacing:3px;"><b>'.$qrcodes_data->Name.'</b></p>
-									<p>&nbsp;</p>
+									
 									<p style="font-size:18px;letter-spacing:3px"><b>'.$qrcodes_data->QrCodeNo.'</b></p>
 								</td>
 							</tr>
@@ -746,10 +749,9 @@ class Qrcode extends CI_Controller {
 					<td>
 						<table style="width:100%">
 							<tr>
-								<td width="30%"><img src="'.base_url('upload/qr-code/'.$qrcodes_data->QrCodeNo).'.png" style="height:300px;width:300px;" ></td>
+								<td width="30%"><img src="'.base_url('api/upload/qr-code/'.$qrcodes_data->QrCodeNo).'.png" style="height:300px;width:300px;" ></td>
 								<td width="60%">
-									<p style="font-size:18px;letter-spacing:3px;"><b>'.$qrcodes_data->Name.'</b></p>
-									<p>&nbsp;</p>
+									
 									<p style="font-size:18px;letter-spacing:3px"><b>'.$qrcodes_data->QrCodeNo.'</b></p>
 								</td>
 							</tr>
@@ -825,83 +827,8 @@ class Qrcode extends CI_Controller {
 	}
 
 
-	function airline(){
-		$data['page_title'] = 'Airline Master';
-		$data['page_name'] = "List Of Airline";
-		$this->load->view('include/admin-header',$data);
-		$this->load->view('include/sidebar');
-		$this->load->view('include/topbar');
-		$this->load->view('superadmin/airline_list',$data);
-		$this->load->view('include/admin-footer');
-	}
-	public function getAirlineList(){
-		$user_role=$this->session->userdata('userdata')['UserRole'];
-		$AutoID=$this->session->userdata('userdata')['AutoID'];
-		$data['data'] = $this->Qrcodemodel->getAirlineList();
-		echo  json_encode($data);
-	}
-	function getOneAirline(){
-		$id =$this->input->post('id');
-		$data = $this->Qrcodemodel->getAirlineById($id);
-		echo  json_encode(["status" => 200,"data"=>$data]);
 
-	}
-	function update_airline(){
-		$this->form_validation->set_rules('up_Name', 'Name', 'required|trim');
-		if ($this->form_validation->run() == FALSE){
-			return FALSE;
-		}else{
-			$up_Name =$this->input->post('up_Name');
-			$up_AutoID =$this->input->post('up_AutoID');
-			$data = array(
-				'Name'=>strip_tags($up_Name),
-				'ModifiedBy'=>$this->session->userdata('userid'),
-				'ModifiedDate'=>date('Y-m-d'),
-			);
-			$where = array(
-				'AutoID'=>$up_AutoID,
-			);
-			$resultId = $this->Commonmodel->common_update('AirlineMst',$where,$data);
-			if($resultId){
-				echo json_encode(array('status' => 1));
-			}else{
-				echo json_encode(array('status' => 0));
-			}
 
-		}
-	}
-	function save_airline(){
-		$this->form_validation->set_rules('airline_name', 'Name', 'required|trim');
-		if ($this->form_validation->run() == FALSE){
-			return FALSE;
-		}else{
-			$airline_name =$this->input->post('airline_name');
-			$data = array(
-				'Name'=>strip_tags($airline_name),
-				'CreatedBy'=>$this->session->userdata('userid'),
-				'CreatedDate'=>date('Y-m-d'),
-			);
-			$resultId = $this->Commonmodel->common_insert('AirlineMst',$data);
-			if($resultId){
-				echo json_encode(array('status' => 1));
-			}else{
-				echo json_encode(array('status' => 0));
-			}
-
-		}
-	}
-	function delete_airline(){
-		$id = $this->input->post('id');
-		$this->db->where('AutoID', $id);
-		$this->db->delete('AirlineMst');
-		$response =$this->db->affected_rows();
-		if($response){
-			echo TRUE;
-		}else{
-			echo FALSE;
-		}
-		
-	}
 	/** TESTING SECTION */
 	function qrcode_generate_testing(){	
 		if($this->session->userdata('GroupID')!='1'){

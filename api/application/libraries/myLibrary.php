@@ -39,7 +39,7 @@ class Mylibrary {
 
         $barcode = new Barcode();
 
-        $targetPath = "../upload/qr-code/";
+        $targetPath = "./upload/qr-code/";
         $text = $code;
         $simple_string = $code;
         // Store the cipher method
@@ -54,7 +54,8 @@ class Mylibrary {
         // Use openssl_encrypt() function to encrypt the data
         $encryption = openssl_encrypt($simple_string, $ciphering,
         $encryption_key, $options, $encryption_iv);
-        $url_text = base_url()."Assetmanagement/ViewAssetDetails?ref_no=".$encryption;
+        //$url_text = base_url()."Assetmanagement/ViewAssetDetails?ref_no=".$encryption;
+        $url_text = "https://sandbox.dahlia.tech/travel_luggage/Qrcode/scanQrCodeDetails?ref_no=".$encryption;
        if (! is_dir($targetPath)) {
         mkdir($targetPath, 0777, true);
         }

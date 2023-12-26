@@ -395,19 +395,21 @@ function getGoogleAddressByLatLong($lat, $long){
         CURLOPT_FOLLOWLOCATION => true,
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_SSL_VERIFYHOST => 0,/* Ignore SSL certificate verification */
-		CURLOPT_SSL_VERIFYPEER => 0,
+		CURLOPT_SSL_VERIFYHOST =>0,
+		CURLOPT_SSL_VERIFYPEER =>0,
     ));
 
     $response = curl_exec($curl);
-
     curl_close($curl);
     if($response){
         $responseData = json_decode($response);
-        if($responseData->status == 'OK'){
+        if(!empty($responseData->error_message)){
+            return NULL;
+        }
+        if(isset($responseData->results[0])){
             return $responseData->results[0]->formatted_address;
         }else{
-            return $responseData->error_message;
+            return NULL;
         }
     }else{
         return NULL;

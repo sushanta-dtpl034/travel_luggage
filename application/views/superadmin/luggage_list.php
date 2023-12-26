@@ -50,11 +50,11 @@
                                 <table id="luggage_table" class="table table-bordered border-t0 key-buttons text-nowrap w-100" >
                                     <thead>
                                         <tr>
-                                            <th>S.No</th>
+                                            <th>SL.No</th>
+                                            <th>Action</th>
                                             <th>QrCode</th>
                                             <th>Name</th>
                                             <th>Contact No</th>
-                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -260,6 +260,8 @@
         </div>
     </div>
 </div>
+
+
 
 
 
