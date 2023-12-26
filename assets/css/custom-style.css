@@ -1,0 +1,73 @@
+/*Global CSS*/
+.hide_div{
+    display:none;
+}
+.show_div{
+    display:block;
+}
+.loadingOverlay {
+        display:    none;
+        position:   fixed;
+        z-index:    1000;
+        top:        0;
+        left:       0;
+        height:     100%;
+        width:      100%;
+        background: rgba( 255, 255, 255, .8 ) 
+        url('<?php echo base_url(); ?>assets/img/loader.svg') 
+        50% 50%
+        no-repeat;
+    }
+    .cat-fileupload,.subcat-fileupload ,.user-fileupload,.companylog,.companystamp{
+        display: none;
+    }
+    .button-aligh{
+        position: absolute;
+        bottom: 0px;
+        color: red;
+    }
+    .customize_select{
+        background-color: transparent;
+        border: 0px;
+    }
+    .hover-submenu .main-sidebar-body .nav-item.active .nav-link .shape1, .hover-submenu .main-sidebar-body .nav-item.active .nav-link .shape2{ width:19px;}
+    .upload-image-thumb { position:relative;}
+    .del-icon { position: absolute; width:30px; height:30px; background-color:#f5f5f5; line-height:30px; top:0; right:15px; text-align:center; }
+    .del-icon .fa{ color:#252525;}
+    
+/* Custom Datatable Css */
+.dataTables_info {
+    margin-bottom: 2rem;
+    margin-top: 0.5rem;
+}
+table.dataTable thead>tr>th.sorting:before,
+table.dataTable thead>tr>th.sorting_asc:before,
+table.dataTable thead>tr>th.sorting_desc:before,
+table.dataTable thead>tr>th.sorting_asc_disabled:before,
+table.dataTable thead>tr>th.sorting_desc_disabled:before,
+table.dataTable thead>tr>td.sorting:before,
+table.dataTable thead>tr>td.sorting_asc:before,
+table.dataTable thead>tr>td.sorting_desc:before,
+table.dataTable thead>tr>td.sorting_asc_disabled:before,
+table.dataTable thead>tr>td.sorting_desc_disabled:before {
+    bottom: 50%;
+    content: "↓↑";
+    float: right;
+    /* content: "↑"; */
+}
+.dt-button-collection .dropdown-item.active, .dt-button-collection .dropdown-item:active {
+    color: #8f9cc0;
+    text-decoration: none;
+    background-color: #0e0e23;
+}
+.dropdown-item:hover, .dropdown-item:focus {
+    color: #141c2b;
+    text-decoration: none;
+    background-color: #8f9cc0;
+}
+/* Form Label  */
+p[required]::after {
+    content: "*";
+    color: red;
+    padding-left: 5px;
+}

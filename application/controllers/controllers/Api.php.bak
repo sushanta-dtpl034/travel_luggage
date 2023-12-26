@@ -1,0 +1,113 @@
+<?php
+require APPPATH . '/libraries/TokenHandler.php';
+require APPPATH . 'libraries/REST_Controller.php';
+class Api extends REST_Controller {
+    public function __construct()
+	{
+		parent::__construct();
+		$this->load->database();
+	    $this->tokenHandler = new TokenHandler();
+		$this->load->model('api_model');
+		$this->load->library('Authtoken');
+		header('Content-Type: application/json');
+	}
+	
+	//Send the OTP to user using this API. Parameter: LoginID . Value: Mobile/Email
+	public function login_post() {
+		$data=$this->request->body;
+		$LoginID=$data['LoginID'];
+	    $random_number=rand(100000,999999);
+        $message="Your one time verification code for login is : $random_number";
+		$sysresponse= $this->api_model->SystemDetails();
+		$strUserName=$sysresponse->SMSUserID;
+		$strPassword=$sysresponse->SMSPass;
+		$strSenderId=$sysresponse->SMSSender;
+		$this->SendSms($LoginID,$message,$strUserName,$strPassword,$strSenderId);
+		$otp['OTP']=$random_number;
+		$otp['Phone']=$LoginID;
+		$otp['CreatedDate']=date("Y-m-d H:i:s");
+		$result=$this->api_model->DeletePreviousOTP($LoginID);
+		$response=$this->api_model->SaveOTP($otp);
+		if($response==true){
+			$userdata['status']=200;
+			return $this->set_response($userdata, REST_Controller::HTTP_OK);
+		}
+	}
+	//Check the OTP is valid or not
+	public function CheckOTP_post() {
+		$data=$this->request->body;
+		$OTP=$data['OTP'];
+		$LoginID=$data['LoginID'];
+	   	$result=$this->api_model->CheckOTP($LoginID,$OTP);
+		if($result>0){
+			if(strlen($LoginID)==10){
+				$result=$this->api_model->checkDuplicateMobile($LoginID);
+			}
+			else{
+				$result=$this->api_model->checkDuplicateEmail($LoginID);
+			}
+			if($result==0){
+				if(strlen($LoginID)==10){
+					$datauser['Phone']=$LoginID;
+				}
+				else{
+					$datauser['Email']=$LoginID;
+				}
+				$datauser['Status']=1;
+				$datauser['CreatedDate']=date("Y-m-d");
+				$datauser['IsDelete']=0;
+				$datauser['IsProfileUpdate']=0;
+				$save_response=$this->api_model->SaveUser($datauser);
+			}
+			$res=$this->api_model->getuserdetails($data);
+			if($res!=""){
+				$AutoID=$res->AutoID;
+				$Name=$res->Name;
+				$Email=$res->Email;
+				$user['AutoID']=$AutoID;
+				$user['Name']=$Name;
+				$user['Email']=$Email;
+			}
+			$userdata['status']=200;
+			$userdata['message']="Valid OTP !";
+			$userdata['token'] = $this->tokenHandler->GenerateToken($user);
+			return $this->set_response($userdata, REST_Controller::HTTP_OK);
+		}
+		else{
+			$userdata['status']=404;
+			$userdata['message']="Invalid OTP !";
+			return $this->set_response($userdata, 404);
+		}
+	}
+	
+	
+	function Sendsms($mobile,$message,$strUserName1,$strPassword1,$strSenderId1){ 
+		$strUserName=$strUserName1;
+		$strPassword=$strPassword1;
+		$strSenderId=$strSenderId1; 
+	
+		$strMobile=$mobile;
+		$strMessage=$message;
+		$postData = array(
+				'mobile' => $strUserName,
+				'pass' => $strPassword,
+				'senderid' => $strSenderId,
+				'to' => $strMobile,
+				'msg' => $strMessage
+		);
+		$url="https://www.smsidea.co.in/smsstatuswithid.aspx";/* API URL*/
+		$ch = curl_init();/* init the resource */
+		curl_setopt_array($ch, array(
+			CURLOPT_URL => $url,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_POST => true,
+			CURLOPT_POSTFIELDS => $postData
+		));
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+		$output = curl_exec($ch);
+		curl_close($ch);
+	}
+	
+	
+}
