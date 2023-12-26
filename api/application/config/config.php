@@ -26,7 +26,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 //$config['base_url'] = 'https://myticket.solutions/restapi';
 // $config['base_url'] = 'http://sandbox.dahlia.tech/barcode_api/';
 //$config['base_url'] = 'http://localhost/ticket_employee/restapi';
-$config['base_url'] = 'http://localhost/barcode/barcode_api/';
+//$config['base_url'] = 'http://localhost/barcode/barcode_api/';
+$config['base_url'] = 'https://sandbox.dahlia.tech/travel_luggage/api/';
 
 /*
 |--------------------------------------------------------------------------

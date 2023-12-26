@@ -110,7 +110,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <p class="mg-b-10"> Contact Number</p>
-                                        <p><i class="fa fa-mobile text-success"></i>&nbsp; <b><?= ($luggage_details)?$luggage_details->Mobile:"";?></b></p>
+                                        <p><b><?= ($luggage_details)?$luggage_details->Mobile:"";?></b></p>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
