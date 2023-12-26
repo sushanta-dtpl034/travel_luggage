@@ -37,9 +37,11 @@ class Api extends REST_Controller {
 				$response=$this->Login_model->validateUserMobile($mobilenowithcountrycode);
 				if($response){
 					//after validate send otp and save
-					$random_number=rand(100000,999999);
+					//$random_number=rand(100000,999999);
+					$random_number='898989';
 					$res =send_otp($mobilenowithcountrycode,$resend,$random_number);
 					if($res){
+						//$userdata['otp']=$random_number;
 						$userdata['message']="OTP Sent!";
 						return $this->set_response($userdata, REST_Controller::HTTP_OK);	
 					}

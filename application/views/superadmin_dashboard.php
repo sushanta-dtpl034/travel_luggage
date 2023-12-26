@@ -1,10 +1,8 @@
-	<!-- Main Content-->
-	<?php $IsAdmin=$this->session->userdata("userdata")['IsAdmin']; ?>
+<!-- Main Content-->
+<?php $IsAdmin = $this->session->userdata('userisadmin');  ?>
 <div class="main-content side-content pt-0">
-
 	<div class="container-fluid">
 		<div class="inner-body">
-
 			<!-- Page Header -->
 			<div class="page-header">
 				<div>
@@ -63,96 +61,7 @@
 				
 			
 			</div>
-							<?php 
-								
-							$firstTenValues = [];
-							if(is_array($pending) && count($pending)>0){
-
-								$al = '';
-								if(count($pending)>=10){
-									$al= 10;
-								}else{
-									$al= count($pending);
-								}
-
-								for ($i = 0; $i < $al; $i++) {
-									$firstTenValues[] = $pending[$i];
-								}
-
-							}
-						
-							?>
-							<!-- End Row -->
-							<!-- <div class="row row-sm">
-								<div class="col-lg-12">
-											<div class="card custom-card mg-b-20">
-												<div class="card-body">
-													<div class="card-header border-bottom-0 pt-0 ps-0 pe-0 d-flex">
-														<div>
-															<label class="main-content-label mb-2">Pending Verification Task</label> <span class="d-block tx-12 mb-3 text-muted"></span>
-														</div>
-													</div>
-													<div class="table-responsive tasks">
-														<table class="table card-table table-vcenter text-nowrap mb-0  border">
-															<thead>
-																<tr>
-																	<th class="wd-lg-10p">Title</th>
-																	<th class="wd-lg-10p">Remaining Days</th>
-																	<th class="wd-lg-20p">Category</th>
-																	<th class="wd-lg-20p">Subcatgory</th>
-																	<th class="wd-lg-20p">User</th>
-																	<th class="wd-lg-20p">Supervisor</th>
-																</tr>
-															</thead>
-															<tbody>
-																	<?php 
-																		
-																		$classes = ['text-primary', 'text-secondary', 'text-warning', 'text-primary']; // Your classes
-																		foreach($firstTenValues as $result_res){
-																			$randomIndex = mt_rand(0, 3);
-																			// Assign the corresponding class to the data point
-																			$item['class'] = $classes[$randomIndex];
-
-																			?>
-																								<tr>
-																									<td class="d-flex"><?php echo $result_res['AssetTitle'] ?></td>
-																									<td class="font-weight-semibold btnTooltip" data-id="<?php echo $result_res['AutoID'] ?>">
-																										
-																										<?php
-																											if($result_res['days']!=0){
-																												if ($result_res['daystatus']=='plus') {
-																													echo '+'.$result_res['days'];
-																												}else{
-																												echo '-'.$result_res['days'];
-																												}
-																											}else{
-																												echo 0;
-																											}
-																										?>
-																									</td>
-																										<td><?php echo $result_res['AsseCatName'] ?></td>
-																									<td><?php echo $result_res['AssetSubcatName'] ?></td>
-																									<td><span class="badge bg-pill bg-primary-light"><?php echo $result_res['User'] ?></span></td>
-																									<td><?php echo $result_res['Supervisor'] ?></td>
-																								</tr>
-																			<?php 
-
-																		}
-																	?>
-																
-																
-																
-																
-															</tbody>
-														</table>
-													</div>
-												</div>
-											</div>
-										</div>
-
-										
-								</div>
-							</div>	 -->	 
+			 
 		</div>
 	</div>
 

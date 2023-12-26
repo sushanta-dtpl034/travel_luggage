@@ -602,12 +602,15 @@ class Assetmodel extends CI_Model{
 		return $query->result_array();
 
 	}
-
+	public function getassetlist_notify($from,$to,$parentid){
+		return false;
+	}
+	/*
 	public function getassetlist_notify($from,$to,$parentid){
 		
-		$Isauditor=$this->session->userdata("userdata")['Isauditor'];
-		$issupervisor=$this->session->userdata("userdata")['issupervisor'];
-		$IsAdmin=$this->session->userdata("userdata")['IsAdmin'];
+		$Isauditor=$this->session->userdata("userdata")->Isauditor;
+		$issupervisor=$this->session->userdata("userdata")->issupervisor;
+		$IsAdmin=$this->session->userdata("userdata")->IsAdmin;
 		
 		$userid=$this->session->userdata('userid');
 		$group_id=$this->session->userdata('GroupID');
@@ -660,6 +663,7 @@ class Assetmodel extends CI_Model{
 		return $query->result_array();
 		
 	}
+	*/
 
 	public function getremoveassest_dash($parenid){
 		$Isauditor=$this->session->userdata("userdata")['Isauditor'];

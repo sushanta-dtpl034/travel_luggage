@@ -1,6 +1,5 @@
 <?php 
-function create_refno($index_assigned,$company_name)
-{
+function create_refno($index_assigned){
     switch(strlen($index_assigned))
     {
         case 1:
@@ -17,7 +16,7 @@ function create_refno($index_assigned,$company_name)
     }
     $date=date("Y");
     $month=date("m");
-    $format="$company_name".$date.$month.$new_index_assigned;
-        return $format;
+    $format=$date.$month.$new_index_assigned;
+    return $format;
 }
 ?>

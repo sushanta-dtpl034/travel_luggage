@@ -74,8 +74,6 @@
 
 		<!-- Peity js-->
 		<script src="<?php echo base_url(); ?>assets/plugins/peity/jquery.peity.min.js"></script>
-
-		
 		
 
 		<!-- Internal Morris js -->

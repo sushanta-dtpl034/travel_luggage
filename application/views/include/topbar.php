@@ -13,38 +13,19 @@
 						</div>
 					</div>
 					<?php if($this->session->userdata("userdata")){ ?>
-					<?php
-						$parentid = $this->session->userdata('userid');
-						if($this->session->userdata('GroupID')!='1'){
-							$parentid = $this->session->userdata('parentid');
-						}
-						$from =  date('Y-m-d');
-						$to = date('Y-m-d', strtotime("+7 days", strtotime($from)));
-					  	$result = $this->Assetmodel->getassetlist_notify($from,$to,$parentid);
-					?>
+					
 					<div class="main-header-right">
-						<!-- <div class="dropdown main-header-notification">
-							<a class="nav-link icon" href="">
-								<i class="fe fe-bell header-icons"></i>
-								<span class="badge bg-danger nav-link-badge"><?php echo count($result); ?></span>
-							</a>
-							<div class="dropdown-menu">
-								<div class="header-navheading">
-									<p class="main-notification-text"><?php echo count($result); ?> Asset Pending for verification <a href="<?php echo base_url()."Assetmanagement/assetnotification_list"; ?>"><span class="badge bg-pill bg-primary ms-3">View all</span></a></p>
-								</div>
-							</div>
-						</div> -->
 						<div class="dropdown main-profile-menu">
 							<a class="d-flex" href="">
-							<?php if($this->session->userdata('userdata')['UserRole'] == 3){ ?>
-							<span class="main-img-user" ><img alt="avatar" src="<?php echo base_url(); ?><?php echo $this->session->userdata('profile'); ?>"></span> 
-							<?php }else{ ?>
 								<?php if(!empty($this->session->userdata('profile'))){ ?>
-								<span class="main-img-user" ><img alt="avatar" src="<?php echo base_url(); ?>upload/profile/<?php echo $this->session->userdata('profile'); ?>"></span> 
+									<span class="main-img-user" >
+										<img alt="avatar" src="<?php echo base_url(); ?>upload/profile/<?php echo $this->session->userdata('profile'); ?>">
+									</span> 
 								<?php }else{ ?>
-								<span class="main-img-user" ><img alt="avatar" src="<?php echo base_url(); ?>assets/img/users/avatar-2.jpg"></span>
+									<span class="main-img-user" >
+										<img alt="avatar" src="<?php echo base_url(); ?>assets/img/users/avatar-2.jpg">
+									</span>
 								<?php } ?>
-							<?php } ?>
 							</a>
 							<div class="dropdown-menu">
 								<div class="header-navheading">
@@ -52,24 +33,14 @@
 									<h6 class="main-notification-title"><b><?php $CompanyName = $this->session->userdata('CompanyName'); $username = $this->session->userdata('username'); if(!empty($CompanyName)){ echo $CompanyName;}else{ echo $username; }?></b></h6>
 									<p class="main-notification-text">
 									<?php 
-
-										$Isauditor=$this->session->userdata("userdata")['Isauditor'];
-										$issupervisor=$this->session->userdata("userdata")['issupervisor'];
-										$IsAdmin=$this->session->userdata("userdata")['IsAdmin'];
-									if($IsAdmin =='1'){ echo "Admin"; }
-									else{
-										if($issupervisor==1){
-											echo "Supervisor";
-										}
-										elseif($Isauditor==1){
-											echo "Auditor";
+										$IsAdmin = $this->session->userdata('userisadmin');
+										if($IsAdmin == 1){
+											echo "Admin"; 
 										}
 										else{
 											echo "User";
 										}
-									}
-									
-										?>
+									?>
 										</p>
 								</div>
 								<!-- <a class="dropdown-item border-top" href="#">

@@ -1,34 +1,25 @@
 <?php
-class Usermodel extends CI_Model
-{
+class Usermodel extends CI_Model{
 
 
-  public function get_users($parentid)
-  {
-
-
-    $this->db->select('RegisterMST.AutoID,GroupID,RegisterMST.Name,Mobile,EmployeeCode,Email,UserName,isActive,ProfileIMG,UserGrouMSt.Name AS groupname,import_status,IsAdmin,Isauditor,issupervisor,Suffix');
-    $this->db->from('RegisterMST');
-    $this->db->join('UserGrouMSt', 'RegisterMST.UserGroupID = UserGrouMSt.AutoID');
-    $this->db->where('ParentID', $parentid);
-    $this->db->where('IsAdmin',0); 
-    $this->db->where('isActive',1); 
-    // $this->db->where('"IsDelete" IS NULL');
-    $this->db->order_by('EmployeeCode', 'asc');
-    $this->db->where_not_in("RegisterMST.IsDelete", 1);
-    $query = $this->db->get();
-    return $query->result_array();
-
-  }
-  public function get_user($id)
-  {
-    $this->db->select('AutoID,UserGroupID,Name,Mobile,EmployeeCode,Email,UserName,isActive,ProfileIMG,IsAdmin,Isauditor,issupervisor,Suffix');
-    $this->db->from('RegisterMST');
-    $this->db->where('AutoID', $id);
-    $query = $this->db->get();
-    return $query->row();
-    return $query->row();
-  }
+	public function get_users($parentid){
+		$this->db->select('*');
+		$this->db->from('RegisterMST');
+		$this->db->where('AutoID', $parentid);
+		//$this->db->where('UserRole',3); 
+		// $this->db->where('"IsDelete" IS NULL');
+		$this->db->order_by('EmployeeCode', 'asc');
+		$this->db->where_not_in("IsDelete", 1);
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+  	public function get_user($id){
+		//$this->db->select('AutoID,UserGroupID,Name,Mobile,EmployeeCode,Email,UserName,isActive,ProfileIMG,IsAdmin,Isauditor,issupervisor,Suffix');
+		$this->db->from('RegisterMST');
+		$this->db->where('AutoID', $id);
+		$query = $this->db->get();
+		return $query->row();
+  	}
 
   public function getuser_byname($name)
   {

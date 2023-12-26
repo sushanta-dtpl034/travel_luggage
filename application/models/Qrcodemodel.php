@@ -78,7 +78,20 @@ class Qrcodemodel extends CI_Model{
 		}
 	}
 
-    function get_qrcode_details_qrcode($QrCodeNo){
+    /* function get_qrcode_details_qrcode($QrCodeNo){
+        $this->db->select('reg.AutoID as regId,CONCAT(reg.Suffix, reg.Name) as Name,reg.Mobile,reg.Address,reg.City,reg.State,reg.ProfileIMG,th.QrCodeNo,th.AutoID as TravelHeadId');
+        $this->db->from('TravelHead as th');
+        $this->db->join('RegisterMST as reg', 'th.UserID = reg.AutoID','left');
+        $this->db->where('th.IsDelete',0);
+        $this->db->where('th.QrCodeNo',$QrCodeNo); 
+        $query = $this->db->get();
+        if($query){
+            return $query->row();
+        }else{
+            return false;
+        }
+    } */
+	function get_qrcode_details_qrcode($QrCodeNo){
         $this->db->select("reg.AutoID as regId,CONCAT(reg.Suffix, reg.Name) as Name,reg.Mobile,reg.Address,reg.City,reg.State,reg.ProfileIMG,reg.ContactPersonMobile,reg.CompanyCode,CONCAT(reg.CompanyCode,' ',reg.ContactPersonMobile) as WhatsappNo, th.QrCodeNo,th.AutoID as TravelHeadId");
         $this->db->from('TravelHead as th');
         $this->db->join('RegisterMST as reg', 'th.UserID = reg.AutoID','left');
@@ -106,20 +119,7 @@ class Qrcodemodel extends CI_Model{
     /**
      * Luggage Details List
      */
-    function getLuggageList($id=""){
-        $this->db->select('reg.AutoID as regId,CONCAT(reg.Suffix, reg.Name) as Name,reg.Mobile,reg.Address,reg.City,reg.State,reg.ProfileIMG,th.QrCodeNo,th.AutoID as TravelHeadId');
-        $this->db->from('TravelHead as th');
-        $this->db->join('RegisterMST as reg', 'th.UserID = reg.AutoID','left');
-		if(!empty($id)){
-			$this->db->where('UserID',$id);
-		}
-        $this->db->where('IsDelete',0);
-        $query = $this->db->get();
-        if($query){
-            return $query->result_array();
-        }
-    }
-    function getLuggageDetailList($id=""){
+   /*  function getLuggageList($id=""){
         $this->db->select("AutoID,QrCodeNo,TitlePrefix,Name,PhoneNumber,AltPhoneNumber,Address,Address2,Landmark,TraavelType,TraavelFrom,TraavelTo,FORMAT(TravelDate, 'dd/MM/yyyy hh:mm') as TravelDate,HotelName,RoomNo,FORMAT(CheckInDate, 'dd/MM/yyyy hh:mm') as CheckInDate,FORMAT(CheckOutDate, 'dd/MM/yyyy hh:mm') as CheckOutDate,IsDelete,PhoneCountryCode,WhatsAppCountryCode,PnrNo,AirlineName");
         $this->db->from('TravelDetails');
 		if(!empty($id)){
@@ -130,11 +130,25 @@ class Qrcodemodel extends CI_Model{
         if($query){
             return $query->result_array();
         }
+    } */
+    function getLuggageList($id=""){
+        $this->db->select("th.AutoID,td.Address,td.City AS Address2,td.State AS Landmark,td.Name,td.Mobile AS PhoneNumber,td.Country AS CountryCode,td.Suffix AS TitlePrefix,td.IsAdmin,td.ContactPersonMobile AS WhatsAppNumber,td.ProfileIMG,td.OfficePhoneNumber AS Phone,td.CompanyCode AS WhatsAppCountryCode, th.QrCodeNo, th.AutoID AS TravelHeadId");
+        $this->db->from('TravelHead as th');
+		$this->db->join('RegisterMST as td','th.UserID = td.AutoID','LEFT');
+        $this->db->where('th.IsDelete',0);
+        $query = $this->db->get();
+        if($query){
+            return $query->result_array();
+        }
     }
     function get_luggage_qrcode_details_ids($qrcode_ids){
         //CONCAT(TitlePrefix, Name) as Name
-        $sql="SELECT AutoID,QrCodeNo,CONCAT(TitlePrefix, Name) as Name FROM TravelDetails WHERE AutoID=$qrcode_ids";
-        $query=$this->db->query($sql);
+		$this->db->select("td.AutoID,CONCAT(td.Suffix, td.Name) as Name, th.QrCodeNo");
+        $this->db->from('TravelHead as th');
+		$this->db->join('RegisterMST as td','th.UserID = td.AutoID','LEFT');
+        //$sql="SELECT AutoID,QrCodeNo,CONCAT(TitlePrefix, Name) as Name FROM TravelHead WHERE AutoID=$qrcode_ids";
+		$this->db->where('th.AutoID',$qrcode_ids);
+        $query = $this->db->get();
         return $query->row();
     }
     function alert_room_no($AutoID, $roomNo){
@@ -155,6 +169,7 @@ class Qrcodemodel extends CI_Model{
 			return false;
 		}
 	}
+  
     function getAirlineList(){
         $query = $this->db->get('AirlineMst');
         if($query){
@@ -168,5 +183,6 @@ class Qrcodemodel extends CI_Model{
             return $query->row_array();
         }
     }
+
 
 }
