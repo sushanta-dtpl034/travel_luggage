@@ -80,6 +80,9 @@
 		<script src="<?php echo base_url(); ?>assets/plugins/raphael/raphael.min.js"></script>
 		<script src="<?php echo base_url(); ?>assets/plugins/morris.js/morris.min.js"></script>
 
+		<!-- <script type="module" src="<?php echo base_url();?>assets/plugins/jquery-validate1.19.3/jquery.validate.min.js"></script>
+		<script type="module" src="<?php echo base_url();?>assets/plugins/jquery-validate1.19.3/additional-methods.min.js"></script> -->
+
 		<!-- Circle Progress js-->
 		<!-- <script src="<?php echo base_url(); ?>assets/js/circle-progress.min.js"></script>
 		<script src="<?php echo base_url(); ?>assets/js/chart-circle.js"></script> -->
@@ -93,7 +96,7 @@
 		<script src="<?php echo base_url(); ?>assets/plugins/bootstrap-datepicker/bootstrap-datepicker.js"></script>
 
 		<script src="<?php echo base_url(); ?>assets/plugins/amazeui-datetimepicker/js/amazeui.datetimepicker.min.js"></script>
-		
+		<!--
 		<script  src="<?php echo base_url(); ?>assets/js/script.js"></script>
 		<script src="<?php echo base_url(); ?>assets/js/custom/masters.js"></script>
 		<script src="<?php echo base_url(); ?>assets/js/custom/miscellaneous.js"></script>
@@ -121,8 +124,10 @@
 		<script src="<?php echo base_url(); ?>assets/js/custom/assetverifylist.js"></script>
 		<script src="<?php echo base_url(); ?>assets/js/custom/assetremovelist.js"></script>
 		<script src="<?php echo base_url(); ?>assets/js/custom/assettransfer.js"></script>
+	-->
 		<script src="<?php echo base_url(); ?>assets/js/custom/luggage.js"></script>
 		<script src="<?php echo base_url(); ?>assets/js/custom/airline.js"></script>
+		<script src="<?php echo base_url(); ?>assets/js/custom/traveller.js"></script>
 
 		<script src="<?php echo base_url(); ?>assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 		<script  src="<?php echo base_url(); ?>assets/plugins/jquery-ui/ui/widgets/datepicker.js"></script>

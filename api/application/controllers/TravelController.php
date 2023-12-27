@@ -100,7 +100,163 @@ class TravelController extends REST_Controller {
         }
        
     }
+	/**
+	 * Post : traveler list  => Date:27-12-2023
+	 */
+
+	function travelerDetails_post(){
+        $headers = apache_request_headers();
+        $input_data=$this->request->body;
+		if (!empty($headers['Token'])) {
+            try {
+                $arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
+				$userid=$arrdata['AutoID'];
+                $travelDetailsListObj = $this->TravelModel->travelerDetailsList($input_data);
+                if($travelDetailsListObj){
+                    $this->output
+                    ->set_status_header(200)
+                    ->set_content_type('application/json', 'utf-8')
+                    ->set_output(json_encode($travelDetailsListObj));
+                }else{
+                    $this->output
+                    ->set_status_header(404)
+                    ->set_content_type('application/json', 'utf-8')
+                    ->set_output(json_encode(["status"=>404,"message"=>"No Data Found."]));
+                }
+                
+               
+            } catch (Exception $e) { 
+                $result['message'] = "Invalid Token";
+                $result['status']=false;
+                return $this->set_response($result, 401);
+            }
+        }else{
+			$result['message'] = "Token or oldpasswor / newpassword not Found";
+			$result['status']=false;
+			return $this->set_response($result, 400);
+
+		}
+    }
      /**
+	 * Post : Traveler  add and update => Date:27-12-2023
+	 */
+    function addUpdateTraveler_post(){
+        $headers = apache_request_headers();
+		$this->load->library('myLibrary');
+        $input_data=$this->input->post();
+		if (!empty($headers['Token'])) {
+			try {
+				$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
+				$userid=$arrdata['AutoID'];
+				$this->form_validation->set_data($this->post());
+				$this->form_validation->set_rules('TitlePrefix', 'Title Prefix', 'required|trim');
+				$this->form_validation->set_rules('Name', 'Name', 'required|trim');
+				$this->form_validation->set_rules('PhoneNumber', 'Phone Number', 'required|trim');
+				$this->form_validation->set_rules('Address', 'Address', 'required|trim');
+				$this->form_validation->set_rules('Address2', 'Address2', 'required|trim');
+	
+				if ($this->form_validation->run() == FALSE){
+					$errors = $this->form_validation->error_array();
+					$this->output
+					->set_status_header(406)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode(["status"=>406,"errors"=>$errors]));                    
+				}else{
+					if(empty($input_data['AutoID'])){				
+						$dataRegID = $this->TravelModel->checkUserDuplicate($input_data['PhoneNumber']);
+					}else{
+						$dataRegID = $this->TravelModel->checkUserDuplicate($input_data['PhoneNumber'],$input_data['AutoID']);
+					}
+					if($dataRegID > 0){
+						$result['message'] ="Phone Number already exists.";
+						$result['status']=403;
+						$status = 403;
+					}else{
+						$data = array(
+							'Suffix'   		=>$input_data['TitlePrefix'],
+							'Name'          =>trim($input_data['Name']),
+							'Email'   		=>trim($input_data['Email']),
+							'CountryCode'	=>trim($input_data['PhoneCountryCode']),
+							'Mobile'		=>trim($input_data['PhoneNumber']),
+							'WhatsAppCountryCode'=>trim($input_data['WhatsAppCountryCode']),
+							'WhatsappNumber'=>trim($input_data['WhatsAppNumber']),
+							'Address'       =>trim($input_data['Address']),
+							'AdressTwo'      =>trim($input_data['Address2']),
+							'Landmark'      =>trim($input_data['Landmark']),
+							'Gender'   		=>trim($input_data['Gender']),
+							'IsAdmin'		=>0,
+							'isActive'		=>1,
+							'IsDelete'		=>0,
+						);
+						$picture = '';
+						if(!empty($_FILES['ProfileIMG']['name'])){
+							if (!file_exists('../upload/profile')) {
+								mkdir('../upload/profile', 0777, true);
+							}
+							$config['upload_path']   = '../upload/profile/'; 
+							$config['allowed_types'] = 'jpg|png|jpeg'; 
+							$this->load->library('upload',$config);
+							$this->upload->initialize($config);
+							if($this->upload->do_upload('ProfileIMG')){
+								$uploadData = $this->upload->data();
+								$picture ="upload/profile/".$uploadData['file_name'];
+							}else{ 
+								$picture = '';  
+							}
+						}
+
+						if(!empty($picture)){
+							$data['ProfileIMG']  =$picture;
+						}
+						
+						if(empty($input_data['AutoID'])){
+							$data['CreatedBy']  =$userid;
+							$data['CreatedDate'] =date('Y-m-d H:i:s');
+							$response =$this->Commonmodel->common_insert('RegisterMST',$data);
+							$result['message'] ="Created successfully.";
+							$result['status']=201;
+							$status = 201;
+
+						}else{
+							
+							$data['ModifyBy']  =$userid;
+							$data['ModifyDate'] =date('Y-m-d H:i:s');
+							$where = array(
+								'AutoID'    =>$input_data['AutoID'],
+							);
+							$response =$this->Commonmodel->common_update('RegisterMST',$where,$data);
+							$result['message'] ="Updated successfully.";
+							$result['status']=201;
+							$status = 201;
+
+						}
+
+					}
+					$this->output
+					->set_status_header($status)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode($result));
+				}
+			} catch (Exception $e) { 
+				$result['message'] = "Invalid Token";
+				$result['status']=false;
+				return $this->set_response($result, 401);
+			}
+		}else{
+			$result['message'] = "Token or oldpasswor / newpassword not Found";
+			$result['status']=false;
+			return $this->set_response($result, 400);
+
+		}
+		
+    }
+
+
+
+
+	
+
+    /**
 	 * Post : travel details list
 	 */
 
@@ -422,7 +578,7 @@ class TravelController extends REST_Controller {
 			}
 		}
 	}
-	
+	/*
 	function addUpdateTraveler_post(){
         $headers = apache_request_headers();
 		$this->load->library('myLibrary');
@@ -536,6 +692,7 @@ class TravelController extends REST_Controller {
 			return $this->set_response($result, 400);
 		}
 	}
+	*/
 	
 	function addItinerary_post(){
 		$headers = apache_request_headers();

@@ -90,3 +90,22 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 define('tbl_currency','CurrencyMST');
 define('tbl_company','CompanyMst');
 define('tbl_asset_subcat_file','AssetSubcatFileMst');
+
+
+
+
+// Define an Ttitle Prefix constant
+
+define('TITLE_PREFIX', [
+    array('name'=>"Ms.",'value'=>"Ms."),
+    array('name'=>"Mr.",'value'=>"Mr."),
+    array('name'=>"Mrs.",'value'=>"Mrs."),
+    array('name'=>"Dr.",'value'=>"Dr."),
+]);
+
+define('TRAVEL_TYPES', [
+    array('name'=>"Air Travel",'value'=>"Air Travel"),
+    array('name'=>"Hotel Stay",'value'=>"Hotel Stay"),
+    array('name'=>"Land Transport",'value'=>"Land Transport"),
+    array('name'=>"Railway Travel",'value'=>"Railway Travel"),
+]);
