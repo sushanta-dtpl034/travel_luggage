@@ -12,9 +12,12 @@ class Login_model extends CI_Model {
 		//$this->load->library('session');
 	}
 	public function validateUser($username){
+        $this->db->where('IsDelete',0);
+		$this->db->where('IsAdmin',1);
+		$this->db->group_start();
         $this->db->where('UserName',$username);
-		$this->db->or_where('EmployeeCode',$username);
         $this->db->or_where('Email',$username);
+		$this->db->group_end();
         $result = $this->db->get('RegisterMST');
         return $result->row_array();
     }
@@ -40,6 +43,8 @@ class Login_model extends CI_Model {
 	*User Login through OTP
 	*/
 	function validateUserMobile($mobile){
+		$this->db->where('IsDelete',0);
+		$this->db->where('IsAdmin',0);
 		$this->db->where('Mobile',$mobile);
 		$query = $this->db->get('RegisterMST');
         return $query->row_array();

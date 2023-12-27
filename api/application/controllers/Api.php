@@ -8,7 +8,7 @@ class Api extends REST_Controller {
 		$this->load->database();
 	    $this->tokenHandler = new TokenHandler();
 		$this->load->model('api_model');
-		$this->load->library('Authtoken');
+		$this->load->library(array('form_validation', 'Authtoken'));
 		$this->load->model('Commonmodel');
 		$this->load->model('Login_model');
 		header('Content-Type: application/json');
@@ -23,114 +23,77 @@ class Api extends REST_Controller {
 	//Send the OTP to user using this API. Parameter: LoginID . Value: Mobile/Email
 	public function login_post() {
 		$data=$this->request->body;
-		$username=$data['username'];
-		$password=$data['password'];
-		$mobile=$data['mobile'];
-		$resend=$data['resend'];
-		$countrycode=$data['countrycode'];
-		if (empty($username) && empty($password)) {
-			if( !empty($mobile) ){
-				//save otp and previous otp delete and send otp
-				//check mobile no
-				
-				$mobilenowithcountrycode = $countrycode.$mobile;
-				$response=$this->Login_model->validateUserMobile($mobilenowithcountrycode);
+		//Password Login
+		if($data['type'] == 1){
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules('username', 'Username', 'required|trim');
+			$this->form_validation->set_rules('password', 'Password', 'required|trim');
+			if ($this->form_validation->run() == FALSE){
+				$errors = $this->form_validation->error_array();
+				return $this->set_response(["status"=>406,"errors"=>$errors], 406);                
+			}else{
+				$username=$data['username'];
+				$password=$data['password'];
+				$result = $this->Login_model->validateUser($username);
+				if($result){
+					if(password_verify($password,$result['Password'])){
+						$token['AutoID']	=$result['AutoID'];
+						$token['Email']		=$result['Email'];
+						$token['IsAdmin']	=$result['IsAdmin'];
+
+						$userdata['token'] 	= $this->tokenHandler->GenerateToken($token);
+						$userdata['AutoID']	=$result['AutoID'];
+						$userdata['Suffix']	=$result['Suffix'];
+						$userdata['Name']	=$result['Name'];
+						$userdata['CountryCode']=$result['CountryCode'];
+						$userdata['Mobile']	=$result['Mobile'];
+						$userdata['Email']	=$result['Email'];
+						$userdata['Address']=$result['Address'];
+						$userdata['AdressTwo']=$result['AdressTwo'];
+						$userdata['ProfileIMG']='upload/profile/'.$result['ProfileIMG'];
+						$userdata['IsAdmin']=$result['IsAdmin'];
+						$userdata['message'] = "User authenticated successfully";
+						$userdata['status']=200;
+						return $this->set_response($userdata, REST_Controller::HTTP_OK);						
+					}else{
+						return $this->set_response(["status"=>401,"errors"=>"Username or Password are Wrong. Try Again. "], 401);
+					}
+				}else{
+					return $this->set_response(["status"=>401,"errors"=>"Username or Password are Wrong. Try Again. "], 401);
+				}
+			}
+		}
+		//Otp Login
+		if($data['type'] == 2){
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules('mobile', 'Mobile No', 'required|trim');
+			$this->form_validation->set_rules('countrycode', 'Country Code', 'required|trim');
+			$this->form_validation->set_rules('resend', 'Resend', 'required|trim');
+			if ($this->form_validation->run() == FALSE){
+				$errors = $this->form_validation->error_array();
+				return $this->set_response(["status"=>406,"errors"=>$errors], 406);                
+			}else{
+				$mobile=$data['mobile'];
+				$resend=$data['resend'];
+				$countrycode=$data['countrycode'];
+				$response=$this->Login_model->validateUserMobile($mobile);
 				if($response){
 					//after validate send otp and save
 					//$random_number=rand(100000,999999);
 					$random_number='898989';
+					$mobilenowithcountrycode = $countrycode.$mobile;
 					$res =send_otp($mobilenowithcountrycode,$resend,$random_number);
 					if($res){
 						//$userdata['otp']=$random_number;
 						$userdata['message']="OTP Sent!";
-						return $this->set_response($userdata, REST_Controller::HTTP_OK);	
+						return $this->set_response(["status"=>200,"message"=>"OTP Sent!"], REST_Controller::HTTP_OK);	
 					}
 			
 				}else{
-					$userdata['message'] = "User not found";
-					$userdata['status']=false;
-					return $this->set_response($userdata, 401);
+					return $this->set_response(["status"=>401,"errors"=>"User not found."], 401);
 				}
-			}else{
-				$userdata['message'] = "username and password empty";
-				$userdata['status']=false;
-				return $this->set_response($userdata, 422);
-			}
-		
+			}			
 		}
-		elseif (empty($username)) {
-			$userdata['message'] = "username  empty";
-			$userdata['status']=false;
-			return $this->set_response($userdata, 422);
-		}
-		elseif (empty($password)) {
-			$userdata['message'] = "password empty";
-			$userdata['status']=false;
-			return $this->set_response($userdata, 422);
-		}
-		else{
-			$result = $this->Login_model->validateUser($username);
-			if(!empty($result['Email'])){
-					if(password_verify($password,$result['Password'])){
-						if($result['IsDelete']==1){
-							$userdata['message'] = "User Deleted";
-							$userdata['status']=false;
-							return $this->set_response($userdata, 422);
-						}
-						else{
-							
-							// if ($result['isApprove'] != 1 && $result['isApprove'] != 2) {
-
-							// 	$userdata['message'] = "User Notapprove";
-							// 	$userdata['status']=false;
-							// 	return $this->set_response($userdata, 403);
-							// }
-							if($result['isActive'] != 1){
-								$userdata['message'] = "User Notactive";
-								$userdata['status']=false;
-								return $this->set_response($userdata, 403);
-							}
-							else{
-								// print_r($result);
-								$token['AutoID']=$result['AutoID'];
-								$token['Email']=$result['Email'];
-								$token['ParentID']=$result['ParentID'];
-								$token['UserRole']=$result['UserRole'];
-								$token['GroupID']=$result['GroupID'];
-								$token['CompanyName']=$result['CompanyName'];
-								$token['IsAdmin']=$result['IsAdmin'];
-								$token['Isauditor']=$result['Isauditor'];
-								$token['issupervisor']=$result['issupervisor'];
-								$userdata['token'] = $this->tokenHandler->GenerateToken($token);
-
-								$userdata['ParentID']=$result['ParentID'];
-								$userdata['UserRole']=$result['UserRole'];
-								$userdata['Name']=$result['Name'];
-								$userdata['Email']=$result['Email'];
-								$userdata['CompanyName']=$result['CompanyName'];
-								$userdata['ProfileIMG']='upload/profile/'.$result['ProfileIMG'];
-								$userdata['IsAdmin']=$result['IsAdmin'];
-								$userdata['Isauditor']=$result['Isauditor'];
-								$userdata['issupervisor']=$result['issupervisor'];
-								$userdata['message'] = "User authenticated successfully";
-								$userdata['status']=true;
-								return $this->set_response($userdata, REST_Controller::HTTP_OK);
-							}
-						}
-					}
-					else{
-						$userdata['message'] = "Wrong Password";
-						$userdata['status']=false;
-						return $this->set_response($userdata, 403);
-					}
-			}
-			else{
-				$userdata['message'] = "User not found";
-				$userdata['status']=false;
-				return $this->set_response($userdata, 401);
-			}
-			// return $this->set_response($result);
-		}		
 	}
 	
 	public function CheckOTP_post() {
@@ -140,34 +103,27 @@ class Api extends REST_Controller {
 		$mnowithcountrycode=$data['countrycode'].$mobile;
 		$result=$this->Login_model->CheckOTP($mnowithcountrycode,$otp);
 		if($result){
-			$result = $this->Login_model->validateUserMobile($mnowithcountrycode);
+			$result = $this->Login_model->validateUserMobile($mobile);
 			$token['AutoID']=$result['AutoID'];
 			$token['Email']=$result['Email'];
-			$token['ParentID']=$result['ParentID'];
-			$token['UserRole']=$result['UserRole'];
-			$token['GroupID']=$result['GroupID'];
-			$token['CompanyName']=$result['CompanyName'];
 			$token['IsAdmin']=$result['IsAdmin'];
-			$token['Isauditor']=$result['Isauditor'];
-			$token['issupervisor']=$result['issupervisor'];
-			$userdata['token'] = $this->tokenHandler->GenerateToken($token);
 
-			$userdata['ParentID']=$result['ParentID'];
-			$userdata['UserRole']=$result['UserRole'];
-			$userdata['Name']=$result['Name'];
-			$userdata['Email']=$result['Email'];
-			$userdata['CompanyName']=$result['CompanyName'];
+			$userdata['token'] = $this->tokenHandler->GenerateToken($token);
+			$userdata['AutoID']	=$result['AutoID'];
+			$userdata['Suffix']	=$result['Suffix'];
+			$userdata['Name']	=$result['Name'];
+			$userdata['CountryCode']=$result['CountryCode'];
+			$userdata['Mobile']	=$result['Mobile'];
+			$userdata['Email']	=$result['Email'];
+			$userdata['Address']=$result['Address'];
+			$userdata['AdressTwo']=$result['AdressTwo'];
 			$userdata['ProfileIMG']='upload/profile/'.$result['ProfileIMG'];
 			$userdata['IsAdmin']=$result['IsAdmin'];
-			$userdata['Isauditor']=$result['Isauditor'];
-			$userdata['issupervisor']=$result['issupervisor'];
 			$userdata['message'] = "User authenticated successfully";
-			$userdata['status']=true;
+			$userdata['status']=200;
 			return $this->set_response($userdata, REST_Controller::HTTP_OK);
 		}else{
-			$userdata['message'] = "Authentication Error!.";
-			$userdata['status']=false;
-			return $this->set_response($userdata, 403);
+			return $this->set_response(["status"=>401,"errors"=>"Authentication Error!."], 401);
 		}
 	}
 

@@ -16,6 +16,7 @@
 		<link href="<?php echo base_url(); ?>assets/plugins/web-fonts/icons.css" rel="stylesheet"/>
 		<link href="<?php echo base_url(); ?>assets/plugins/web-fonts/font-awesome/font-awesome.min.css" rel="stylesheet">
 		<link href="<?php echo base_url(); ?>assets/plugins/web-fonts/plugin.css" rel="stylesheet"/>
+		<link href="<?php echo base_url(); ?>assets/css/icon-list.css" rel="stylesheet" />
 		<!-- Style css-->
 		<link href="<?php echo base_url(); ?>assets/css/style.css" rel="stylesheet">
 		<link href="<?php echo base_url(); ?>assets/css/boxed.css" rel="stylesheet" />
@@ -47,7 +48,7 @@
 		<link href="<?php echo base_url(); ?>assets/plugins/amazeui-datetimepicker/css/amazeui.datetimepicker.css" rel="stylesheet">
 		<link href="<?php echo base_url(); ?>assets/plugins/fileuploads/css/fileupload.css" rel="stylesheet" type="text/css"/>
 		<link href="<?php echo base_url(); ?>assets/plugins/fancyuploder/fancy_fileupload.css" rel="stylesheet" />
-	
+		<!-- Internal TelephoneInput css-->
 		<link rel="stylesheet" href="<?php echo base_url(); ?>/assets/plugins/telephoneinput/telephoneinput.css">
 		<link href="<?php echo base_url(); ?>/assets/plugins/gallery/gallery.css" rel="stylesheet">
 		<link href="<?php echo base_url(); ?>/assets/plugins/sweet-alert/sweetalert.css" rel="stylesheet">
@@ -94,6 +95,6 @@
 			
 	    </style>	
 		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbuZi1kLIraGC1950pFaOUnGc228vsQrY&libraries=places"></script>
-	
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
           
 	</head> 
