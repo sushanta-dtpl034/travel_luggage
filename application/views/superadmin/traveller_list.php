@@ -102,6 +102,11 @@
             </div>
             <form id="add-traveller-form" >
                 <div class="modal-body">
+                    <!-- Show PHP Validation ERRORS Start -->
+                     <div class="alert alert-danger print-error-msg" style="display:none">
+                        <ul id="form_errors"></ul>
+                    </div>
+                    <!-- Show PHP Validation ERRORS End -->
 
                     <div class="row row-sm">
                         <div class="col-md-6">
@@ -250,11 +255,11 @@
             <form id="update-traveller-form">
                 <div class="modal-body">
                     <!-- Show PHP Validation ERRORS Start -->
-                        <div class="alert alert-danger print-error-msg" style="display:none">
-                            <ul id="form_errors"></ul>
-                        </div>
-                        
-                        <!-- Show PHP Validation ERRORS End -->
+                    <div class="alert alert-danger print-error-msg" style="display:none">
+                        <ul id="form_errors"></ul>
+                    </div>
+                    
+                    <!-- Show PHP Validation ERRORS End -->
                     <div class="row row-sm">
                         <div class="col-md-6">
                             <div class="form-group">

@@ -269,6 +269,7 @@ class TravelController extends REST_Controller {
 				$userid=$arrdata['AutoID'];
 				$dataHead = array(
 					'UserID'		=>$TravelUserId,
+					'ItineraryName'	=>trim($input_data['ItineraryName']),
 					'StartDate'		=>date('Y-m-d H:i:s', strtotime($input_data['StartDate'])),
 					'EndDate'		=>date('Y-m-d H:i:s', strtotime($input_data['EndDate'])),
 					'IsDelete'		=>0,
