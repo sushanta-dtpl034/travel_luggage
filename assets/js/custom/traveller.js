@@ -1,6 +1,4 @@
-
 $(function () {
-   
     var travellerTable = $('#traveller_table').DataTable({
         "processing": true,
         "serverSide": false,
@@ -69,19 +67,26 @@ $(function () {
     });
 
     /* save the material condiotn */
-    $("#mobile-number").intlTelInput();
-    $("#mobile-number2").intlTelInput();
+    // $("#mobile-number").intlTelInput();
+    // $("#mobile-number2").intlTelInput();
+    $(".CountryCode").select2({
+        dropdownParent: $("#traveller_modal"),
+        width:'100%',
+    });
+    $(".WhatsAppCountryCode").select2({
+        dropdownParent: $("#traveller_modal"),
+        width:'100%',
+    });
+
+
     $("#traveller_button").click(function () {
         if ($('#add-traveller-form').parsley().validate()) {
             let frm = $('#add-traveller-form');
             let traveller_save = new FormData(frm[0]);
-           // var  traveller_save = new FormData();
-            // var Suffix     = $('#Suffix').val();
-            // airline_save.append('Suffix', Suffix);
-
             $.ajax({
                 url: base_url + 'TravelerController/save_travel_luggage',
                 type: "POST",
+                dataType: 'json',
                 contentType: false,
                 processData: false,
                 data: traveller_save,
@@ -89,8 +94,9 @@ $(function () {
                     $('.load-traveller').show();
                     $('#traveller_button').hide();
                 },
-                success: function (result) {
-                    var jsonData = JSON.parse(result);
+                success: function (jsonData) {
+                    //var jsonData = JSON.parse(result);
+                    $("#traveller_modal .print-error-msg").hide();
                     if (jsonData.status === 1) {
                         $("#traveller_modal .btn-secondary").click()
                         $('.insert').show();
@@ -113,12 +119,45 @@ $(function () {
                         }, 2000);
                     }
                 },
+                error: function (xhr, status, errors) {
+                    //$('.spinner').hide();
+                    //console.log(xhr.responseText);
+                    var pattern = /<p>(.*?)<\/p>/g;
+                    var arrayOfStrings = [];
+                    var match;
+                    while ((match = pattern.exec(xhr.responseText)) !== null) {
+                        arrayOfStrings.push(match[1]);
+                    }
+                    $('#form_errors').html(""); 
+                    if(arrayOfStrings.length > 0){
+                        $.each(arrayOfStrings, function (key, item) {
+                            $("#traveller_modal #form_errors").append("<li class='alert alert-danger m-0 border-0 p-1'>" + item + "</li>");
+                        });
+                        $("#traveller_modal .print-error-msg").show();
+                        $('.load-traveller').hide();
+                        $('#traveller_button').show();
+                    }
+                
+                }
 
             });
         }
 
     });
 
+   /*  $(".uSuffix").select2({
+        dropdownParent: $("#update-traveller-modal"),
+        width:'100%',
+    }); */
+    $(".uCountryCode").select2({
+        dropdownParent: $("#update-traveller-modal"),
+        width:'100%',
+    });
+    $(".uWhatsAppCountryCode").select2({
+        dropdownParent: $("#update-traveller-modal"),
+        width:'100%',
+    });
+    
     $("#traveller_table").on('click', '.update_travel_luggage', function () {
         var id = $(this).attr("id");
         $.ajax({
@@ -128,18 +167,27 @@ $(function () {
             dataType: 'json',
             success: function (response) {
                 if (response.status == 200) {
-                    console.log(response.data);
                     $('#update-traveller-modal').modal('show');
                     $('#uAutoId').val(response.data.AutoID);
                     $('#uName').val(response.data.Name);
                     $('#uMobile').val(response.data.Mobile);
-                    $('#uMobil2').val(response.data.WhatsappNumber);
-                    $('#uUserName').val(response.data.UserName);
+                    $('#uWhatsappNumber').val(response.data.WhatsappNumber);
                     $('#uEmail').val(response.data.Email);
                     $('#uAddress').val(response.data.Address);
                     $('#uAdressTwo').val(response.data.AdressTwo);
                     $('#uLandmark').val(response.data.Landmark);
                     $('#uoldimage').val(response.data.ProfileIMG);
+
+                    $('.uSuffix').val(response.data.Suffix).trigger('change');
+                    $('.uCountryCode').val(response.data.CountryCode).trigger('change');
+                    $('.uWhatsAppCountryCode').val(response.data.WhatsAppCountryCode).trigger('change');
+                    $(`.uGender`).each(function () {
+                        if ($(this).val() == response.data.Gender) {
+                           $(this).prop("checked", true);
+                        }
+                    });
+                    $('#image-show').attr("src",`${base_url}/${response.data.ProfileIMG}`);
+                   
                 } else {
                     alert("Invalid ID.");
                 }
@@ -150,24 +198,24 @@ $(function () {
 
 
     $("#update_travel_luggage").click(function () {
+       
         if ($('#update-traveller-form').parsley().validate()) {
-            var airline_update = new FormData();
-            var up_Name     = $('#up_airline_name').val();
-            var up_AutoID   = $('#up_airline_id').val();
-            airline_update.append('up_Name', up_Name);
-            airline_update.append('up_AutoID', up_AutoID);
+            let frm = $('#update-traveller-form');
+            let traveller_save = new FormData(frm[0]);
             $.ajax({
                 url: base_url + 'TravelerController/update_travel_luggage',
                 type: "POST",
+                dataType: 'json',
                 contentType: false,
                 processData: false,
-                data: airline_update,
+                data: traveller_save,
                 beforeSend: function () {
                     $('.load-travel_luggage').show();
                     $('#update_travel_luggage').hide();
                 },
-                success: function (result) {
-                    var jsonData = JSON.parse(result);
+                success: function (jsonData) {
+                    //var jsonData = JSON.parse(result);
+                    $("#update-traveller-modal .print-error-msg").hide();
                     if (jsonData.status === 1) {
                         $('#update-traveller-modal').modal('toggle');
                         $('.update').show();
@@ -188,7 +236,37 @@ $(function () {
                     }
 
                 },
+                error: function (xhr, status, errors) {
+                    //$('.spinner').hide();
+                    //console.log(xhr.responseText);
+                    var pattern = /<p>(.*?)<\/p>/g;
+                    var arrayOfStrings = [];
+                    var match;
+                    while ((match = pattern.exec(xhr.responseText)) !== null) {
+                        arrayOfStrings.push(match[1]);
+                    }
+                    $('#form_errors').html(""); 
+                    if(arrayOfStrings.length > 0){
+                        $.each(arrayOfStrings, function (key, item) {
+                            $("#update-traveller-modal #form_errors").append("<li class='alert alert-danger m-0 border-0 p-1'>" + item + "</li>");
+                        });
+                        $("#update-traveller-modal .print-error-msg").show();
+                        $('.load-travel_luggage').hide();
+                        $('#update_travel_luggage').show();
+                        //$('#submit').attr('disabled', false);
+                    }
+                
+                }
 
+            });
+        }else{
+            $(".uCountryCode").select2({
+                dropdownParent: $("#update-traveller-modal"),
+                width:'100%',
+            });
+            $(".uWhatsAppCountryCode").select2({
+                dropdownParent: $("#update-traveller-modal"),
+                width:'100%',
             });
         }
 

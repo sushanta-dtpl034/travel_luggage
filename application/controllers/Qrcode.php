@@ -39,7 +39,6 @@ class Qrcode extends CI_Controller {
 		if($this->session->userdata('GroupID')!='1'){
 			$parentid = $this->session->userdata('parentid');
 		}
-		$data['company'] = $this->Companymodel->getcompany($parentid);
 		$data['qrcode'] = $this->Qrcodemodel->get_qrcode_data();
 	
 		$this->load->view('superadmin/qrcode_list',$data);
@@ -123,24 +122,15 @@ class Qrcode extends CI_Controller {
 		
 	}
 	public function get_qrcode_details($id){
-		$data['company_name'] = $this->Qrcodemodel->get_qrcode_companyDetails($id);
-		$data['qrcode_data'] = $this->Qrcodemodel->get_qrcode_details($id);		
-
+		$data['qrcode_data'] = $this->Qrcodemodel->get_qrcode_details($id);	
+		$data['qrcode'] = $this->Qrcodemodel->get_qrcode_data();	
 		$data['page_title'] = 'QR Code Details';
 		$data['page_name'] = "List of QR Code";
 		$this->load->view('include/admin-header',$data);
 		$this->load->view('include/sidebar');
 		$this->load->view('include/topbar');
-		$parentid = $this->session->userdata('parentid');
-		if($this->session->userdata('GroupID')!='1'){
-			$parentid = $this->session->userdata('parentid');
-		}
-		$data['company'] = $this->Companymodel->getcompany($parentid);
-		$data['qrcode'] = $this->Qrcodemodel->get_qrcode_data();
-	
 		$this->load->view('superadmin/qrcode_detail_view',$data);
 		$this->load->view('include/admin-footer');
-
 	}
 	function print_qrcode(){
 		$noof_copy =$this->input->post('noof_copy');
@@ -608,11 +598,6 @@ class Qrcode extends CI_Controller {
 		$this->load->view('include/admin-header',$data);
 		$this->load->view('include/sidebar');
 		$this->load->view('include/topbar');
-		$parentid = $this->session->userdata('parentid');
-		if($this->session->userdata('GroupID')!='1'){
-			$parentid = $this->session->userdata('parentid');
-		}
-		$data['company'] = $this->Companymodel->getcompany($parentid);
 		$data['qrcode'] = $this->Qrcodemodel->get_qrcode_data();
 	
 		$this->load->view('superadmin/luggage_list',$data);

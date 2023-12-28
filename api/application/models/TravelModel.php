@@ -85,8 +85,8 @@ class TravelModel extends CI_Model {
 			return false;
 		}
 	}
-	public function travelerListDetails($data){ 
-        $query=$this->db->select("rm.AutoID,rm.Name,rm.Mobile,rm.Suffix AS TitlePrefix, ih.AutoID AS ItineraryHeadId,ih.UserID");
+	public function travelerItineraryListDetails($data){ 
+        $query=$this->db->select("rm.AutoID,rm.Name,rm.Mobile,rm.Suffix AS TitlePrefix,rm.ProfileIMG,ih.AutoID AS ItineraryHeadId,ih.UserID,ih.StartDate,ih.EndDate, ih.CreatedDate,ih.ModifiedDate,ih.ItineraryName");
         $this->db->from('ItineraryHead as ih');//ItineraryDetails
 		$this->db->join('RegisterMST as rm','ih.UserID = rm.AutoID','LEFT');
         $this->db->where('ih.IsDelete',0);

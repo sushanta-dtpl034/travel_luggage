@@ -11,7 +11,7 @@ class Assetmodel extends CI_Model{
 	function get_dashboard_data(){
 		$sql="SELECT
         (SELECT SUM(NoofQRCode) FROM QRCodeHeadMst) AS TOTAL_QRCODE,
-        (SELECT COUNT(*) FROM TravelHead WHERE IsDelete = 0) AS TOTAL_TRAVEL_DETAILS";
+        (SELECT COUNT(*) FROM ItineraryHead WHERE IsDelete = 0) AS TOTAL_TRAVEL_DETAILS";
 		$query =$this->db->query($sql);
 		return $query->row();
 	}

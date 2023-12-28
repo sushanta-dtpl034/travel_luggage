@@ -1556,24 +1556,16 @@ class Assetmanagement extends CI_Controller
 			//print_r($qrcodes_data);
 		}
 	}
-	function print_barcode_label()
-	{
+	function print_barcode_label(){
 		$data['page_title'] = 'Barcode Label List';
 		$data['page_name'] = "Barcode Label List";
 		$this->load->view('include/admin-header', $data);
 		$this->load->view('include/sidebar');
 		$this->load->view('include/topbar');
-		$parentid = $this->session->userdata('userid');
-		if ($this->session->userdata('GroupID') != '1') {
-			$parentid = $this->session->userdata('parentid');
-		}
-		$data['clocation'] = $this->Assetmodel->getlocation($parentid);
-
 		$this->load->view('superadmin/print_barcode_label', $data);
 		$this->load->view('include/admin-footer');
 	}
-	function get_assets_by_location_id()
-	{
+	function get_assets_by_location_id(){
 		$location = $this->input->post('location');
 		if (!empty($location)) {
 			$assets = $this->Assetmodel->get_asset_by_location($location);
@@ -1601,8 +1593,7 @@ class Assetmanagement extends CI_Controller
 
 		}
 	}
-	function single_qrcode_pdf_generate($noof_copy, $qrcodes_data)
-	{
+	function single_qrcode_pdf_generate($noof_copy, $qrcodes_data){
 		$defaultConfig = (new Mpdf\Config\ConfigVariables())->getDefaults();
 		$fontDirs = $defaultConfig['fontDir'];
 		$defaultFontConfig = (new Mpdf\Config\FontVariables())->getDefaults();
@@ -1876,8 +1867,7 @@ class Assetmanagement extends CI_Controller
 		$mpdf->Output(); // opens in browser
 		//$mpdf->Output('arjun.pdf','D');
 	}
-	function print_qrcode()
-	{
+	function print_qrcode(){
 		$noof_copy = $this->input->post('noof_copy');
 		$qrcode_ids = $this->input->post('qrcode_ids');
 		if (!empty($noof_copy) && !empty($qrcode_ids)) {
@@ -1885,8 +1875,7 @@ class Assetmanagement extends CI_Controller
 			$this->qrcode_pdf_generate($noof_copy, $qrcodes_data);
 		}
 	}
-	function qrcode_pdf_generate($noof_copy, $qrcodes_data)
-	{
+	function qrcode_pdf_generate($noof_copy, $qrcodes_data){
 		$defaultConfig = (new Mpdf\Config\ConfigVariables())->getDefaults();
 		$fontDirs = $defaultConfig['fontDir'];
 		$defaultFontConfig = (new Mpdf\Config\FontVariables())->getDefaults();
@@ -2245,17 +2234,12 @@ class Assetmanagement extends CI_Controller
 		$mpdf->Output(); // opens in browser
 		//$mpdf->Output('arjun.pdf','D');
 	}
-	public function getVerifiedAttachement()
-	{
-
+	public function getVerifiedAttachement(){
 		$id = $this->input->post('id');
 		$attachment = $this->Assetmodel->getAttachement($id);
 		echo json_encode($attachment);
-
-
 	}
-	public function exportAssetdetails()
-	{
+	public function exportAssetdetails(){
 		header('Content-Type: application/vnd.ms-excel');
 		header('Content-Disposition: attachment;filename="assetsdetails_list.xlsx"');
 		$spreadsheet = new Spreadsheet();
@@ -2368,8 +2352,7 @@ class Assetmanagement extends CI_Controller
 		$writer->save("php://output");
 	}
 
-	public function allocateasset_list()
-	{
+	public function allocateasset_list(){
 		$data['page_title'] = 'Asset List';
 		$data['page_name'] = "Allocate Asset";
 		$this->load->view('include/admin-header', $data);

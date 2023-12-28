@@ -125,6 +125,7 @@
 		<script src="<?php echo base_url(); ?>assets/js/custom/assetremovelist.js"></script>
 		<script src="<?php echo base_url(); ?>assets/js/custom/assettransfer.js"></script>
 	-->
+		<script src="<?php echo base_url(); ?>assets/js/custom/qucode.js"></script>
 		<script src="<?php echo base_url(); ?>assets/js/custom/luggage.js"></script>
 		<script src="<?php echo base_url(); ?>assets/js/custom/airline.js"></script>
 		<script src="<?php echo base_url(); ?>assets/js/custom/traveller.js"></script>
