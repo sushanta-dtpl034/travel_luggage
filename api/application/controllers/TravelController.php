@@ -452,7 +452,7 @@ class TravelController extends REST_Controller {
 			try {
 				$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
 				$userid=$arrdata['AutoID'];
-				$travelDetailsListObj = $this->TravelModel->travelerListDetails($input_data);
+				$travelDetailsListObj = $this->TravelModel->travelerItineraryListDetails($input_data);
 				if($travelDetailsListObj){
 					$this->output
 					->set_status_header(200)

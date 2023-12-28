@@ -19,7 +19,7 @@
 							<a class="d-flex" href="">
 								<?php if(!empty($this->session->userdata('profile'))){ ?>
 									<span class="main-img-user" >
-										<img alt="avatar" src="<?php echo base_url(); ?>upload/profile/<?php echo $this->session->userdata('profile'); ?>">
+										<img alt="avatar" src="<?php echo base_url(); ?><?php echo $this->session->userdata('profile'); ?>">
 									</span> 
 								<?php }else{ ?>
 									<span class="main-img-user" >
