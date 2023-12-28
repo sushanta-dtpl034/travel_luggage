@@ -226,8 +226,8 @@ class TravelController extends REST_Controller {
 							);
 							$response =$this->Commonmodel->common_update('RegisterMST',$where,$data);
 							$result['message'] ="Updated successfully.";
-							$result['status']=201;
-							$status = 201;
+							$result['status']=200;
+							$status = 200;
 
 						}
 
@@ -250,6 +250,275 @@ class TravelController extends REST_Controller {
 		}
 		
     }
+	/**
+	 * Post : Itinerary add and update => Date:27-12-2023
+	 */
+	function addItinerary_post(){
+		$headers = apache_request_headers();
+		$this->load->library('myLibrary');
+		$input_data=$this->request->body;
+		$TravelUserId = $input_data['UserID'];
+		//$Type = isset($input_data['Type']) ? $input_data['Type'] : '';
+		$Hotel = isset($input_data['Hotel']) ? $input_data['Hotel'] : [];
+		$Airtravel = isset($input_data['Airtravel']) ? $input_data['Airtravel'] : []; 
+		$Landtravel = isset($input_data['Landtravel']) ? $input_data['Landtravel'] : [];
+		$Traintravel = isset($input_data['Traintravel']) ? $input_data['Traintravel'] : [];
+		if (!empty($headers['Token'])) {
+			try {
+				$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
+				$userid=$arrdata['AutoID'];
+				$dataHead = array(
+					'UserID'		=>$TravelUserId,
+					'StartDate'		=>date('Y-m-d H:i:s', strtotime($input_data['StartDate'])),
+					'EndDate'		=>date('Y-m-d H:i:s', strtotime($input_data['EndDate'])),
+					'IsDelete'		=>0,
+				); 
+				if(empty($input_data['AutoID'])){	
+					$dataHead['CreatedBy']  =$userid;
+					$dataHead['CreatedDate'] =date('Y-m-d H:i:s');
+
+					$QrCodeID =$this->Commonmodel->common_insert('ItineraryHead',$dataHead);
+				}else{
+					$dataHead['ModifiedBy']  =$userid;
+					$dataHead['ModifiedDate'] =date('Y-m-d H:i:s');
+					$where = array(
+						'AutoID'    =>$input_data['AutoID'],
+					);
+					$QrCodeID =$input_data['AutoID'];
+					$this->Commonmodel->common_update('ItineraryHead',$where,$dataHead);					
+				}
+			
+				if(isset($Hotel) && count($Hotel) > 0){
+					foreach($Hotel as $key => $val){
+						$dataHotel = array(
+							'ItineraryHeadId'=>$QrCodeID,
+							'Type'			=>$val['Type'],
+							'TravelType'	=>$val['HotelType'],
+							'HotelName'		=>$val['HotelName'],
+							'RoomNo'		=>$val['RoomNo'],
+							'HotelAddress'	=>$val['HotelAddress'],
+							'CheckInDate'	=>date('Y-m-d H:i:s', strtotime($val['CheckInDate'])),
+							'CheckOutDate'	=>date('Y-m-d H:i:s', strtotime($val['CheckOutDate'])),
+							'IsDelete'  	=> 0,
+						);
+						if(empty($val['AutoID'])){
+							$dataHotel['CreatedBy']  =$userid;
+							$dataHotel['CreatedDate'] =date('Y-m-d H:i:s');
+							$response =$this->Commonmodel->common_insert('ItineraryDetails',$dataHotel);
+						}else{
+							$dataHotel['ModifiedBy']  =$userid;
+							$dataHotel['ModifiedDate'] =date('Y-m-d H:i:s');
+							$hotelWhere = array(
+								'AutoID'    =>$val['AutoID'],
+							);
+							$this->Commonmodel->common_update('ItineraryDetails',$hotelWhere,$dataHotel);
+						}
+						
+					}
+					$result['message'] ="Created successfully.";
+					$result['status']=201;
+					$status = 201;
+				}
+				
+				if(isset($Airtravel) && count($Airtravel) > 0){
+					foreach($Airtravel AS $key => $val){
+						$dataTravel = array(
+							'ItineraryHeadId'	=>$QrCodeID,
+							'Type'			=>$val['Type'],
+							'AirlineName'	=>$val['AirlineName'],
+							'TravelType'	=>$val['TravelType'],
+							'TravelFrom'	=>$val['TravelFrom'],
+							'TravelTo'		=>$val['TravelTo'],
+							'PnrNo'			=> $val['PnrNo'],
+							'TravelStartDateTime'=>date('Y-m-d H:i:s', strtotime($val['TravelStartDateTime'])),
+							'TravelEndDateTime'	=>date('Y-m-d H:i:s', strtotime($val['TravelEndDateTime'])),
+							'IsDelete'  		=> 0,
+						);
+						if(empty($val['AutoID'])){
+							$dataTravel['CreatedBy']  =$userid;
+							$dataTravel['CreatedDate'] =date('Y-m-d H:i:s');
+							$response =$this->Commonmodel->common_insert('ItineraryDetails',$dataTravel);
+						}else{
+							$dataTravel['ModifiedBy']  =$userid;
+							$dataTravel['ModifiedDate'] =date('Y-m-d H:i:s');
+							$TravelWhere = array(
+								'AutoID'    =>$val['AutoID'],
+							);
+							$this->Commonmodel->common_update('ItineraryDetails',$TravelWhere,$dataTravel);
+						}
+
+					}
+					$result['message'] ="Created successfully.";
+					$result['status']=201;
+					$status = 201;
+				} 
+				if(isset($Landtravel) && count($Landtravel) > 0){
+					foreach($Landtravel AS $key => $val){
+						$dataLandtravel = array(
+							'ItineraryHeadId'	=>$QrCodeID,
+							'Type'			=>$val['Type'],
+							'LandTransferType'=>$val['LandTransferType'],
+							'VehicleNo'		=>$val['VehicleNo'],
+							'startDateTime'	=>date('Y-m-d H:i:s', strtotime($val['startDateTime'])),
+							'EndDateTime'	=>date('Y-m-d H:i:s', strtotime($val['EndDateTime'])),
+							'TravelFrom'	=>$val['TravelFrom'],
+							'TravelTo'		=>$val['TravelTo'],
+							'IsDelete'  	=> 0,
+						);
+						if(empty($val['AutoID'])){
+							$dataTravel['CreatedBy']  =$userid;
+							$dataLandtravel['CreatedDate'] =date('Y-m-d H:i:s');
+							$dataLandtravel =$this->Commonmodel->common_insert('ItineraryDetails',$dataLandtravel);
+						}else{
+							$dataLandtravel['ModifiedBy']  =$userid;
+							$dataLandtravel['ModifiedDate'] =date('Y-m-d H:i:s');
+							$LandtravelWhere = array(
+								'AutoID'    =>$val['AutoID'],
+							);
+							$this->Commonmodel->common_update('ItineraryDetails',$LandtravelWhere,$dataLandtravel);
+						}
+
+					}
+					$result['message'] ="Created successfully.";
+					$result['status']=201;
+					$status = 201;
+				}
+				if(isset($Traintravel) && count($Traintravel) > 0){
+					foreach($Traintravel AS $key => $val){
+						$dataTraintravel = array(
+							'ItineraryHeadId'=>$QrCodeID,
+							'Type'			=>$val['Type'],
+							'TrainName'		=>$val['TrainName'],
+							'TrainNumber'	=>$val['TrainNumber'],
+							'StartDate'		=>date('Y-m-d H:i:s', strtotime($val['StartDate'])),
+							'EndDate'		=>date('Y-m-d H:i:s', strtotime($val['EndDate'])),
+							'PnrNo'			=>$val['PnrNo'],
+							'TravelFrom'	=>$val['TravelFrom'],
+							'TravelTo'		=>$val['TravelTo'],
+							'IsDelete'  	=> 0,
+						);
+						if(empty($val['AutoID'])){
+							$dataTraintravel['CreatedBy']  =$userid;
+							$dataTraintravel['CreatedDate'] =date('Y-m-d H:i:s');
+							$dataLandtravel =$this->Commonmodel->common_insert('ItineraryDetails',$dataTraintravel);
+						}else{
+							$dataTraintravel['ModifiedBy']  =$userid;
+							$dataTraintravel['ModifiedDate'] =date('Y-m-d H:i:s');
+							$TraintravelWhere = array(
+								'AutoID'    =>$val['AutoID'],
+							);
+							$this->Commonmodel->common_update('ItineraryDetails',$TraintravelWhere,$dataTraintravel);
+						}
+
+					}
+					$result['message'] ="Created successfully.";
+					$result['status']=201;
+					$status = 201;
+				}
+
+				if(empty($input_data['AutoID'])){	
+					$result['message'] ="Created successfully.";
+					$result['status']=201;
+					$status = 201;
+				}else{
+					$result['message'] ="Updated successfully.";
+					$result['status']=200;
+					$status = 200;
+				}
+				
+				$this->output
+					->set_status_header($status)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode($result));
+				
+			}catch (Exception $e) { 
+				$result['message'] = "Invalid Token";
+				$result['status']=false;
+				return $this->set_response($result, 401);
+			}
+		}else{
+			$result['message'] = "Token or old password / new password not Found";
+			$result['status']=false;
+			return $this->set_response($result, 400);
+		}
+	}
+	/**
+	 * Post : Itinerary List API => Date:27-12-2023
+	 */
+	function TravelerItineraryDetails_post(){
+		$headers = apache_request_headers();
+		$input_data=$this->request->body;
+		if (!empty($headers['Token'])) {
+			try {
+				$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
+				$userid=$arrdata['AutoID'];
+				$travelDetailsListObj = $this->TravelModel->travelerListDetails($input_data);
+				if($travelDetailsListObj){
+					$this->output
+					->set_status_header(200)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode($travelDetailsListObj));
+				}else{
+					$this->output
+					->set_status_header(404)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode(["status"=>404,"message"=>"No Data Found."]));
+				}
+			}catch (Exception $e) { 
+				$result['message'] = "Invalid Token";
+				$result['status']=false;
+				return $this->set_response($result, 401);
+			}
+		}else{
+			$result['message'] = "Token or oldpassword / newpassword not Found";
+			$result['status']=false;
+			return $this->set_response($result, 400);
+		}
+	}
+
+	function alertRoomUpdate_post(){
+		$headers = apache_request_headers();
+		if (!empty($headers['Token'])) {
+			try {
+				$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
+				$userid=$arrdata['AutoID'];
+				$input_data=$this->input->post();
+				$RoomNo = $input_data['RoomNo'];
+				$travel_id =$input_data['travel_id'];
+				$response=$this->TravelModel->alert_room_no($travel_id,$RoomNo);
+				if($response){
+					$google_address= getGoogleAddressByLatLong(trim($input_data['Lattitude']),trim($input_data['Longitude']));
+					//Qr Code scanned record add
+					$scanned_data=[
+						'TravelDetailID'    =>$input_data['travel_id'],
+						'ScanedBy'          =>$userid,
+						'Lattitude'         =>trim($input_data['Lattitude']),
+						'Longitude'         =>trim($input_data['Longitude']),
+						'CreatedBy'         =>$userid,
+						'CreatedDate'       =>date('Y-m-d H:i:s'),
+						'Address'           =>$google_address
+					];
+					$this->Commonmodel->common_insert('QRScanHistory',$scanned_data);
+					$result['message'] ="Updated successfully.";
+					$result['status']=201;
+					$status = 201;
+					return $this->set_response($result, 200);
+				}else{
+					$result['message'] = "Invalid Data";
+					$result['status']=false;
+					return $this->set_response($result, 401);
+				}
+			} catch (Exception $e) { 
+				$result['message'] = "Invalid Token";
+				$result['status']=false;
+				return $this->set_response($result, 401);
+			}
+		}
+	}
+
+
+
+
 
 
 
@@ -539,45 +808,7 @@ class TravelController extends REST_Controller {
 		}
     }
 	
-	function alertRoomUpdate_post(){
-		$headers = apache_request_headers();
-		if (!empty($headers['Token'])) {
-			try {
-				$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
-				$userid=$arrdata['AutoID'];
-				$input_data=$this->input->post();
-				$RoomNo = $input_data['RoomNo'];
-				$travel_id =$input_data['travel_id'];
-				$response=$this->TravelModel->alert_room_no($travel_id,$RoomNo);
-				if($response){
-					$google_address= getGoogleAddressByLatLong(trim($input_data['Lattitude']),trim($input_data['Longitude']));
-					//Qr Code scanned record add
-					$scanned_data=[
-						'TravelDetailID'    =>$input_data['travel_id'],
-						'ScanedBy'          =>$userid,
-						'Lattitude'         =>trim($input_data['Lattitude']),
-						'Longitude'         =>trim($input_data['Longitude']),
-						'CreatedBy'         =>$userid,
-						'CreatedDate'       =>date('Y-m-d H:i:s'),
-						'Address'           =>$google_address
-					];
-					$this->Commonmodel->common_insert('QRScanHistory',$scanned_data);
-					$result['message'] ="Updated successfully.";
-					$result['status']=201;
-					$status = 201;
-					return $this->set_response($result, 200);
-				}else{
-					$result['message'] = "Invalid Data";
-					$result['status']=false;
-					return $this->set_response($result, 401);
-				}
-			} catch (Exception $e) { 
-				$result['message'] = "Invalid Token";
-				$result['status']=false;
-				return $this->set_response($result, 401);
-			}
-		}
-	}
+	
 	/*
 	function addUpdateTraveler_post(){
         $headers = apache_request_headers();
@@ -694,204 +925,6 @@ class TravelController extends REST_Controller {
 	}
 	*/
 	
-	function addItinerary_post(){
-		$headers = apache_request_headers();
-		$this->load->library('myLibrary');
-		$input_data=$this->request->body;
-		$TravelUserId = $input_data['UserID'];
-		//$Type = isset($input_data['Type']) ? $input_data['Type'] : '';
-		$Hotel = isset($input_data['Hotel']) ? $input_data['Hotel'] : [];
-		$Airtravel = isset($input_data['Airtravel']) ? $input_data['Airtravel'] : []; 
-		$Landtravel = isset($input_data['Landtravel']) ? $input_data['Landtravel'] : [];
-		$Traintravel = isset($input_data['Traintravel']) ? $input_data['Traintravel'] : [];
-		if (!empty($headers['Token'])) {
-			try {
-				$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
-				$userid=$arrdata['AutoID'];
-				$NewCountRow=$this->Commonmodel->getlast_row() + 1;
-				$this->mylibrary->generate(create_refno($NewCountRow));
-				$dataHead = array(
-					'UserID'=>$TravelUserId,
-					'QrCodeNo'=>create_refno($NewCountRow),
-					'IsDelete'=>0,
-					'CreatedBy'=>$userid,
-					'CreatedDate'=>date('Y-m-d')
-				); 
-				$QrCodeID = $this->Commonmodel->common_insert('TravelHead',$dataHead);
-				
-				if(isset($Hotel) && count($Hotel) > 0){
-					foreach($Hotel as $key => $val){
-						$dataHotel = array(
-							'TravelHeadId'=>$QrCodeID,
-							'Type'=>$val['Type'],
-							'HotelName'=> $val['HotelName'],
-							'RoomNo'=>$val['RoomNo'],
-							'TravelType'=>$val['TravelType'],
-							'CheckInDate'=>$val['CheckInDate'],
-							'CheckOutDate'=>$val['CheckOutDate'],
-							'HotelAddress'=>$val['HotelAddress'],
-							'IsDelete'  => 0,
-							'CreatedBy' => $userid,
-							'CreatedDate' => date('Y-m-d H:i:s')
-						);
-						$response =$this->Commonmodel->common_insert('TravelDetails',$dataHotel);
-					}
-					$result['message'] ="Created successfully.";
-					$result['status']=201;
-					$status = 201;
-				}
-				if(isset($Airtravel) && count($Airtravel) > 0){
-					foreach($Airtravel AS $key => $val){
-						$dataTravel = array(
-							'TravelHeadId'=>$QrCodeID,
-							'Type'=>$val['Type'],
-							'AirlineName'=>$val['AirlineName'],
-							'TravelType'=>$val['TravelType'],
-							'TravelFrom'=>$val['TravelFrom'],
-							'PnrNo'=> $val['PnrNo'],
-							'TravelTo'=>$val['TravelTo'],
-							//'TravelDate'=>$val['TravelDate'],
-							'TravelStartDateTime'=>$val['TravelStartDateTime'],
-							'TravelEndDateTime'=>$val['TravelEndDateTime'],
-							'IsDelete'  => 0,
-							'CreatedBy' => $userid, 
-							'CreatedDate' => date('Y-m-d H:i:s')
-						);
-						$response =$this->Commonmodel->common_insert('TravelDetails',$dataTravel);
-					}
-					$result['message'] ="Created successfully.";
-					$result['status']=201;
-					$status = 201;
-				} 
-				if(isset($Landtravel) && count($Landtravel) > 0){
-					foreach($Landtravel AS $key => $val){
-						$dataLandtravel = array(
-							'TravelHeadId'=>$QrCodeID,
-							'Type'=>$val['Type'],
-							'LandTransferType'=>$val['LandTransferType'],
-							'VehicleNo'=>$val['VehicleNo'],
-							'startDateTime'=>$val['startDateTime'],
-							'EndDateTime'=>$val['EndDateTime'],
-							'IsDelete'  => 0,
-							'CreatedBy' => $userid,
-							'CreatedDate' => date('Y-m-d H:i:s')
-						);
-						$response =$this->Commonmodel->common_insert('TravelDetails',$dataLandtravel);
-					}
-					$result['message'] ="Created successfully.";
-					$result['status']=201;
-					$status = 201;
-				}
-				if(isset($Traintravel) && count($Traintravel) > 0){
-					foreach($Traintravel AS $key => $val){
-						$dataTraintravel = array(
-							'TravelHeadId'=>$QrCodeID,
-							'Type'=>$val['Type'],
-							'TrainName'=>$val['TrainName'],
-							'TrainNumber'=>$val['TrainNumber'],
-							'StartDate'=>$val['StartDate'],
-							'EndDate'=>$val['EndDate'],
-							'PnrNo'=>$val['PnrNo'],
-							'IsDelete'  => 0,
-							'CreatedBy' => $userid,
-							'CreatedDate' => date('Y-m-d H:i:s')
-						);
-						$response =$this->Commonmodel->common_insert('TravelDetails',$dataTraintravel);
-					}
-					$result['message'] ="Created successfully.";
-					$result['status']=201;
-					$status = 201;
-				}
-				
-				
-				
-				
-				
-				/* $dataRegisterMst = array(
-					'UserID'=>$userid,
-					'TraavelType'=>$input_data['TraavelType'],
-					'TraavelFrom'=>$input_data['TraavelFrom'],
-					'TraavelTo'=>$input_data['TraavelTo'],
-					'TravelDate'=>$input_data['TravelDate'],
-					'HotelName'=>$input_data['HotelName'],
-					'RoomNo'=>$input_data['RoomNo'],
-					'CheckInDate'=>$input_data['CheckInDate'],
-					'CheckOutDate'=>$input_data['CheckOutDate'],
-					'LandTransferType'=>$input_data['LandTransferType'],
-					'startDateTime'=>$input_data['startDateTime'],
-					'EndDateTime'=>$input_data['EndDateTime'],
-					'VehicleNo'=>$input_data['VehicleNo'],
-					'TrainName'=>$input_data['TrainName'],
-					'TrainNumber'=>$input_data['TrainNumber'],
-					'PnrNo'=>$input_data['PnrNo'],
-					'StartDate'=>$input_data['startDateTime'],
-					'EndDate'=>$input_data['EndDateTime'],
-				);
-				if(empty($input_data['AutoID'])){
-					$dataRegisterMst['IsDelete']  =0;
-					$dataRegisterMst['CreatedBy']  =$userid;
-					$dataRegisterMst['CreatedDate'] =date('Y-m-d H:i:s');
-					$dataRegisterMst['QrCodeNo'] =create_refno($NewCountRow);
-					$response =$this->Commonmodel->common_insert('TravelDetails',$dataRegisterMst);
-					
-					//Qr Code scanned record add
-					$google_address= getGoogleAddressByLatLong(trim($input_data['Lattitude']),trim($input_data['Longitude']));
-					$scanned_data=[
-						'TravelDetailID'    => $response,
-						'ScanedBy'          =>$userid,
-						'Lattitude'         =>trim($input_data['Lattitude']),
-						'Longitude'         =>trim($input_data['Longitude']),
-						'CreatedBy'         =>$userid,
-						'CreatedDate'       =>date('Y-m-d H:i:s'), 
-						'Address'           =>$google_address
-					];
-					$this->Commonmodel->common_insert('QRScanHistory',$scanned_data);
-					$result['message'] ="Created successfully.";
-					$result['status']=201;
-					$status = 201;
-				}else{
-					$dataRegisterMst['ModifiedBy']  =$userid;
-					$dataRegisterMst['ModifiedDate'] =date('Y-m-d H:i:s');
-					$where = array(
-						'AutoID'    =>$input_data['AutoID'],
-					);
-					$response =$this->Commonmodel->common_update('TravelDetails',$where,$dataRegisterMst);					
-					//Qr Code scanned record add
-					$google_address= getGoogleAddressByLatLong(trim($input_data['Lattitude']),trim($input_data['Longitude']));
-					$scanned_data=[
-						'TravelDetailID'    =>$input_data['AutoID'],
-						'ScanedBy'          =>$userid,
-						'Lattitude'         =>trim($input_data['Lattitude']),
-						'Longitude'         =>trim($input_data['Longitude']),
-						'CreatedBy'         =>$userid,
-						'CreatedDate'       =>date('Y-m-d H:i:s'),
-						'Address'           =>$google_address
-					];
-					$this->Commonmodel->common_insert('QRScanHistory',$scanned_data);
-					$result['message'] ="Updated successfully.";
-					$result['status']=200;
-					$status = 200;
-				} */
-				$result['message'] ="Created successfully.";
-				$result['status']=201;
-				$status = 201;
-				$this->output
-					->set_status_header($status)
-					->set_content_type('application/json', 'utf-8')
-					->set_output(json_encode($result));
-				
-			}catch (Exception $e) { 
-				$result['message'] = "Invalid Token";
-				$result['status']=false;
-				return $this->set_response($result, 401);
-			}
-		}else{
-			$result['message'] = "Token or old password / new password not Found";
-			$result['status']=false;
-			return $this->set_response($result, 400);
-		}
-	}
-	
 	function TravelerList_post(){
 		$headers = apache_request_headers();
 		$input_data=$this->request->body;
@@ -900,37 +933,6 @@ class TravelController extends REST_Controller {
 				$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
 				$userid=$arrdata['AutoID'];
 				$travelDetailsListObj = $this->TravelModel->travelerList($input_data);
-				if($travelDetailsListObj){
-					$this->output
-					->set_status_header(200)
-					->set_content_type('application/json', 'utf-8')
-					->set_output(json_encode($travelDetailsListObj));
-				}else{
-					$this->output
-					->set_status_header(404)
-					->set_content_type('application/json', 'utf-8')
-					->set_output(json_encode(["status"=>404,"message"=>"No Data Found."]));
-				}
-			}catch (Exception $e) { 
-				$result['message'] = "Invalid Token";
-				$result['status']=false;
-				return $this->set_response($result, 401);
-			}
-		}else{
-			$result['message'] = "Token or oldpassword / newpassword not Found";
-			$result['status']=false;
-			return $this->set_response($result, 400);
-		}
-	}
-	
-	function TravelerItineraryDetails_post(){
-		$headers = apache_request_headers();
-		$input_data=$this->request->body;
-		if (!empty($headers['Token'])) {
-			try {
-				$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
-				$userid=$arrdata['AutoID'];
-				$travelDetailsListObj = $this->TravelModel->travelerListDetails($input_data);
 				if($travelDetailsListObj){
 					$this->output
 					->set_status_header(200)
