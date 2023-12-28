@@ -21,6 +21,7 @@ class TravelModel extends CI_Model {
 	public function travelerDetailsList($data){
         $this->db->from('RegisterMST');
         $this->db->where('IsDelete',0);
+		$this->db->where('IsAdmin',0);
 		if(isset($data['AutoID']) && !empty($data['AutoID'])){
 			$this->db->where('AutoID',$data['AutoID']);
 		}else{	
@@ -84,9 +85,115 @@ class TravelModel extends CI_Model {
 			return false;
 		}
 	}
+	public function travelerListDetails($data){ 
+        $query=$this->db->select("rm.AutoID,rm.Name,rm.Mobile,rm.Suffix AS TitlePrefix, ih.AutoID AS ItineraryHeadId,ih.UserID");
+        $this->db->from('ItineraryHead as ih');//ItineraryDetails
+		$this->db->join('RegisterMST as rm','ih.UserID = rm.AutoID','LEFT');
+        $this->db->where('ih.IsDelete',0);
+		if(isset($data['AutoID']) && !empty($data['AutoID'])){
+			$this->db->where('ih.AutoID',$data['AutoID']);
+		}else{	
+			if(!empty(trim($data['keyword']))) {
+				$this->db->group_start();
+				$this->db->like('Name', trim($data['keyword']));
+				$this->db->group_end();
+			}else{
+				$this->db->limit($data['length']);
+				$this->db->offset($data['start']);
+				$this->db->order_by('AutoID','desc');
+			}
+		}
+        $query=$this->db->get();
+		
+		$Requestlist = $query->result();
+		if($Requestlist){
+			foreach($Requestlist as $res){
+				$scan_history_data = $this->getTravelItineraryDetails($res->ItineraryHeadId);
+				$res->Itinerary=$scan_history_data;
+				$scan_history_data=$this->getQRScanHistory($res->ItineraryHeadId);
+				$res->scan_history_data=$scan_history_data;
+			}
+			$Requestlist = json_decode(json_encode($Requestlist),true);
+			$draw = $this->input->post('draw');
+			$total = $this->db->where('ItineraryHead.IsDelete',0)->count_all_results('ItineraryHead');
+			$totalFilter = count($Requestlist);
+			$contents = array(
+				"status"		=>200,
+				"msg"			=>"data found",
+				"data"			=>$Requestlist,
+				"draw"			=>$draw,
+				"recordsTotal"	=>$total,
+				"recordsFiltered"=>$total
+			);			
+			return $contents;
+		}else{
+			return false;
+		}       
+    }
+	function getTravelItineraryDetails($travelHeadId){
+		$query=$this->db->select("ItineraryDetails.*");
+		$this->db->where('ItineraryHeadId',$travelHeadId);
+		$this->db->from('ItineraryDetails');
+		$query=$this->db->get();
+		if($query){
+			return $query->result();
+		}else{
+			return false;
+		}
+	}
+	function getQRScanHistory($travelId){
+		$query=$this->db->select("qsh.*,rm.Name as ScanedByName");
+		$this->db->where('TravelDetailID',$travelId);
+		$this->db->from('QRScanHistory as qsh');
+		$this->db->join('RegisterMST as rm','rm.AutoID = qsh.ScanedBy','LEFT');
+		$query=$this->db->get();
+		if($query){
+			return $query->result();
+		}else{
+			return false;
+		}
+	}
+
+
 
 
 	
+	function getid_from_qrdata($qrtext){
+		$query=$this->db->select("TravelDetails.*, th.QrCodeNo");
+		$this->db->where('TravelHeadId',$travelHeadId);
+		$this->db->from('TravelDetails');
+		$this->db->join('TravelHead as th','th.AutoID = TravelDetails.TravelHeadId','LEFT');
+		$query=$this->db->get();
+		if($query){
+			return $query->result();
+		}else{
+			return false;
+		}
+		/* $this->db->where('QrCodeNo',$qrtext);
+		$query=$this->db->get('TravelDetails');
+		if($query){
+			return $query->row();
+		}else{
+			return false;
+		} */
+	}
+	function alert_room_no($AutoID, $roomNo){
+        $this->db->where('AutoID', $AutoID);
+        $result = $this->db->update('TravelDetails', ['RoomNo' =>$roomNo]);
+        if($result){
+            return true;
+        }else{
+            return false;
+        }
+    }
+	
+
+
+
+
+
+
+
 	public function travelDetailsList($data){       
         $query=$this->db->select("td.AutoID,td.QrCodeNo,td.TitlePrefix,td.Name,td.PhoneNumber,td.AltPhoneNumber,td.Address,td.Address2,td.Landmark,td.TraavelType,td.TraavelFrom,td.TraavelTo,td.TravelDate,td.HotelName,td.RoomNo,td.CheckInDate,td.CheckOutDate,td.ProfilePicture,td.CreatedDate,td.PhoneCountryCode,td.WhatsAppCountryCode,td.PnrNo,td.AirlineName");
         $this->db->from('TravelDetails as td');
@@ -144,37 +251,8 @@ class TravelModel extends CI_Model {
 			return false;
 		}       
     }
-	function getQRScanHistory($travelId){
-		$query=$this->db->select("qsh.*,rm.Name as ScanedByName");
-		$this->db->where('TravelDetailID',$travelId);
-		$this->db->from('QRScanHistory as qsh');
-		$this->db->join('RegisterMST as rm','rm.AutoID = qsh.ScanedBy','LEFT');
-		$query=$this->db->get();
-		if($query){
-			return $query->result();
-		}else{
-			return false;
-		}
-	}
-	function getid_from_qrdata($qrtext){
-		$query=$this->db->select("TravelDetails.*, th.QrCodeNo");
-		$this->db->where('TravelHeadId',$travelHeadId);
-		$this->db->from('TravelDetails');
-		$this->db->join('TravelHead as th','th.AutoID = TravelDetails.TravelHeadId','LEFT');
-		$query=$this->db->get();
-		if($query){
-			return $query->result();
-		}else{
-			return false;
-		}
-		/* $this->db->where('QrCodeNo',$qrtext);
-		$query=$this->db->get('TravelDetails');
-		if($query){
-			return $query->row();
-		}else{
-			return false;
-		} */
-	}
+	
+	
 	/**
 	 * Qr code Use - When taravel luggage add
 	 */
@@ -195,15 +273,7 @@ class TravelModel extends CI_Model {
 	}
 	*/
 	
-	function alert_room_no($AutoID, $roomNo){
-        $this->db->where('AutoID', $AutoID);
-        $result = $this->db->update('TravelDetails', ['RoomNo' =>$roomNo]);
-        if($result){
-            return true;
-        }else{
-            return false;
-        }
-    }
+	
 	
 	public function travelerList($data){ 
         $query=$this->db->select("td.AutoID,td.Address,td.City AS Address2,td.State AS Landmark,td.Name,td.Mobile,td.Country AS CountryCode,td.Suffix AS TitlePrefix,td.IsAdmin,td.ContactPersonMobile AS WhatsAppNumber,td.ProfileIMG,td.OfficePhoneNumber AS Phone,td.CompanyCode AS WhatsAppCountryCode");
@@ -245,62 +315,8 @@ class TravelModel extends CI_Model {
 		}       
     }
 	
-	public function travelerListDetails($data){ 
-        $query=$this->db->select("td.AutoID,td.Address,td.City AS Address2,td.State AS Landmark,td.Name,td.Mobile,td.Country AS CountryCode,td.Suffix AS TitlePrefix,td.IsAdmin,td.ContactPersonMobile AS WhatsAppNumber,td.ProfileIMG,td.OfficePhoneNumber AS Phone,td.CompanyCode AS WhatsAppCountryCode, th.QrCodeNo, th.AutoID AS TravelHeadId");
-        $this->db->from('TravelHead as th');
-		$this->db->join(' RegisterMST as td','th.UserID = td.AutoID','LEFT');
-        $this->db->where('th.IsDelete',0);
-		if(isset($data['AutoID']) && !empty($data['AutoID'])){
-			$this->db->where('th.AutoID',$data['AutoID']);
-		}else{	
-			if(!empty(trim($data['keyword']))) {
-				$this->db->group_start();
-				$this->db->like('Name', trim($data['keyword']));
-				$this->db->or_like('QrCodeNo', trim($data['keyword']));
-				$this->db->group_end();
-			}else{
-				$this->db->order_by('AutoID','desc');
-				//$this->db->limit($data['length']);
-				//$this->db->offset($data['start']);
-			}
-		}
-        $query=$this->db->get();
-		$Requestlist = $query->result();
-		if($Requestlist){
-			foreach($Requestlist as $res){
-				$scan_history_data = $this->getTravelItineraryDetails($res->TravelHeadId);
-				$res->Itinerary=$scan_history_data;
-				$scan_history_data=$this->getQRScanHistory($res->TravelHeadId);
-				$res->scan_history_data=$scan_history_data;
-			}
-			$Requestlist = json_decode(json_encode($Requestlist),true);
-			$draw = $this->input->post('draw');
-			$total = $this->db->where('TravelHead.IsDelete',0)->count_all_results('TravelHead');
-			$totalFilter = count($Requestlist);
-			$contents = array(
-				"status"		=>200,
-				"msg"			=>"data found",
-				"data"			=>$Requestlist,
-				"draw"			=>$draw,
-				"recordsTotal"	=>$total,
-				"recordsFiltered"=>$total
-			);			
-			return $contents;
-		}else{
-			return false;
-		}       
-    }
 	
-	function getTravelItineraryDetails($travelHeadId){
-		$query=$this->db->select("TravelDetails.*");
-		$this->db->where('TravelHeadId',$travelHeadId);
-		$this->db->from('TravelDetails');
-		$query=$this->db->get();
-		if($query){
-			return $query->result();
-		}else{
-			return false;
-		}
-	}
+	
+	
 
 }
