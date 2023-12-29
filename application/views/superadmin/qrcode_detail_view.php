@@ -68,7 +68,12 @@
                                             <td><?= $data['QRCodeText'];?> </td>
                                             <td><?= $data['status'];?></td>
                                             <td>
-                                                <a href="#"  onclick="printSingleQrcode(<?= $data['AutoID'];?>)" ><i class="fa fa-qrcode fa-lg" aria-hidden="true"></i></a>
+                                                <a href="#"  onclick="printSingleQrcode(<?= $data['AutoID'];?>)" >
+                                                    <i class="fa fa-qrcode fa-lg" aria-hidden="true"></i>
+                                                </a>
+                                                <a href="<?= base_url();?>upload/qr-code/<?= $data['QRCodeText'];?>.png" download class="mx-2">
+                                                    <i class="fa fa-download fa-lg" aria-hidden="true"></i>
+                                                </a>
                                                 <?php if($data['status'] === 'Used'){ ?>
                                                   <!-- <span>  &nbsp; &nbsp;</span>
                                                 <a href="#"  onclick="showQrCodeTravelDetails(<?= $data['QRCodeText'];?>)" ><i class="fa fa-eye fa-lg ml-2" aria-hidden="true"></i></a> -->
@@ -83,6 +88,7 @@
                                             <td colspan='3' align="center">
                                                 <a href="#" onclick="printQrcode()"><button class="btn btn-success btn-sm">Print QR Code</button>
                                                     <i class="fa fa-pdf fa-lg" aria-hidden="true"></i></a>
+                                                    
                                             </td>
                                         </tr>
                                     </tfoot>
@@ -121,6 +127,14 @@
                                     <?php for($i=1; $i <= 2; $i++){ ?>
                                     <option value="<?= $i;?>"><?= $i;?></option>
                                     <?php } ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <p class="mg-b-10">Print Type</p>
+                                <select name="type" class="form-control print_type">
+                                    <option value="">Select Type</option>
+                                    <option value="1" selected>Print only QRcode</option>
+                                    <option value="2">Print with QRcode Number</option>
                                 </select>
                             </div>
                             <input type="hidden" name="qrcode_ids" id="qrcode_ids" value="">
@@ -162,6 +176,14 @@
                                     <option value="6">6</option>
                                     <option value="8">8</option>
                                     <option value="10">10</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <p class="mg-b-10">Print Type</p>
+                                <select name="type" class="form-control print_type">
+                                    <option value="">Select Type</option>
+                                    <option value="1" selected>Print only QRcode</option>
+                                    <option value="2">Print with QRcode Number</option>
                                 </select>
                             </div>
                             <input type="hidden" name="qrcode_id" id="qrcode_id" value="">

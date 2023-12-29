@@ -17,7 +17,6 @@ class Mylibrary {
         return "<h2>Result of $large - $small is: " . ($large - $small) . "</h2>";
     }
     function ref_enc($code){
-
         $simple_string = $code;
         // Store the cipher method
         $ciphering = "AES-128-CTR";
@@ -35,10 +34,7 @@ class Mylibrary {
 
     }
     function generate($code){
-
-
         $barcode = new Barcode();
-
         $targetPath = "./upload/qr-code/";
         $text = $code;
         $simple_string = $code;
@@ -54,15 +50,23 @@ class Mylibrary {
         // Use openssl_encrypt() function to encrypt the data
         $encryption = openssl_encrypt($simple_string, $ciphering,
         $encryption_key, $options, $encryption_iv);
-        $url_text = base_url()."Qrcode/scanQrCodeDetails?ref_no=".$encryption.'&type=3';
+        //$url_text = base_url()."Qrcode/scanQrCodeDetails?ref_no=".$encryption.'&type=3';
+        $url_text =$encryption;
         if (! is_dir($targetPath)) {
             mkdir($targetPath, 0777, true);
         }
-        $bobj = $barcode->getBarcodeObj('QRCODE,H',$url_text ,-4,-4, 'black', array(
-        - 2,
-        - 2,
-        - 2,
-        - 2
+        /*$bobj = $barcode->getBarcodeObj('QRCODE,H',$url_text ,-4,-4, 'black', array(
+            - 2,
+            - 2,
+            - 2,
+            - 2
+        ))->setBackgroundColor('#f0f0f0'); */
+
+        $bobj = $barcode->getBarcodeObj('QRCODE,H',$url_text ,-8,-8, 'black', array(
+            4,
+            4,
+            4,
+            4,
         ))->setBackgroundColor('#f0f0f0');
 
         $imageData = $bobj->getPngData();
