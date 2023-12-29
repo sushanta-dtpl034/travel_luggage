@@ -19,46 +19,44 @@
 					<div class="card custom-card">
 						<div class="card-body">
 							<div class="card-order">
-								<label class="main-content-label mb-3 pt-1">Total Travel Details</label>
-								<h2 class="text-end"><a href="<?php echo base_url('Qrcode/luggag_details'); ?>"><i class="mdi mdi-cube icon-size float-start text-primary"></i><span class="font-weight-bold"><?php echo $dashboard_data->TOTAL_TRAVEL_DETAILS; ?></span></a></h2>
+								<label class="main-content-label mb-3 pt-1">Total Traveller</label>
+								<h2 class="text-end"><a href="<?php echo base_url('Qrcode/luggag_details'); ?>"><i class="mdi mdi-airplane icon-size float-start text-primary"></i><span class="font-weight-bold"><?php echo $dashboard_data->TOTAL_TRAVELler_COUNT; ?></span></a></h2>
 							</div>
 						</div>
 					</div>
 				</div>
-				<!-- COL END -->
-				<!--<div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+				<div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
 					<div class="card custom-card">
 						<div class="card-body">
 							<div class="card-order">
-								<label class="main-content-label mb-3 pt-1">Total Used</label>
-								<h2 class="text-end"><a href="<?php echo base_url('Qrcode/index') ?>"><i class="mdi mdi-cube icon-size float-start text-primary"></i><span class="font-weight-bold"><?php echo $dashboard_data->TOTAL_USED_QRCODE; ?></span></a></h2>
+								<label class="main-content-label mb-3 pt-1">Total Itinerary</label>
+								<h2 class="text-end"><a href="<?php echo base_url('Qrcode/luggag_details'); ?>"><i class="mdi mdi-wallet-travel icon-size float-start text-primary"></i><span class="font-weight-bold"><?php echo $dashboard_data->TOTAL_ITINERARY; ?></span></a></h2>
 							</div>
 						</div>
 					</div>
-				</div>-->
-				<!-- <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+				</div>
+				<div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
 					<div class="card custom-card">
 						<div class="card-body">
 							<div class="card-order">
-								<label class="main-content-label mb-3 pt-1">Removed Asset</label>
-								<h2 class="text-end"><a href="<?php echo (count($remove)!=0) ? base_url('Assetmanagement/removeassetform_list') :'javascript:void(0)'; ?>"><i class="mdi mdi-cube icon-size float-start text-primary"></i><span class="font-weight-bold"><?php echo $count = !empty($remove) ? count($remove) : 0; ?></span></a></h2>
+								<label class="main-content-label mb-3 pt-1">Total QR Code Generated</label>
+								<h2 class="text-end"><a href="<?php echo base_url('Qrcode/luggag_details'); ?>"><i class="mdi mdi-qrcode icon-size float-start text-primary"></i><span class="font-weight-bold"><?php echo $dashboard_data->TOTAL_QRCODE; ?></span></a></h2>
 							</div>
 						</div>
 					</div>
-				</div> -->
-			
-				<!-- <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+				</div>
+				<div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
 					<div class="card custom-card">
 						<div class="card-body">
-							<div class="card-order ">
-								<label class="main-content-label mb-3 pt-1">Total Users</label>
-								<h2 class="text-end card-item-icon card-icon">
-								<a href="<?php  echo ( $IsAdmin ==1 ? base_url('Usercontroller/user_list_admin') : base_url('Usercontroller/user_list')); ?>"><i class="mdi mdi-account-multiple icon-size float-start text-primary"></i><span class="font-weight-bold"><?php echo count($total); ?></span></a></h2>
+							<div class="card-order">
+								<label class="main-content-label mb-3 pt-1">Total QR Code Used</label>
+								<h2 class="text-end"><a href="<?php echo base_url('Qrcode/luggag_details'); ?>"><i class="mdi mdi-qrcode icon-size float-start text-primary"></i><span class="font-weight-bold"><?php echo $dashboard_data->TOTAL_QRCODE_USED; ?></span></a></h2>
 							</div>
 						</div>
 					</div>
-				</div> -->
+				</div>
 				
+			
 			
 			</div>
 			 

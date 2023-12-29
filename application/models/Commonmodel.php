@@ -173,10 +173,19 @@ class Commonmodel extends CI_Model{
 		$query = $this->db->get('QRCodeDetailsMst');
 		return $query->num_rows();
 	}
+	public function last_qrcode($pre_month,$pre_year){
+		// $this->db->where('MONTH(CreatedDate)',$pre_month); 
+		// $this->db->where('YEAR(CreatedDate)', $pre_year); 
+		$query = $this->db->get('QRCodeDetailsMst');
+		return $query->num_rows();
+	}
 
-	public function getlast_row($parent_id){
+	public function getlast_row(){
 		$row= $this->db->select('*')->order_by('AutoID',"desc")->limit(1)->get('QRCodeHeadMst')->row();
-		return $row->CreatedDate;	
+		if(!$row){
+			return false;	
+		}
+		return $row;	
 	}
 
 

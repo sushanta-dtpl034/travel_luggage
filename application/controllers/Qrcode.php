@@ -10,13 +10,13 @@ class Qrcode extends CI_Controller {
 		parent::__construct();
 		$username = $this->session->userdata('username');
 		$userid = $this->session->userdata('userid');
-/* 
+		/* 
 		if($this->uri->segment(2) != 'scanQrCodeDetails'){
 			if (!isset($username) && !isset($userid)) { 
 				redirect('Login');
 			} 
 		}
-	 */
+	 	*/
 		
 		$this->load->library('form_validation');
 		$this->load->library('upload');
@@ -35,12 +35,7 @@ class Qrcode extends CI_Controller {
 		$this->load->view('include/admin-header',$data);
 		$this->load->view('include/sidebar');
 		$this->load->view('include/topbar');
-		$parentid = $this->session->userdata('parentid');
-		if($this->session->userdata('GroupID')!='1'){
-			$parentid = $this->session->userdata('parentid');
-		}
 		$data['qrcode'] = $this->Qrcodemodel->get_qrcode_data();
-	
 		$this->load->view('superadmin/qrcode_list',$data);
 		$this->load->view('include/admin-footer');
     }
@@ -51,17 +46,7 @@ class Qrcode extends CI_Controller {
 
 	function qrcode_save(){
 		$this->load->library('myLibrary');
-		if($this->session->userdata('GroupID')!='1'){
-			$parent_id = $this->session->userdata('parentid');
-		}else{
-			$parent_id = $this->session->userdata('userid');
-		}
-
-
-		// $company_id= $this->input->post('company_id');
-		// $company_code=string_ucword($this->input->post('company_code'));
 		$noof_qrcode= $this->input->post('noof_qrcode');
-		
 		$insert_data=[
 			// 'CompanyID'		=>$company_id,
 			// 'ShortCode'		=>$company_code,
@@ -76,18 +61,23 @@ class Qrcode extends CI_Controller {
 		if($last_insert_id){
 			if(intval($noof_qrcode) > 0){
 				//check previous month in assetMst table
-				$prev_create_date_row=$this->Commonmodel->getlast_row($parent_id);
-				$prv_year_month=date('Ym', strtotime($prev_create_date_row));
+				$prev_create_date_row=$this->Commonmodel->getlast_row();
+				if($prev_create_date_row){
+					$prv_year_month=date('Ym', strtotime($prev_create_date_row->CreatedDate));
+				}
 				$current_year_month= date('Ym');
-				if($prv_year_month == $current_year_month){
+				if(isset($prv_year_month) == $current_year_month){
 					//for existing month
-					$prv_month=date('m', strtotime($prev_create_date_row));
-					$prv_year=date('Y', strtotime($prev_create_date_row));
-					$old_sequence_no_assets= $this->Commonmodel->last_companycode($parent_id,$prv_month,$prv_year);
-					$prev_sequence_no =get_previous_qrcode_sequence($last_insert_id,$current_year_month);
-					$total_sequence_no =$prev_sequence_no + $old_sequence_no_assets;
+					$prv_month=date('m', strtotime($prv_year_month));
+					$prv_year=date('Y', strtotime($prv_year_month));
+					
+					$old_sequence_no= $this->Commonmodel->last_qrcode($prv_month,$prv_year);
+					//$prev_sequence_no =get_previous_qrcode_sequence($last_insert_id,$current_year_month);
+					//$total_sequence_no =$old_sequence_no_assets + 1;
+
+					
 					for($i=1; $i <= intval($noof_qrcode); $i++ ){
-						$refno=$total_sequence_no+$i; 
+						$refno=$old_sequence_no+$i; 
 						$details_data=[
 							'QRCodeId'		=>$last_insert_id,
 							'QRCodeText'	=>create_refno($refno),
@@ -111,7 +101,7 @@ class Qrcode extends CI_Controller {
 						$this->Qrcodemodel->qrcode_details_save($details_data);
 						$this->mylibrary->generate(create_refno($refno));
 					}
-		
+					
 				}
 
 				echo json_encode(array('status' => 1));
@@ -121,6 +111,7 @@ class Qrcode extends CI_Controller {
 		}
 		
 	}
+
 	public function get_qrcode_details($id){
 		$data['qrcode_data'] = $this->Qrcodemodel->get_qrcode_details($id);	
 		$data['qrcode'] = $this->Qrcodemodel->get_qrcode_data();	
@@ -134,16 +125,17 @@ class Qrcode extends CI_Controller {
 	}
 	function print_qrcode(){
 		$noof_copy =$this->input->post('noof_copy');
+		$type =$this->input->post('type'); // 1-only QR code, 2-QR code with number
 		//$qrcode_ids =implode(',',$this->input->post('qrcode_ids'));
 		$qrcode_ids =$this->input->post('qrcode_ids');
 		if(!empty($noof_copy) && !empty($qrcode_ids)){
 			$qrcodes_data = $this->Qrcodemodel->get_qrcode_details_ids($qrcode_ids);
-			$this->qrcode_pdf_generate($noof_copy,$qrcodes_data );
+			$this->qrcode_pdf_generate($noof_copy,$qrcodes_data,$type);
 		}
 		
 	}
 
-	function qrcode_pdf_generate($noof_copy,$qrcodes_data){	
+	function qrcode_pdf_generate($noof_copy,$qrcodes_data,$type){	
 		$defaultConfig = (new Mpdf\Config\ConfigVariables())->getDefaults();
 		$fontDirs = $defaultConfig['fontDir'];
 		$defaultFontConfig = (new Mpdf\Config\FontVariables())->getDefaults();
@@ -184,19 +176,20 @@ class Qrcode extends CI_Controller {
 		$inner_html='';
 		if($noof_copy ==1){
 			for($i=0; $i < count($qrcodes_data); $i++){
-				$usedUserName=QrCodeUsesUserName($qrcodes_data[$i]->QRCodeText);
+				$usedUserName="";//QrCodeUsesUserName($qrcodes_data[$i]->QRCodeText);
+				$QRCodeText=($type ==1)?"":$qrcodes_data[$i]->QRCodeText;
 				if($i %2 === 0){
 					if($i == 0 && count($qrcodes_data) == 1){
 						$inner_html.='<tr><td>
 							<table style="width:100%">
 								<tr>
 									<td width="30%">
-										<img src="'.base_url('api/upload/qr-code/'.$qrcodes_data[$i]->QRCodeImage).'" style="height:300px;width:300px;" >
+										<img src="'.base_url('upload/qr-code/'.$qrcodes_data[$i]->QRCodeImage).'" style="height:300px;width:300px;" >
 									</td>
 									<td width="70%">
 										<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
 										<p>&nbsp;</p>
-										<p style="font-size:22px;letter-spacing:3px"><b>'.$qrcodes_data[$i]->QRCodeText.'</b></p>
+										<p style="font-size:22px;letter-spacing:3px"><b>'.$QRCodeText.'</b></p>
 											
 									</td>
 								</tr>
@@ -208,7 +201,7 @@ class Qrcode extends CI_Controller {
 								<tr style="display:none;">
 									<td width="30%"></td>
 									<td width="70%">
-										<p style="font-size:35px; color:white"><b>'.$qrcodes_data[$i]->QRCodeText.'</b></p>
+										<p style="font-size:35px; color:white"><b>'.$QRCodeText.'</b></p>
 										<p style="font-size:55px;color:white">.</p>
 									</td>
 								</tr>
@@ -220,11 +213,11 @@ class Qrcode extends CI_Controller {
 					$inner_html.='<tr><td>
 						<table style="width:100%">
 							<tr>
-								<td width="30%"><img src="'.base_url('api/upload/qr-code/'.$qrcodes_data[$i]->QRCodeImage).'" style="height:300px;width:300px;" ></td>
+								<td width="30%"><img src="'.base_url('upload/qr-code/'.$qrcodes_data[$i]->QRCodeImage).'" style="height:300px;width:300px;" ></td>
 								<td width="70%">
 									<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
 									<p>&nbsp;</p>
-									<p style="font-size:22px;letter-spacing:3px"><b>'.$qrcodes_data[$i]->QRCodeText.'</b></p>
+									<p style="font-size:22px;letter-spacing:3px"><b>'.$QRCodeText.'</b></p>
 								
 								</td>
 							</tr>
@@ -235,11 +228,11 @@ class Qrcode extends CI_Controller {
 					$inner_html.='<td>
 						<table style="width:100%">
 							<tr>
-								<td width="30%"><img src="'.base_url('api/upload/qr-code/'.$qrcodes_data[$i]->QRCodeImage).'" style="height:300px;width:300px;" ></td>
+								<td width="30%"><img src="'.base_url('upload/qr-code/'.$qrcodes_data[$i]->QRCodeImage).'" style="height:300px;width:300px;" ></td>
 								<td width="70%">
 									<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
 									<p>&nbsp;</p>
-									<p style="font-size:22px;letter-spacing:3px"><b>'.$qrcodes_data[$i]->QRCodeText.'</b></p>
+									<p style="font-size:22px;letter-spacing:3px"><b>'.$QRCodeText.'</b></p>
 								
 								</td>
 							</tr>
@@ -250,17 +243,18 @@ class Qrcode extends CI_Controller {
 			
 		}else if($noof_copy == 2){
 			foreach($qrcodes_data as $data){
-				$usedUserName=QrCodeUsesUserName($data->QRCodeText);
+				$usedUserName="";//QrCodeUsesUserName($data->QRCodeText);
+				$QRCodeText=($type ==1)?"":$data->QRCodeText;
 				$inner_html.='
 					<tr >
 						<td>
 							<table style="width:100%">
 								<tr>
-									<td width="30%"><img src="'.base_url('api/upload/qr-code/'.$data->QRCodeImage).'" style="height:300px;width:300px;" ></td>
+									<td width="30%"><img src="'.base_url('upload/qr-code/'.$data->QRCodeImage).'" style="height:300px;width:300px;" ></td>
 									<td width="70%">
 										<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
 										<p>&nbsp;</p>
-										<p style="font-size:22px;letter-spacing:3px"><b>'.$data->QRCodeText.'</b></p>
+										<p style="font-size:22px;letter-spacing:3px"><b>'.$QRCodeText.'</b></p>
 										
 									</td>
 								</tr>
@@ -269,11 +263,11 @@ class Qrcode extends CI_Controller {
 						<td>
 							<table style="width:100%">
 								<tr>
-									<td width="30%"><img src="'.base_url('api/upload/qr-code/'.$data->QRCodeImage).'" style="height:300px;width:300px;" ></td>
+									<td width="30%"><img src="'.base_url('upload/qr-code/'.$data->QRCodeImage).'" style="height:300px;width:300px;" ></td>
 									<td width="70%">
 										<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
 										<p>&nbsp;</p>
-										<p style="font-size:22px;letter-spacing:3px"><b>'.$data->QRCodeText.'</b></p>
+										<p style="font-size:22px;letter-spacing:3px"><b>'.$QRCodeText.'</b></p>
 										
 									</td>
 								</tr>
@@ -283,18 +277,19 @@ class Qrcode extends CI_Controller {
 			}
 		}else{
 			foreach($qrcodes_data as $data){
-				$usedUserName=QrCodeUsesUserName($data->QRCodeText);
+				$usedUserName="";//QrCodeUsesUserName($data->QRCodeText);
+				$QRCodeText=($type ==1)?"":$data->QRCodeText;
 				for($i=0; $i < $noof_copy; $i++){
 					$inner_html.='
 					<tr >
 						<td>
 							<table style="width:100%">
 								<tr>
-									<td width="30%"><img src="'.base_url('api/upload/qr-code/'.$data->QRCodeImage).'" style="height:300px;width:300px;" ></td>
+									<td width="30%"><img src="'.base_url('upload/qr-code/'.$data->QRCodeImage).'" style="height:300px;width:300px;" ></td>
 									<td width="70%">
 										<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
 										<p>&nbsp;</p>
-										<p style="font-size:22px;letter-spacing:3px"><b>'.$data->QRCodeText.'</b></p>
+										<p style="font-size:22px;letter-spacing:3px"><b>'.$QRCodeText.'</b></p>
 										
 									</td>
 								</tr>
@@ -303,11 +298,11 @@ class Qrcode extends CI_Controller {
 						<td>
 							<table style="width:100%">
 								<tr>
-									<td width="30%"><img src="'.base_url('api/upload/qr-code/'.$data->QRCodeImage).'" style="height:300px;width:300px;" ></td>
+									<td width="30%"><img src="'.base_url('upload/qr-code/'.$data->QRCodeImage).'" style="height:300px;width:300px;" ></td>
 									<td width="70%">
 										<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
 										<p>&nbsp;</p>
-										<p style="font-size:22px;letter-spacing:3px"><b>'.$data->QRCodeText.'</b></p>
+										<p style="font-size:22px;letter-spacing:3px"><b>'.$QRCodeText.'</b></p>
 									</td>
 								</tr>
 							</table>
@@ -332,14 +327,15 @@ class Qrcode extends CI_Controller {
 
 	function single_print_qrcode(){		
 		$noof_copy =$this->input->post('noof_copy');
+		$type =$this->input->post('type'); // 1-only QR code, 2-QR code with number
 		$qrcode_ids =$this->input->post('qrcode_id');
 		if(!empty($noof_copy) && !empty($qrcode_ids)){
 			$qrcodes_data = $this->Qrcodemodel->get_qrcode_details_ids($qrcode_ids);
-			$this->single_qrcode_pdf_generate($noof_copy,$qrcodes_data );
+			$this->single_qrcode_pdf_generate($noof_copy,$qrcodes_data,$type);
 		}
 	}
 
-	function single_qrcode_pdf_generate($noof_copy,$qrcodes_data){	
+	function single_qrcode_pdf_generate($noof_copy,$qrcodes_data,$type){	
 		$defaultConfig = (new Mpdf\Config\ConfigVariables())->getDefaults();
 		$fontDirs = $defaultConfig['fontDir'];
 		$defaultFontConfig = (new Mpdf\Config\FontVariables())->getDefaults();
@@ -382,7 +378,8 @@ class Qrcode extends CI_Controller {
 		$inner_html='';
 		if($noof_copy ==1){
 			for($i=0; $i < count($qrcodes_data); $i++){
-				$usedUserName=QrCodeUsesUserName($qrcodes_data[$i]->QRCodeText);
+				$usedUserName="";//QrCodeUsesUserName($qrcodes_data[$i]->QRCodeText);
+				$QRCodeText=($type ==1)?"":$qrcodes_data[$i]->QRCodeText;
 				if($i %2 === 0){
 					if($i == 0 && count($qrcodes_data) == 1){ 
 						$inner_html.='<tr><td>
@@ -394,7 +391,7 @@ class Qrcode extends CI_Controller {
 										<td width="70%">
 											<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
 											<p>&nbsp;</p>
-											<p style="font-size:22px;letter-spacing:3px"><b>'.$qrcodes_data[$i]->QRCodeText.'</b></p>
+											<p style="font-size:22px;letter-spacing:3px"><b>'.$QRCodeText.'</b></p>
 											
 										</td>
 									</tr>
@@ -423,7 +420,7 @@ class Qrcode extends CI_Controller {
 									<td width="60%">
 										<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
 										<p>&nbsp;</p>
-										<p style="font-size:22px;letter-spacing:3px"><b>'.$qrcodes_data[$i]->QRCodeText.'</b></p>
+										<p style="font-size:22px;letter-spacing:3px"><b>'.$QRCodeText.'</b></p>
 									</td>
 								</tr>
 							</table>
@@ -437,7 +434,7 @@ class Qrcode extends CI_Controller {
 								<td width="70%">
 									<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
 									<p>&nbsp;</p>
-									<p style="font-size:22px;letter-spacing:3px"><b>'.$qrcodes_data[$i]->QRCodeText.'</b></p>
+									<p style="font-size:22px;letter-spacing:3px"><b>'.$QRCodeText.'</b></p>
 								</td>
 							</tr>
 						</table>
@@ -447,7 +444,8 @@ class Qrcode extends CI_Controller {
 			
 		}else if($noof_copy == 2){
 			foreach($qrcodes_data as $data){
-				$usedUserName=QrCodeUsesUserName($data->QRCodeText);
+				$usedUserName="";//QrCodeUsesUserName($data->QRCodeText);
+				$QRCodeText=($type ==1)?"":$data->QRCodeText;
 				$inner_html.='
 					<tr >
 						<td>
@@ -457,7 +455,7 @@ class Qrcode extends CI_Controller {
 									<td width="70%">
 										<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
 										<p>&nbsp;</p>
-										<p style="font-size:22px;letter-spacing:3px"><b>'.$data->QRCodeText.'</b></p>
+										<p style="font-size:22px;letter-spacing:3px"><b>'.$QRCodeText.'</b></p>
 									</td>
 								</tr>
 							</table>
@@ -469,7 +467,7 @@ class Qrcode extends CI_Controller {
 									<td width="70%">
 										<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
 										<p>&nbsp;</p>
-										<p style="font-size:22px;letter-spacing:3px"><b>'.$data->QRCodeText.'</b></p>
+										<p style="font-size:22px;letter-spacing:3px"><b>'.$QRCodeText.'</b></p>
 									</td>
 								</tr>
 							</table>
@@ -478,7 +476,8 @@ class Qrcode extends CI_Controller {
 			}
 		}else{
 			foreach($qrcodes_data as $data){
-				$usedUserName=QrCodeUsesUserName($data->QRCodeText);
+				$usedUserName="";//QrCodeUsesUserName($data->QRCodeText);
+				$QRCodeText=($type ==1)?"":$data->QRCodeText;
 				for($i=0; $i < $noof_copy/2; $i++){
 					$inner_html.='
 					<tr >
@@ -489,7 +488,7 @@ class Qrcode extends CI_Controller {
 									<td width="70%">
 										<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
 										<p>&nbsp;</p>
-										<p style="font-size:22px;letter-spacing:3px"><b>'.$data->QRCodeText.'</b></p>
+										<p style="font-size:22px;letter-spacing:3px"><b>'.$QRCodeText.'</b></p>
 									</td>
 								</tr>
 							</table>
@@ -501,7 +500,7 @@ class Qrcode extends CI_Controller {
 									<td width="70%">
 										<p style="font-size:22px;letter-spacing:3px;"><b>'.$usedUserName.'</b></p>
 										<p>&nbsp;</p>
-										<p style="font-size:22px;letter-spacing:3px"><b>'.$data->QRCodeText.'</b></p>
+										<p style="font-size:22px;letter-spacing:3px"><b>'.$QRCodeText.'</b></p>
 									</td>
 								</tr>
 							</table>

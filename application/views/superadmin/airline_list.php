@@ -103,7 +103,7 @@
 <!--End Grid modal -->
 <!-- update Grid modal -->
 <div class="modal" id="up_airlinemodel">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-md" role="document">
         <div class="modal-content modal-content-demo">
             <div class="modal-header">
                 <h6 class="modal-title">Airline Update</h6><button aria-label="Close" class="btn-close btn-secondary" data-bs-dismiss="modal" type="button">&times;</button>

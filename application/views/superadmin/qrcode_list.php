@@ -80,7 +80,7 @@
     }
 </style>
 <div class="modal" id="qrcodeform_model">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-md" role="document">
         <div class="modal-content modal-content-demo">
             <div class="modal-header">
                 <h6 class="modal-title">Add QR Code</h6>
@@ -110,7 +110,7 @@
                             </div>
                         </div> -->
                        
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group">
                                 <p class="mg-b-10" >Number of QR Code Required<span class="tx-danger">*</span></p>
                                 <input type="number" class="form-control" id="noof_qrcode" min="1" name="noof_qrcode" placeholder="Number QR Code Required" required="">

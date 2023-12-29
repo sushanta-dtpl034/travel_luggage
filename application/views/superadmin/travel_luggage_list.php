@@ -34,8 +34,8 @@
                 </div>
                 <div class="d-flex">
                     <div class="justify-content-center">
-                        <button type="button" class="btn btn-primary my-2 btn-icon-text btn-sm" data-bs-target="#traveller_modal" data-bs-toggle="modal" href="">
-                            Add Traveller
+                        <button type="button" class="btn btn-primary my-2 btn-icon-text btn-sm" data-bs-target="#travel_luggage_modal" data-bs-toggle="modal" href="">
+                            Add Travel Luggage 
                         </button>
                         <!-- <a href="<?php echo base_url()."Company/excel_export"; ?>"><button type="button" class="btn btn-sm btn-warning my-2 btn-icon-text">Export</button></a> -->
                     </div>
@@ -48,12 +48,12 @@
                         <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <strong>Traveller   </strong> Generate succesfully.
+                        <strong>Travel Luggage    </strong> Generate succesfully.
                     </div>
                     <div class="alert alert-solid-success update" role="alert" style="display:none">
                         <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button">
                         <span aria-hidden="true">&times;</span></button>
-                        <strong>Traveller  </strong> updated succesfully.
+                        <strong>Travel Luggage   </strong> updated succesfully.
                     </div>
                     <div class="alert alert-solid-warning mg-b-0" role="alert" style="display:none">
                         <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button">
@@ -65,14 +65,14 @@
                     <div class="card custom-card overflow-hidden">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="traveller_table" class="table table-bordered border-t0 key-buttons text-nowrap w-100" >
+                                <table id="itinerary_table" class="table table-bordered border-t0 key-buttons text-nowrap w-100" >
                                     <thead>
                                         <tr>
                                             <th>S.No</th>
                                             <th>Name</th>
                                             <th>Phone No</th>
                                             <th>Whatsapp No</th>
-                                            <th>Email</th>
+                                            <th>Address</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -93,14 +93,14 @@
 
 
 <!-- insert Grid modal -->
-<div class="modal" id="traveller_modal">
-    <div class="modal-dialog modal-lg" role="document">
+<div class="modal" id="travel_luggage_modal">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content modal-content-demo">
             <div class="modal-header">
-                <h6 class="modal-title">Traveller Creation</h6>
+                <h6 class="modal-title">Travel Luggage  Creation</h6>
                 <button aria-label="Close" class="btn-close btn-secondary" data-bs-dismiss="modal" type="button">&times;</button>
             </div>
-            <form id="add-traveller-form" >
+            <form id="add-travel-luggage-form" >
                 <div class="modal-body">
                     <!-- Show PHP Validation ERRORS Start -->
                      <div class="alert alert-danger print-error-msg" style="display:none">
@@ -113,13 +113,13 @@
                             <div class="form-group">
                                 <p class="mg-b-10">Gender <span class="tx-danger">*</span></p>
                                 <div class="row mg-t-10  parsley-error" id="Gender">
-                                    <div class="col-sm-3">
+                                    <div class="col-lg-3">
                                         <label class="rdiobox"><input name="Gender" type="radio" class="Gender" value="Male" data-parsley-multiple="Gender" data-parsley-errors-container="#GenderErrorContainer" data-parsley-class-handler="#Gender" required> <span>Male</span></label>
                                     </div>
-                                    <div class="col-sm-4 mg-t-20 mg-lg-t-0">
+                                    <div class="col-lg-3 mg-t-20 mg-lg-t-0">
                                         <label class="rdiobox"><input name="Gender" type="radio" class="Gender" value="Female" data-parsley-multiple="Gender" data-parsley-errors-container="#GenderErrorContainer" required> <span>Female</span></label>
                                     </div>
-                                    <div class="col-sm-5 mg-t-20 mg-lg-t-0">
+                                    <div class="col-lg-6 mg-t-20 mg-lg-t-0">
                                         <label class="rdiobox"><input name="Gender" type="radio" class="Gender" value="Transgender" data-parsley-multiple="Gender" data-parsley-errors-container="#GenderErrorContainer" required> <span>Transgender</span></label>
                                     </div>
                                     <div id="GenderErrorContainer"></div>
@@ -158,60 +158,50 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row row-sm">
                         <div class="col-md-6">
-                            <div class="row row-sm">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <p class="mg-b-10">Country Code </p>
-                                        <div class="parsley-select" id="CountryCode">
-                                            <select class="form-control select2 CountryCode" required=""  name="CountryCode" data-parsley-class-handler="#CountryCode" data-parsley-errors-container="#CountryCodeErrorContainer"  data-parsley-required
-                                            data-parsley-required-message="Select Country Code">
-                                            <option value="">Select Country Code</option>
-                                                <?php foreach($country_codes as $country_code){ ?>
-                                                <option value="+<?= $country_code['Dialing'];?>">+ <?= $country_code['Dialing'];?> - <?= $country_code['Name'];?></option>
-                                                <?php } ?>
-                                            </select>
+                            <div class="form-group">
+                                <p class="mg-b-10">Country Code </p>
+                                <div class="parsley-select" id="CountryCode">
+                                    <select class="form-control select2 CountryCode" required=""  name="CountryCode" data-parsley-class-handler="#CountryCode" data-parsley-errors-container="#CountryCodeErrorContainer"  data-parsley-required
+                                    data-parsley-required-message="Select Country Code">
+                                    <option value="">Select Country Code</option>
+                                        <?php foreach($country_codes as $country_code){ ?>
+                                        <option value="+<?= $country_code['Dialing'];?>">+ <?= $country_code['Dialing'];?></option>
+                                        <?php } ?>
+                                    </select>
 
-                                            <div id="CountryCodeErrorContainer"></div>
-                                        </div>
-                                    </div>
+                                    <div id="CountryCodeErrorContainer"></div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <p class="mg-b-10">Phone No <span class="tx-danger">*</span></p>
-                                        <input type="number" class="form-control" name="Mobile" id="Mobile" data-parsley-length="[6, 10]" placeholder="Phone No" required>
-                                    </div>
-                                </div>
-
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="row row-sm">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <p class="mg-b-10">Whatsapp Country Code </p>
-                                        <select class="form-control select2 WhatsAppCountryCode" name="WhatsAppCountryCode" >
-                                            <option value="">Select Country Code</option>
-                                            <?php foreach($country_codes as $country_code){ ?>
-                                            <option value="+<?= $country_code['Dialing'];?>">+ <?= $country_code['Dialing'];?> - <?= $country_code['Name'];?></option>
-                                            <?php } ?>
-                                        </select>
-                                        <div id="WhatsAppCountryCodeErrorContainer"></div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <p class="mg-b-10">Whatsapp No </p>
-                                        <input type="tel" class="form-control" name="WhatsappNumber" placeholder="Whatsapp No">
-                                    </div>
-                                </div>
+                            <div class="form-group">
+                                <p class="mg-b-10">Phone No <span class="tx-danger">*</span></p>
+                                <input type="number" class="form-control" name="Mobile" id="Mobile" data-parsley-length="[6, 10]" placeholder="Phone No" required>
                             </div>
                         </div>
-                       
                     </div>
-                    
+                    <div class="row row-sm">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <p class="mg-b-10">Country Code </p>
+                                <select class="form-control select2 WhatsAppCountryCode" name="WhatsAppCountryCode" >
+                                    <option value="">Select Country Code</option>
+                                    <?php foreach($country_codes as $country_code){ ?>
+                                    <option value="+<?= $country_code['Dialing'];?>">+ <?= $country_code['Dialing'];?></option>
+                                    <?php } ?>
+                                </select>
+                                <div id="WhatsAppCountryCodeErrorContainer"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <p class="mg-b-10">Whatsapp No </p>
+                                <input type="tel" class="form-control" name="WhatsappNumber" placeholder="Whatsapp No">
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="row row-sm">
                         <div class="col-md-6">
@@ -247,8 +237,9 @@
                 </div>
             </form>
             <div class="modal-footer">
-                <button class="btn ripple btn-secondary load-traveller" disabled type="button" style="display:none;"><span aria-hidden="true" class="spinner-border spinner-border-sm" role="status"></span> Loading...</button>
-                <button class="btn ripple btn-primary" type="button" id="traveller_button">Save changes</button>
+                <button class="btn ripple btn-secondary load-travel_luggage" disabled type="button" style="display:none;">
+                <span aria-hidden="true" class="spinner-border spinner-border-sm" role="status"></span> Loading...</button>
+                <button class="btn ripple btn-primary" type="button" id="travel_luggage_button">Save changes</button>
                 <button class="btn ripple btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
             </div>
         </div>
@@ -256,13 +247,13 @@
 </div>
 <!--End Grid modal -->
 <!-- update Grid modal -->
-<div class="modal" id="update-traveller-modal">
-    <div class="modal-dialog modal-lg" role="document">
+<div class="modal" id="update-travel-luggage-modal">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content modal-content-demo">
             <div class="modal-header">
-                <h6 class="modal-title">Traveller Update</h6><button aria-label="Close" class="btn-close btn-secondary" data-bs-dismiss="modal" type="button">&times;</button>
+                <h6 class="modal-title">Travel Luggage  Update</h6><button aria-label="Close" class="btn-close btn-secondary" data-bs-dismiss="modal" type="button">&times;</button>
             </div>
-            <form id="update-traveller-form">
+            <form id="update-travel-luggage-form">
                 <div class="modal-body">
                     <!-- Show PHP Validation ERRORS Start -->
                     <div class="alert alert-danger print-error-msg" style="display:none">
@@ -278,10 +269,10 @@
                                     <div class="col-lg-3">
                                         <label class="rdiobox"><input name="Gender" type="radio" class="uGender" value="Male" data-parsley-multiple="Gender" data-parsley-errors-container="#uGenderErrorContainer" data-parsley-class-handler="#uGender" required> <span>Male</span></label>
                                     </div>
-                                    <div class="col-lg-4 mg-t-20 mg-lg-t-0">
+                                    <div class="col-lg-3 mg-t-20 mg-lg-t-0">
                                         <label class="rdiobox"><input name="Gender" type="radio" class="uGender" value="Female" data-parsley-multiple="Gender" data-parsley-errors-container="#uGenderErrorContainer" required> <span>Female</span></label>
                                     </div>
-                                    <div class="col-lg-5 mg-t-20 mg-lg-t-0">
+                                    <div class="col-lg-6 mg-t-20 mg-lg-t-0">
                                         <label class="rdiobox"><input name="Gender" type="radio" class="uGender" value="Transgender" data-parsley-multiple="Gender" data-parsley-errors-container="#uGenderErrorContainer" required> <span>Transgender</span></label>
                                     </div>
                                     <div id="uGenderErrorContainer"></div>
@@ -321,54 +312,46 @@
                     </div>
                     <div class="row row-sm">
                         <div class="col-md-6">
-                            <div class="row row-sm">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <p class="mg-b-10">Country Code </p>
-                                        <div class="parsley-select" id="uCountryCode">
-                                            <select class="form-control select2 uCountryCode" required=""  name="CountryCode" data-parsley-class-handler="#uCountryCode" data-parsley-errors-container="#uCountryCodeErrorContainer"  data-parsley-required
-                                            data-parsley-required-message="Select Country Code">
-                                            <option value="">Select Country Code</option>
-                                                <?php foreach($country_codes as $country_code){ ?>
-                                                <option value="+<?= $country_code['Dialing'];?>">+ <?= $country_code['Dialing'];?> - <?= $country_code['Name'];?></option>
-                                                <?php } ?>
-                                            </select>
+                            <div class="form-group">
+                                <p class="mg-b-10">Country Code </p>
+                                <div class="parsley-select" id="uCountryCode">
+                                    <select class="form-control select2 uCountryCode" required=""  name="CountryCode" data-parsley-class-handler="#uCountryCode" data-parsley-errors-container="#uCountryCodeErrorContainer"  data-parsley-required
+                                    data-parsley-required-message="Select Country Code">
+                                    <option value="">Select Country Code</option>
+                                        <?php foreach($country_codes as $country_code){ ?>
+                                        <option value="+<?= $country_code['Dialing'];?>">+ <?= $country_code['Dialing'];?></option>
+                                        <?php } ?>
+                                    </select>
 
-                                            <div id="uCountryCodeErrorContainer"></div>
-                                        </div>
-                                    </div>
+                                    <div id="uCountryCodeErrorContainer"></div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <p class="mg-b-10">Phone No <span class="tx-danger">*</span></p>
-                                        <input type="number" class="form-control" name="Mobile" id="uMobile" data-parsley-length="[6, 10]" placeholder="Phone No" required>
-                                    </div>
-                                </div>
-
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="row row-sm">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <p class="mg-b-10">Whatsapp Country Code </p>
-                                        <select class="form-control select2  uWhatsAppCountryCode" name="WhatsAppCountryCode" >
-                                            <option value="">Select Country Code</option>
-                                            <?php foreach($country_codes as $country_code){ ?>
-                                            <option value="+<?= $country_code['Dialing'];?>">+ <?= $country_code['Dialing'];?> - <?= $country_code['Name'];?></option>
-                                            <?php } ?>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <p class="mg-b-10">Whatsapp No </p>
-                                        <input type="tel" class="form-control" name="WhatsappNumber" id="uWhatsappNumber"  placeholder="Whatsapp No">
-                                    </div>
-                                </div>
+                            <div class="form-group">
+                                <p class="mg-b-10">Phone No <span class="tx-danger">*</span></p>
+                                <input type="number" class="form-control" name="Mobile" id="uMobile" data-parsley-length="[6, 10]" placeholder="Phone No" required>
                             </div>
                         </div>
-                       
+                    </div>
+                    <div class="row row-sm">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <p class="mg-b-10">Whatsapp Country Code </p>
+                                <select class="form-control select2  uWhatsAppCountryCode" name="WhatsAppCountryCode" >
+                                    <option value="">Select Country Code</option>
+                                    <?php foreach($country_codes as $country_code){ ?>
+                                    <option value="+<?= $country_code['Dialing'];?>">+ <?= $country_code['Dialing'];?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <p class="mg-b-10">Whatsapp No </p>
+                                <input type="tel" class="form-control" name="WhatsappNumber" id="uWhatsappNumber"  placeholder="Whatsapp No">
+                            </div>
+                        </div>
                     </div>
 
                     <div class="row row-sm">
@@ -415,7 +398,8 @@
                 <input type="hidden" name="AutoId" value="" id="uAutoId">
             </form>
             <div class="modal-footer">
-                <button class="btn ripple btn-secondary load-travel_luggage" disabled type="button" style="display:none;"><span aria-hidden="true" class="spinner-border spinner-border-sm" role="status"></span> Loading...</button>
+                <button class="btn ripple btn-secondary load-travel-luggage" disabled type="button" style="display:none;">
+                <span aria-hidden="true" class="spinner-border spinner-border-sm" role="status"></span> Loading...</button>
                 <button class="btn ripple btn-primary" type="button" id="update_travel_luggage">Update</button>
                 <button class="btn ripple btn-secondary" data-bs-dismiss="modal" type="button" id="update_close">Close</button>
             </div>

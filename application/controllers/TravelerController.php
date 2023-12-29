@@ -149,13 +149,15 @@ class TravelerController extends CI_Controller {
 				'Mobile'			=>strip_tags($this->input->post('Mobile')),
 				'WhatsAppCountryCode'=>strip_tags($this->input->post('WhatsAppCountryCode')),
 				'WhatsappNumber'	=>strip_tags($this->input->post('WhatsappNumber')),
-				'ProfileIMG'		=>$picture,
 				'IsAdmin'			=>0,
 				'isActive'			=>1,
 				'IsDelete'			=>0,
 				'ModifyBy'			=>$this->session->userdata('userid'),
 				'ModifyDate'		=>date('Y-m-d'),
 			);
+			if(!empty($picture)){
+				$data['ProfileIMG']=$picture;
+			}
 			$where = array(
 				'AutoID'=>$this->input->post('AutoId'),
 			);
