@@ -53,7 +53,9 @@
                                 <table id="view_qrcode_table123" class="table table-bordered border-t0 key-buttons text-nowrap w-100" >
                                     <thead>
                                         <tr>
-                                            <th> <input type="checkbox" onchange="checkAll(this)" name="chk[]" class="master_checkbox" > &nbsp; Select All </th>
+                                            <th>Sl No. 
+                                                <!-- <input type="checkbox" onchange="checkAll(this)" name="chk[]" class="master_checkbox" > &nbsp; Select All  -->
+                                            </th>
                                             <!-- <th>Date</th> -->
                                             <th>QR Code</th>
                                             <th>Status</th>
@@ -63,7 +65,10 @@
                                     <tbody>
                                         <?php $sl=0; if(count($qrcode_data) > 0){ foreach($qrcode_data as $data){ $sl++; ?>
                                         <tr>
-                                            <td><input type="checkbox" name="qrcodes" class="checkbox" value="<?= $data['AutoID']; ?>"></td>
+                                            <td>
+                                                <!-- <input type="checkbox" name="qrcodes" class="checkbox" value="<?= $data['AutoID']; ?>"> -->
+                                                <?= $sl; ?>
+                                            </td>
                                             <!-- <td><?= $data['create_date'];?></td> -->
                                             <td><?= $data['QRCodeText'];?> </td>
                                             <td><?= $data['status'];?></td>
@@ -83,7 +88,7 @@
                                         <?php } ?>
                                         <?php }else{ echo "<tr><td colspan='4'> No record founds.</td></tr>"; } ?>
                                     </tbody>
-                                    <tfoot>
+                                    <!-- <tfoot>
                                         <tr>
                                             <td colspan='3' align="center">
                                                 <a href="#" onclick="printQrcode()"><button class="btn btn-success btn-sm">Print QR Code</button>
@@ -91,7 +96,7 @@
                                                     
                                             </td>
                                         </tr>
-                                    </tfoot>
+                                    </tfoot> -->
                                 </table>
                             </div>
                         </div>

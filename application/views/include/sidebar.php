@@ -59,13 +59,7 @@
 							</a>
 						</li>
 						
-						<li class="nav-item">
-							<a class="nav-link tt" href="<?php echo base_url(); ?>Qrcode/airline">
-								<span class="shape1"></span><span class="shape2"></span>
-								<i class="fa fa-plane sidemenu-icon"></i>
-								<span class="sidemenu-label">Manage Airlines</span>
-							</a>
-						</li>
+						
 						<li class="nav-item">
 							<a class="nav-link tt" href="<?php echo base_url(); ?>TravelerController">
 								<span class="shape1"></span><span class="shape2"></span>
@@ -80,36 +74,32 @@
 								<span class="sidemenu-label">Manage Itinerary</span>
 							</a>
 						</li>
-
-						
-						<!-- <li class="nav-item">
-							<a class="nav-link tt" href="<?php echo base_url(); ?>Qrcode/index">
-							<span class="shape1"></span><span class="shape2"></span><i class="ti-home sidemenu-icon"></i>
-							<span class="sidemenu-label">Luggage QR Code</span></a>
-						</li> -->
 						<li class="nav-item">
 							<a class="nav-link tt" href="<?php echo base_url(); ?>TravelLuggageController">
 								<span class="shape1"></span><span class="shape2"></span>
 								<i class="fa fa-suitcase sidemenu-icon"></i>
 								<span class="sidemenu-label">Manage Luggage</span>
 							</a>
-						</li>
+						</li>						
+						<!-- <li class="nav-item">
+							<a class="nav-link tt" href="<?php echo base_url(); ?>Qrcode/index">
+							<span class="shape1"></span><span class="shape2"></span><i class="ti-home sidemenu-icon"></i>
+							<span class="sidemenu-label">Luggage QR Code</span></a>
+						</li> -->
 						<li class="nav-item">
-							<a class="nav-link with-sub" href="#">
+							<a class="nav-link tt" href="<?php echo base_url(); ?>Qrcode/index">
 								<span class="shape1"></span><span class="shape2"></span>
-								<i class="ti-layout-grid3-alt sidemenu-icon"></i>
+								<i class="fa fa-qrcode sidemenu-icon"></i>
 								<span class="sidemenu-label">Manage QR Code</span>
 							</a>
-							<ul class="nav-sub">
-								<li class="side-menu-label1"><a href="#">Manage QR Code </a></li>
-								<li class="nav-sub-item">
-									<a class="nav-sub-link" href="<?php echo base_url(); ?>Qrcode/index">QR Code Generate</a>
-								</li>
-								<!-- <li class="nav-sub-item">
-									<a class="nav-sub-link" href="<?php echo base_url(); ?>Assetmanagement/print_barcode_label">Print QR Code
-									Label</a>
-								</li> -->
-							</ul>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link tt" href="<?php echo base_url(); ?>Qrcode/airline">
+								<span class="shape1"></span><span class="shape2"></span>
+								<i class="fa fa-plane sidemenu-icon"></i>
+								<span class="sidemenu-label">Manage Airlines</span>
+							</a>
 						</li>
 					<?php }else{ ?>
 						<!--<li class="nav-item">

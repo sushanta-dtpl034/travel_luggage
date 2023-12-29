@@ -31,16 +31,17 @@ $(function () {
                     return meta.row + meta.settings._iDisplayStart + 1;
                 }
             },
+            
             { 
                 "data": "Name" ,
                 "render": function(data, type, full, meta) {
-                    return `${full.Suffix} ${data}`;
+                    return `<img src="${base_url}${full.ProfileIMG}" height="40" width="40"/> &nbsp; &nbsp;${full.Suffix} ${full.Name}`;
                 }
             },
             { 
                 "data": "Mobile",
                 "render": function(data, type, full, meta) {
-                    return `${full.CountryCode} ${data}`;
+                    return `${full.CountryCode} ${full.Mobile}`;
                 }
             },
             { 
@@ -50,7 +51,7 @@ $(function () {
                 }
             
             },
-            { "data": "AdressTwo" },
+            { "data": "Email" },
             {
                 "render": function (AutoID, type, row, meta) {
                     return '<button class="btn btn-sm update_travel_luggage bg-success mx-2" id="' + row.AutoID + '"  datatype="edit"><i class="si si-pencil"></i></button><button class="btn btn-sm ripple delete_travel_luggage btn-danger" id="' + row.AutoID + '"><i class="fe fe-trash"></i></button>';
