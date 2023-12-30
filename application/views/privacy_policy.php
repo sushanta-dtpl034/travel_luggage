@@ -58,7 +58,7 @@ footer {
     <main>
     <section>
             <h2>1. Introduction</h2>
-            <p>Thank you for using the AMT app. We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, and disclose information when you use the App. By using the App, you consent to the practices described in this Privacy Policy</p>
+            <p>Thank you for using the Travel Luggage Management app. We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, and disclose information when you use the App. By using the App, you consent to the practices described in this Privacy Policy</p>
         </section>
         <section>
             <h2>2. Information We Collect</h2>
@@ -110,7 +110,7 @@ footer {
         <section>
             <h2>9.Contact Us</h2>
                 <p>If you have any questions or concerns about this Privacy Policy or our privacy practices, please contact us at [email address].</p><br>
-                <p>Please note that this Privacy Policy only applies to the AMT app and not to any third-party websites or services that may be linked from within the app. We encourage you to review the privacy policies of those third parties before providing any personal information.</p>
+                <p>Please note that this Privacy Policy only applies to the Travel Luggage Management app and not to any third-party websites or services that may be linked from within the app. We encourage you to review the privacy policies of those third parties before providing any personal information.</p>
         </section>
         <!-- Add more sections for your privacy policy -->
     </main>

@@ -58,7 +58,7 @@ footer {
     <main>
         <section>
             <h2>1. Introduction</h2>
-            <p>Thank you for using the AMT app. These Terms and Conditions govern your use of the App. By using the App, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these Terms and Conditions, you should not use the App.</p>
+            <p>Thank you for using the Travel Luggage Management app. These Terms and Conditions govern your use of the App. By using the App, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these Terms and Conditions, you should not use the App.</p>
         </section>
         <section>
             <h2>2. Use of the App</h2>
@@ -119,7 +119,7 @@ footer {
             <ul>
                 <li>
                     <p> If you have any questions or concerns about these Terms and Conditions or your use of the App, please contact us at [email address].</p>
-                    <p>Please note that these Terms and Conditions only apply to the AMT app and not to any third-party websites or services that may be linked from within the app. We encourage you to review the terms and conditions of those third parties before using their services.</p>
+                    <p>Please note that these Terms and Conditions only apply to the Travel Luggage Management app and not to any third-party websites or services that may be linked from within the app. We encourage you to review the terms and conditions of those third parties before using their services.</p>
                 </li>
             </ul>
         </section>
