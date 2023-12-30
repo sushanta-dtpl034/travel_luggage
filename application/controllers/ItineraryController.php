@@ -20,5 +20,27 @@ class ItineraryController extends CI_Controller {
 		$this->load->view('superadmin/itinerary_list',$data);
 		$this->load->view('include/admin-footer');
     }
+    function getItineraryList(){
+        $IsAdmin = $this->session->userdata('userisadmin');
+		$data['data'] = $this->ItineraryModel->getItineraryList();
+		echo  json_encode($data);
+    }
 
+    /**
+     * Itinerary Details list Section
+     */
+    function itineraryDetailList($itineraryHeadId){
+        $data['page_title'] = 'Itinerary Detail List';
+		$data['page_name'] = "Itinerary Detail List";
+		$this->load->view('include/admin-header',$data);
+		$this->load->view('include/sidebar');
+		$this->load->view('include/topbar');
+		$this->load->view('superadmin/itinerary_detail_list',$data);
+		$this->load->view('include/admin-footer');
+    }
+    function getItineraryDetailList($itineraryHeadId){
+        $IsAdmin = $this->session->userdata('userisadmin');
+		$data['data'] = $this->ItineraryModel->getItineraryDetailList($itineraryHeadId);
+		echo  json_encode($data);
+    }
 }

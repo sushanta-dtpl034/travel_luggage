@@ -69,10 +69,8 @@
                                     <thead>
                                         <tr>
                                             <th>S.No</th>
+                                            <th>Traveller Name</th>
                                             <th>Name</th>
-                                            <th>Phone No</th>
-                                            <th>Whatsapp No</th>
-                                            <th>Address</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>

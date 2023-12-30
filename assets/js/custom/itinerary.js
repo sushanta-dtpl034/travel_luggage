@@ -1,5 +1,5 @@
 $(function () {
-    var travellerTable = $('#traveller_table').DataTable({
+    var travellerTable = $('#itinerary_table').DataTable({
         "processing": true,
         "serverSide": false,
         "order": [[0, "asc"]],
@@ -22,7 +22,7 @@ $(function () {
 
         ],
         "ajax": {
-            "url": base_url + "TravelerController/getTravelLuggageList",
+            "url": base_url + "ItineraryController/getItineraryList",
             "type": "POST",
         },
         "columns": [
@@ -39,22 +39,11 @@ $(function () {
                 }
             },
             { 
-                "data": "Mobile",
-                "render": function(data, type, full, meta) {
-                    return `${full.CountryCode} ${full.Mobile}`;
-                }
+                "data": "ItineraryName",
             },
-            { 
-                "data": "WhatsappNumber",
-                "render": function(data, type, full, meta) {
-                    return `${full.WhatsappNumber?full.WhatsAppCountryCode:''} ${data}`;
-                }
-            
-            },
-            { "data": "Email" },
             {
                 "render": function (AutoID, type, row, meta) {
-                    return '<button class="btn btn-sm update_travel_luggage bg-success mx-2" id="' + row.AutoID + '"  datatype="edit"><i class="si si-pencil"></i></button><button class="btn btn-sm ripple delete_travel_luggage btn-danger" id="' + row.AutoID + '"><i class="fe fe-trash"></i></button>';
+                    return '<button class="btn btn-sm view_travel_luggage bg-info mx-2" id="' + row.AutoID + '"  datatype="view"><i class="si si-eye"></i></button><button class="btn btn-sm update_travel_luggage bg-success mx-2" id="' + row.AutoID + '"  datatype="edit"><i class="si si-pencil"></i></button><button class="btn btn-sm ripple delete_travel_luggage btn-danger" id="' + row.AutoID + '"><i class="fe fe-trash"></i></button>';
                 }
             },
         ],
@@ -79,7 +68,7 @@ $(function () {
         width:'100%',
     });
 
-
+    /*
     $("#traveller_button").click(function () {
         if ($('#add-traveller-form').parsley().validate()) {
             let frm = $('#add-traveller-form');
@@ -108,7 +97,7 @@ $(function () {
                             $('.insert').hide();
                             $('.load-traveller').hide();
                             $('#traveller_button').show();
-                            location.href = base_url + 'TravelerController';
+                            location.href = base_url + 'TravelerController/index';
                         }, 2000);
                     } else {
                         $("#traveller_modal .btn-secondary").click()
@@ -116,7 +105,7 @@ $(function () {
                         $('.alert-solid-warning').show();
                         setTimeout(function () {
                             $('.alert-solid-warning').hide();
-                            location.href = base_url + 'TravelerController';
+                            location.href = base_url + 'TravelerController/index';
                         }, 2000);
                     }
                 },
@@ -145,11 +134,8 @@ $(function () {
         }
 
     });
+    
 
-   /*  $(".uSuffix").select2({
-        dropdownParent: $("#update-traveller-modal"),
-        width:'100%',
-    }); */
     $(".uCountryCode").select2({
         dropdownParent: $("#update-traveller-modal"),
         width:'100%',
@@ -159,7 +145,7 @@ $(function () {
         width:'100%',
     });
     
-    $("#traveller_table").on('click', '.update_travel_luggage', function () {
+    $("#itinerary_table").on('click', '.update_travel_luggage', function () {
         var id = $(this).attr("id");
         $.ajax({
             url: base_url + 'TravelerController/getOneTravelLuggage',
@@ -182,12 +168,11 @@ $(function () {
                     $('.uSuffix').val(response.data.Suffix).trigger('change');
                     $('.uCountryCode').val(response.data.CountryCode).trigger('change');
                     $('.uWhatsAppCountryCode').val(response.data.WhatsAppCountryCode).trigger('change');
-                    $('.uGender').val(response.data.Gender).trigger('change');
-                   /*  $(`.uGender`).each(function () {
+                    $(`.uGender`).each(function () {
                         if ($(this).val() == response.data.Gender) {
                            $(this).prop("checked", true);
                         }
-                    }); */
+                    });
                     $('#image-show').attr("src",`${base_url}/${response.data.ProfileIMG}`);
                    
                 } else {
@@ -232,7 +217,7 @@ $(function () {
                         $('.alert-solid-warning').show();
                         setTimeout(function () {
                             $('.alert-solid-warning').hide();
-                            location.href = base_url + 'TravelerController';
+                            location.href = base_url + 'TravelerController/index';
                         }, 2000);
 
                     }
@@ -274,7 +259,7 @@ $(function () {
 
     });
 
-    $('#traveller_table').on('click', '.delete_travel_luggage', function () {
+    $('#itinerary_table').on('click', '.delete_travel_luggage', function () {
         var id = $(this).attr('id');
         var deleteConfirm = confirm("Are you sure?");
         if (deleteConfirm == true) {
@@ -304,7 +289,15 @@ $(function () {
         }
 
     });
+    */
+    /**
+     * View Itinerary
+     */
 
-    
-   
+     $("#itinerary_table").on('click', '.view_travel_luggage', function () {
+        var id = $(this).attr("id");
+        const url = base_url + 'ItineraryController/itineraryDetailList/' + id;
+        window.location.href =url;
+        console.log(id);
+    });
 });

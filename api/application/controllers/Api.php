@@ -166,103 +166,80 @@ class Api extends REST_Controller {
 	}
 
 	public function profileupdate_post(){
-          	$headers = apache_request_headers();
-			if (!empty($headers['Token'])) {
-				try {
-						$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
-						$userid=$arrdata['AutoID'];
+		$headers = apache_request_headers();
+		$input_data=$this->input->post();
+		if (!empty($headers['Token'])) {
+			try {
+				$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
+				$userid=$arrdata['AutoID'];
 
-							$profile_companyname = $this->input->post('company_name');
-							$profile_address = $this->input->post('profile_address');
-							$profile_city = $this->input->post('city_id');
-							$profile_state = $this->input->post('state_id');
-							$profile_pincode = $this->input->post('profile_pincode');
-							$profile_country = $this->input->post('country_id');
-							$profile_pan = $this->input->post('profile_pan');
-							$profile_tax = $this->input->post('profile_tax');
-							$profile_gst = $this->input->post('profile_gst');
-							$profile_contactperson = $this->input->post('profile_contactperson');
-							$profile_emailid = $this->input->post('profile_emailid');
-							$profile_office = $this->input->post('profile_office');
-							$profile_mobile = $this->input->post('profile_mobile');
-							$data_id = $this->input->post('data_id');
+				$picture = '';
+				if(!empty($_FILES['ProfileIMG']['name'])){
+					if (!file_exists('../upload/profile')) {
+						mkdir('../upload/profile', 0777, true);
+					}
+					
+					$config['upload_path']   = '../upload/profile/'; 
+					$config['allowed_types'] = 'jpg|png|jpeg'; 
+					$this->load->library('upload',$config);
+					$this->upload->initialize($config);
+					if($this->upload->do_upload('ProfileIMG')){
+						$uploadData = $this->upload->data();
+						$picture ="upload/profile/".$uploadData['file_name'];
+					}else{ 
+						$picture = '';  
+					}
+				}
 
-							 if(!empty($_FILES['profile_image']['name'])){
-										$config['upload_path']   = '../upload/profile/'; 
-										$config['allowed_types'] = 'jpg|png|jpeg'; 
-										$this->load->library('upload',$config);
-										$this->upload->initialize($config);
-										if($this->upload->do_upload('profile_image')){
-							                $uploadData = $this->upload->data();
-							                $picture = $uploadData['file_name'];
-									      }
-									      else
-									      { $picture = '';  }
-								}else{
-           						 $picture = '';
-        							}
 
-					if($picture != ''){
-							$data = array(
-								'CompanyName'=>$profile_companyname,
-								'Address'=>$profile_address,
-								'City'=>$profile_city,
-								'State'=>$profile_state,
-								'Pincode'=>$profile_pincode,
-								'Country'=>$profile_country,
-								'GstNo'=>$profile_gst,
-								'TaxID'=>$profile_tax,
-								'Pan'=>$profile_pan,
-								'Email'=>$profile_emailid,
-								'ContactPersonName'=>$profile_contactperson,
-								'OfficePhoneNumber'=>$profile_office,
-								'ContactPersonMobile'=>$profile_mobile,
-								'ModifyBy'=>$userid,
-								'ModifyDate'=>date('Y-m-d'),
-								'ProfileIMG'=>$picture
-								);
-							}else{
-								$data = array(
-								'CompanyName'=>$profile_companyname,
-								'Address'=>$profile_address,
-								'City'=>$profile_city,
-								'State'=>$profile_state,
-								'Pincode'=>$profile_pincode,
-								'Country'=>$profile_country,
-								'GstNo'=>$profile_gst,
-								'TaxID'=>$profile_tax,
-								'Pan'=>$profile_pan,
-								'Email'=>$profile_emailid,
-								'ContactPersonName'=>$profile_contactperson,
-								'OfficePhoneNumber'=>$profile_office,
-								'ContactPersonMobile'=>$profile_mobile,
-								'ModifyBy'=>$userid,
-								'ModifyDate'=>date('Y-m-d'),
-								);
-							}
-							
-							$where = array(
-								'AutoID'=>$data_id,
-							);
+				$data = array(
+					'Suffix'			=>strip_tags($input_data['Suffix']),
+					'Name'				=>strip_tags($input_data['Name']),
+					'Email'				=>strip_tags($input_data['Email']),
+					'Gender'			=>strip_tags($input_data['Gender']),
+					'Address'			=>strip_tags($input_data['Address']),
+					'AdressTwo'			=>strip_tags($input_data['AdressTwo']),
+					'Landmark'			=>strip_tags($input_data['Landmark']),
+					'CountryCode'		=>strip_tags($input_data['CountryCode']),
+					'Mobile'			=>strip_tags($input_data['Mobile']),
+					'WhatsAppCountryCode'=>strip_tags($input_data['WhatsAppCountryCode']),
+					'WhatsappNumber'	=>strip_tags($input_data['WhatsappNumber']),
+					'isActive'			=>1,
+					'IsDelete'			=>0,
+					'ModifyBy'			=>$userid,
+					'ModifyDate'		=>date('Y-m-d H:i:s'),
+				);
+				$data_id =$this->input->post('data_id');
 
-							$this->Commonmodel->common_update('RegisterMST',$where,$data);
-						    $result['message'] = "success";
-						    $result['status']=true;
-						    return $this->set_response($result, REST_Controller::HTTP_OK);
-					} catch (\Exception $e) 
-						{ 
-		   					 $result['message'] = "Invalid Token";
-							$result['status']=false;
-							return $this->set_response($result, 401);
-						}
+				if(!empty($picture)){
+					$data['ProfileIMG'] =$picture;
+				}
+				$where = array(
+					'AutoID'=>$data_id,
+				);
+
+				$response = $this->Commonmodel->common_update('RegisterMST',$where,$data);
+				if($response){
+					$result['message'] = "success";
+					$result['status']=200;
+					return $this->set_response($result, REST_Controller::HTTP_OK);
+				}else{
+					$result['message'] = "Something went wrong!.";
+					$result['status']=500;
+					return $this->set_response($result, 500);
+				}
+
+			} catch (Exception $e) { 
+				$result['message'] = "Invalid Token";
+				$result['status']=401;
+				return $this->set_response($result, 401);
 			}
-			else{
-				$result['message'] = "Token not Found";
-				$result['status']=false;
-				return $this->set_response($result, 400);
-
-			}
+		}else{
+			$result['message'] = "Token not Found";
+			$result['status']=400;
+			return $this->set_response($result, 400);
 		}
+	}
 
 	//change password
 

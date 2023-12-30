@@ -151,7 +151,6 @@ class Profile extends CI_Controller {
 		echo  true;
 	}
 	public function change_password(){
-
 		$data['page_title'] = 'Change Password';
 		$data['page_name'] = "Change Password";
 		$this->load->view('header',$data);
@@ -159,12 +158,9 @@ class Profile extends CI_Controller {
 		$this->load->view('include/topbar',$data);
 		$this->load->view('superadmin/change_password');
 		$this->load->view('include/admin-footer');
-
 	}
    
 	public function update_password(){
-
-
 		$password = $this->input->post('password');
 		$change_id = $this->input->post('change_id');
 		$data = array(

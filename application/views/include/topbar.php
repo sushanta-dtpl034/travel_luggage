@@ -64,12 +64,12 @@
 									?>
 								   
 								</a> -->
-								<a class="dropdown-item border-top" href="<?php echo base_url("profile/sup_profile"); ?>">
+								<!-- <a class="dropdown-item border-top" href="<?php echo base_url("profile/sup_profile"); ?>">
 									<i class="fe fe-user"></i> My Profile
 								</a>
 								<a class="dropdown-item border-top" href="<?php echo base_url("profile/change_password"); ?>">
 									<i class="fe fe-user"></i> Change Password
-								</a>
+								</a> -->
 								<!-- <a class="dropdown-item" href="#">
 									<i class="fe fe-settings"></i> Account Settings
 								</a> -->

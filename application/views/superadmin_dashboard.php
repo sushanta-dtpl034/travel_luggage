@@ -1,5 +1,4 @@
 <!-- Main Content-->
-<?php $IsAdmin = $this->session->userdata('userisadmin');  ?>
 <div class="main-content side-content pt-0">
 	<div class="container-fluid">
 		<div class="inner-body">
@@ -20,7 +19,7 @@
 						<div class="card-body">
 							<div class="card-order">
 								<label class="main-content-label mb-3 pt-1">Total Traveller</label>
-								<h2 class="text-end"><a href="<?php echo base_url('Qrcode/luggag_details'); ?>"><i class="mdi mdi-airplane icon-size float-start text-primary"></i><span class="font-weight-bold"><?php echo $dashboard_data->TOTAL_TRAVELler_COUNT; ?></span></a></h2>
+								<h2 class="text-end"><a href="<?php echo base_url('TravelerController'); ?>"><i class="mdi mdi-airplane icon-size float-start text-primary"></i><span class="font-weight-bold"><?php echo $dashboard_data->TOTAL_TRAVELler_COUNT; ?></span></a></h2>
 							</div>
 						</div>
 					</div>
@@ -30,7 +29,7 @@
 						<div class="card-body">
 							<div class="card-order">
 								<label class="main-content-label mb-3 pt-1">Total Itinerary</label>
-								<h2 class="text-end"><a href="<?php echo base_url('Qrcode/luggag_details'); ?>"><i class="mdi mdi-wallet-travel icon-size float-start text-primary"></i><span class="font-weight-bold"><?php echo $dashboard_data->TOTAL_ITINERARY; ?></span></a></h2>
+								<h2 class="text-end"><a href="<?php echo base_url('ItineraryController'); ?>"><i class="mdi mdi-wallet-travel icon-size float-start text-primary"></i><span class="font-weight-bold"><?php echo $dashboard_data->TOTAL_ITINERARY; ?></span></a></h2>
 							</div>
 						</div>
 					</div>
@@ -40,7 +39,7 @@
 						<div class="card-body">
 							<div class="card-order">
 								<label class="main-content-label mb-3 pt-1">Total QR Code Generated</label>
-								<h2 class="text-end"><a href="<?php echo base_url('Qrcode/luggag_details'); ?>"><i class="mdi mdi-qrcode icon-size float-start text-primary"></i><span class="font-weight-bold"><?php echo $dashboard_data->TOTAL_QRCODE; ?></span></a></h2>
+								<h2 class="text-end"><a href="<?php echo base_url('Qrcode/index'); ?>"><i class="mdi mdi-qrcode icon-size float-start text-primary"></i><span class="font-weight-bold"><?php echo $dashboard_data->TOTAL_QRCODE; ?></span></a></h2>
 							</div>
 						</div>
 					</div>
@@ -50,7 +49,7 @@
 						<div class="card-body">
 							<div class="card-order">
 								<label class="main-content-label mb-3 pt-1">Total QR Code Used</label>
-								<h2 class="text-end"><a href="<?php echo base_url('Qrcode/luggag_details'); ?>"><i class="mdi mdi-qrcode icon-size float-start text-primary"></i><span class="font-weight-bold"><?php echo $dashboard_data->TOTAL_QRCODE_USED; ?></span></a></h2>
+								<h2 class="text-end"><a href="<?php echo base_url('Qrcode/index'); ?>"><i class="mdi mdi-qrcode icon-size float-start text-primary"></i><span class="font-weight-bold"><?php echo $dashboard_data->TOTAL_QRCODE_USED; ?></span></a></h2>
 							</div>
 						</div>
 					</div>
