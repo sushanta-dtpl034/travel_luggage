@@ -129,6 +129,9 @@
 		<script src="<?php echo base_url(); ?>assets/js/custom/luggage.js"></script>
 		<script src="<?php echo base_url(); ?>assets/js/custom/airline.js"></script>
 		<script src="<?php echo base_url(); ?>assets/js/custom/traveller.js"></script>
+		<script src="<?php echo base_url(); ?>assets/js/custom/itinerary.js"></script>
+		<script src="<?php echo base_url(); ?>assets/js/custom/itinerary_details.js"></script>
+		<script src="<?php echo base_url(); ?>assets/js/custom/travel_luggage.js"></script>
 
 		<script src="<?php echo base_url(); ?>assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 		<script  src="<?php echo base_url(); ?>assets/plugins/jquery-ui/ui/widgets/datepicker.js"></script>

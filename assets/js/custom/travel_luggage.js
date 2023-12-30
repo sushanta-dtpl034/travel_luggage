@@ -1,5 +1,5 @@
 $(function () {
-    var travellerTable = $('#traveller_table').DataTable({
+    var travellerTable = $('#travel_luggage_table').DataTable({
         "processing": true,
         "serverSide": false,
         "order": [[0, "asc"]],
@@ -22,7 +22,7 @@ $(function () {
 
         ],
         "ajax": {
-            "url": base_url + "TravelerController/getTravelLuggageList",
+            "url": base_url + "TravelLuggageController/getTravelLuggageList",
             "type": "POST",
         },
         "columns": [
@@ -39,19 +39,14 @@ $(function () {
                 }
             },
             { 
-                "data": "Mobile",
+                "data": "LuggageName",
                 "render": function(data, type, full, meta) {
-                    return `${full.CountryCode} ${full.Mobile}`;
+                    return `<img src="${base_url}${full.LuggageImage}" height="40" width="40"/> &nbsp; &nbsp; ${full.LuggageName}`;
                 }
             },
             { 
-                "data": "WhatsappNumber",
-                "render": function(data, type, full, meta) {
-                    return `${full.WhatsappNumber?full.WhatsAppCountryCode:''} ${data}`;
-                }
-            
+                "data": "LuggageRemarks",
             },
-            { "data": "Email" },
             {
                 "render": function (AutoID, type, row, meta) {
                     return '<button class="btn btn-sm update_travel_luggage bg-success mx-2" id="' + row.AutoID + '"  datatype="edit"><i class="si si-pencil"></i></button><button class="btn btn-sm ripple delete_travel_luggage btn-danger" id="' + row.AutoID + '"><i class="fe fe-trash"></i></button>';
@@ -79,7 +74,7 @@ $(function () {
         width:'100%',
     });
 
-
+    /*
     $("#traveller_button").click(function () {
         if ($('#add-traveller-form').parsley().validate()) {
             let frm = $('#add-traveller-form');
@@ -108,7 +103,7 @@ $(function () {
                             $('.insert').hide();
                             $('.load-traveller').hide();
                             $('#traveller_button').show();
-                            location.href = base_url + 'TravelerController';
+                            location.href = base_url + 'TravelerController/index';
                         }, 2000);
                     } else {
                         $("#traveller_modal .btn-secondary").click()
@@ -116,7 +111,7 @@ $(function () {
                         $('.alert-solid-warning').show();
                         setTimeout(function () {
                             $('.alert-solid-warning').hide();
-                            location.href = base_url + 'TravelerController';
+                            location.href = base_url + 'TravelerController/index';
                         }, 2000);
                     }
                 },
@@ -146,10 +141,6 @@ $(function () {
 
     });
 
-   /*  $(".uSuffix").select2({
-        dropdownParent: $("#update-traveller-modal"),
-        width:'100%',
-    }); */
     $(".uCountryCode").select2({
         dropdownParent: $("#update-traveller-modal"),
         width:'100%',
@@ -182,12 +173,11 @@ $(function () {
                     $('.uSuffix').val(response.data.Suffix).trigger('change');
                     $('.uCountryCode').val(response.data.CountryCode).trigger('change');
                     $('.uWhatsAppCountryCode').val(response.data.WhatsAppCountryCode).trigger('change');
-                    $('.uGender').val(response.data.Gender).trigger('change');
-                   /*  $(`.uGender`).each(function () {
+                    $(`.uGender`).each(function () {
                         if ($(this).val() == response.data.Gender) {
                            $(this).prop("checked", true);
                         }
-                    }); */
+                    });
                     $('#image-show').attr("src",`${base_url}/${response.data.ProfileIMG}`);
                    
                 } else {
@@ -232,7 +222,7 @@ $(function () {
                         $('.alert-solid-warning').show();
                         setTimeout(function () {
                             $('.alert-solid-warning').hide();
-                            location.href = base_url + 'TravelerController';
+                            location.href = base_url + 'TravelerController/index';
                         }, 2000);
 
                     }
@@ -304,7 +294,7 @@ $(function () {
         }
 
     });
-
+    */
     
    
 });

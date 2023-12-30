@@ -20,5 +20,10 @@ class TravelLuggageController extends CI_Controller {
 		$this->load->view('superadmin/travel_luggage_list',$data);
 		$this->load->view('include/admin-footer');
     }
+    function getTravelLuggageList(){
+        $IsAdmin = $this->session->userdata('userisadmin');
+		$data['data'] = $this->TravelLuggageModel->getTravelLuggageList();
+		echo  json_encode($data);
+    }
 
 }

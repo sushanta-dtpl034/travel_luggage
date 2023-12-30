@@ -28,12 +28,12 @@
 			<div class="sidemenu-logo" style="width: 232px;">
 				<a class="main-logo" href="<?php echo base_url('/Dashboard/superadmin_dasboard'); ?>">
 				<?php
-					$height = ($this->session->userdata('height'))?$this->session->userdata('height'):80;
-					$width = ($this->session->userdata('width'))?$this->session->userdata('width'):80;
+					$height = ($this->session->userdata('height'))?$this->session->userdata('height'):120;
+					$width = ($this->session->userdata('width'))?$this->session->userdata('width'):120;
 					$logo = $this->session->userdata('logo');
 					if (!empty($height) && !empty($width) && !empty($logo)) {
-					$url = base_url() . 'upload/setting/' . $logo;
-					//$url = base_url() . 'assets/img/logo3.png';
+						//$url = base_url() . 'upload/setting/' . $logo;
+						$url = base_url() . 'assets/img/logo3.png';
 					}else{
 						$url = base_url() . 'assets/img/logo3.png';
 					}

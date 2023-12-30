@@ -65,14 +65,13 @@
                     <div class="card custom-card overflow-hidden">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="itinerary_table" class="table table-bordered border-t0 key-buttons text-nowrap w-100" >
+                                <table id="travel_luggage_table" class="table table-bordered border-t0 key-buttons text-nowrap w-100" >
                                     <thead>
                                         <tr>
                                             <th>S.No</th>
+                                            <th>Traveller Name</th>
                                             <th>Name</th>
-                                            <th>Phone No</th>
-                                            <th>Whatsapp No</th>
-                                            <th>Address</th>
+                                            <th>Remarks</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
