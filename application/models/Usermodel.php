@@ -115,6 +115,7 @@ class Usermodel extends CI_Model{
     return $query->num_rows();
 
   }
+  
 
 }
 ?>
