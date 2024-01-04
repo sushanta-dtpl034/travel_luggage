@@ -33,7 +33,7 @@ class Loginmodel extends CI_Model{
 		$this->db->where('isActive',1);
 		$this->db->where('Mobile',$mobile);
 		$query = $this->db->get('RegisterMST');
-		return $query->row_array(); 
+		return $query->row(); 
 	}
 	function CheckOTP($mobile,$otp){
 		$this->db->where('Phone',$mobile);
