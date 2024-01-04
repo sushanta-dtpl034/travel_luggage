@@ -151,6 +151,7 @@ class TravelController extends REST_Controller {
 				$this->form_validation->set_data($this->post());
 				$this->form_validation->set_rules('TitlePrefix', 'Title Prefix', 'required|trim');
 				$this->form_validation->set_rules('Name', 'Name', 'required|trim');
+				$this->form_validation->set_rules('PhoneCountryCode', 'Country Code', 'required');
 				$this->form_validation->set_rules('PhoneNumber', 'Phone Number', 'required|trim');
 				$this->form_validation->set_rules('Address', 'Address', 'required|trim');
 				$this->form_validation->set_rules('Address2', 'Address2', 'required|trim');
@@ -205,18 +206,22 @@ class TravelController extends REST_Controller {
 							}
 						}
 
-						/* if(!empty($OldProfileIMG)){
-							if (file_exists('../'.$OldProfileIMG)){
-								if (unlink('../'.$OldProfileIMG)) {   
+						if(!empty($input_data['OldProfileIMG'])){
+							if (file_exists('../'.$input_data['OldProfileIMG'])){
+								if (unlink('../'.$input_data['OldProfileIMG'])) {   
 								}   
 							} 
-						} */
+						} 
 
 						if(!empty($picture)){
 							$data['ProfileIMG']  =$picture;
 						}
 						
 						if(empty($input_data['AutoID'])){
+							//user create a traveller update parent id
+							if($arrdata['IsAdmin'] == 0){
+								$data['ParentId']  =$userid;
+							}
 							$data['CreatedBy']  =$userid;
 							$data['CreatedDate'] =date('Y-m-d H:i:s');
 							$response =$this->Commonmodel->common_insert('RegisterMST',$data);

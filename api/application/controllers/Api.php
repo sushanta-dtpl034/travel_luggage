@@ -2,8 +2,7 @@
 require APPPATH . '/libraries/TokenHandler.php';
 require APPPATH . 'libraries/REST_Controller.php';
 class Api extends REST_Controller {
-    public function __construct()
-	{
+    public function __construct(){
 		parent::__construct();
 		$this->load->database();
 	    $this->tokenHandler = new TokenHandler();
@@ -191,6 +190,12 @@ class Api extends REST_Controller {
 					}
 				}
 
+				if(!empty($input_data['OldProfileIMG'])){
+					if (file_exists('../'.$input_data['OldProfileIMG'])){
+						if (unlink('../'.$input_data['OldProfileIMG'])) {   
+						}   
+					} 
+				} 
 
 				$data = array(
 					'Suffix'			=>strip_tags($input_data['Suffix']),
@@ -467,5 +472,94 @@ class Api extends REST_Controller {
 		curl_close($ch);					
 	}
 	
+
+	/**
+	 * Registration User API
+	 */
+	function sendOtp_post(){
+		$input_data=$this->request->body;
+		$this->form_validation->set_data($input_data);
+		$this->form_validation->set_rules('PhoneCountryCode', 'Country Code', 'required|trim');
+		$this->form_validation->set_rules('PhoneNumber', 'Phone Number', 'required|trim|callback_mobile_check');
+		if ($this->form_validation->run() == FALSE){
+			$errors = $this->form_validation->error_array();
+			$this->output
+			->set_status_header(406)
+			->set_content_type('application/json', 'utf-8')
+			->set_output(json_encode(["status"=>406,"errors"=>$errors]));                    
+		}else{
+			$mobile=$input_data['PhoneNumber'];
+			$resend=$input_data['Resend'];
+			$countrycode=$input_data['PhoneCountryCode'];
+			$random_number='898989';
+			$mobilenowithcountrycode = $countrycode.$mobile;
+			$res =send_otp($mobilenowithcountrycode,$resend,$random_number);
+			if($res){
+				//$userdata['otp']=$random_number;
+				$userdata['message']="OTP Sent!";
+				return $this->set_response(["status"=>200,"message"=>"OTP Sent!"], REST_Controller::HTTP_OK);	
+			}else{
+				return $this->set_response(["status"=>500,"errors"=>"Something went wrong."], 500);
+			}
+		}
+	}
+	function userRegistration_post(){
+		$input_data=$this->request->body;
+		$this->form_validation->set_data($input_data);
+		$this->form_validation->set_rules('TitlePrefix', 'Title Prefix', 'required|trim');
+		$this->form_validation->set_rules('Name', 'Name', 'required|trim');
+		$this->form_validation->set_rules('PhoneCountryCode', 'Country Code', 'required|trim');
+		$this->form_validation->set_rules('PhoneNumber', 'Phone Number', 'required|trim|callback_mobile_check');
+
+		if ($this->form_validation->run() == FALSE){
+			$errors = $this->form_validation->error_array();
+			$this->output
+			->set_status_header(406)
+			->set_content_type('application/json', 'utf-8')
+			->set_output(json_encode(["status"=>406,"errors"=>$errors]));                    
+		}else{
+			$otp=$input_data['Otp'];
+			$mnowithcountrycode=$input_data['PhoneCountryCode'].$input_data['PhoneNumber'];
+			$isOtpVerified=$this->Login_model->CheckOTP($mnowithcountrycode,$otp);
+			if($isOtpVerified){
+				$data = array(
+					'Suffix'   		=>$input_data['TitlePrefix'],
+					'Name'          =>trim($input_data['Name']),
+					'CountryCode'	=>trim($input_data['PhoneCountryCode']),
+					'Mobile'		=>trim($input_data['PhoneNumber']),
+					'IsAdmin'		=>0,
+					'isActive'		=>1,
+					'IsDelete'		=>0,
+					
+				);
+
+				$data['CreatedDate'] =date('Y-m-d H:i:s');
+				$response =$this->Commonmodel->common_insert('RegisterMST',$data);
+				if($response=1){
+					$result['message'] ="User registration successfully.";
+					$result['status']=201;
+					$status = 201;
+				}else{
+					$result['message'] ="Something went wrong.";
+					$result['status']=500;
+					$status = 500;
+				}
+				$this->output
+					->set_status_header($status)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode($result));
+
+			}
+		}
+	}
+	function mobile_check($str){
+		$response =checkDuplicate('RegisterMST', 'Mobile',$str,["IsDelete"=>0]);
+		if ($response){
+			$this->form_validation->set_message('mobile_check', 'The Phone Number field must be unique.');
+			return FALSE;
+		}else{
+            return TRUE;
+        }
+	}
 	
 }

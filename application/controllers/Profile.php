@@ -139,48 +139,7 @@ class Profile extends CI_Controller {
 			}
 
 		}
-		die();
-		$profile_name = $this->input->post('profile_name');
-		$profile_email = $this->input->post('profile_email');
-		$profile_mobile = $this->input->post('profile_mobile');
-		$profile_username = $this->input->post('profile_username');
-		$profile_prefix = $this->input->post('profile_prefix');
-		// $profile_companyname = $this->input->post('bio');
-		// $profile_address = $this->input->post('profile_address');
-		// $profile_city = $this->input->post('city_id');
-		// $profile_state = $this->input->post('state_id');
-		// $profile_pincode = $this->input->post('profile_pincode');
-		// $profile_country = $this->input->post('country_id');
-		// $profile_pan = $this->input->post('profile_pan');
-		// $profile_tax = $this->input->post('profile_tax');
-		// $profile_gst = $this->input->post('profile_gst');
-		// $profile_contactperson = $this->input->post('profile_contactperson');
-		// $profile_emailid = $this->input->post('profile_emailid');
-		// $profile_office = $this->input->post('profile_office');
-		// $profile_mobile = $this->input->post('profile_mobile');
-		$data_id = $this->input->post('data_id');
-		// $data = array(
-		// 	'CompanyName'=>$profile_companyname,
-		// 	'Address'=>$profile_address,
-		// 	'City'=>$profile_city,
-		// 	'State'=>$profile_state,
-		// 	'Pincode'=>$profile_pincode,
-		// 	'Country'=>$profile_country,
-		// 	'GstNo'=>$profile_gst,
-		// 	'TaxID'=>$profile_tax,
-		// 	'Pan'=>$profile_pan,
-		// 	'Email'=>$profile_emailid,
-		// 	'ContactPersonName'=>$profile_contactperson,
-		// 	'OfficePhoneNumber'=>$profile_office,
-		// 	'ContactPersonMobile'=>$profile_mobile,
-		// 	'ModifyBy'=>$this->session->userdata('userid'),
-		// 	'ModifyDate'=>date('Y-m-d')	
-		// );
 		
-		
-
-		$resultId = $this->Commonmodel->common_update('RegisterMST',$where,$data);
-		echo  true;
 	}
 	function duplicate_mobile_check($str,$AutoID){
 		$response =checkDuplicate('RegisterMST', 'Mobile',$str,["AutoId !="=>$AutoID,"IsDelete"=>0]);
