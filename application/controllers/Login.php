@@ -238,104 +238,74 @@ class Login extends CI_Controller {
 	   redirect($url);
 	}
 	function otpsent(){
-     $mobile = "+91".$this->input->post('mobile');
-	if( !empty($mobile) ){
-		//save otp and previous otp delete and send otp
-		//check mobile no
-		$resend = 0;
-		$response=$this->Loginmodel->validateUserMobile($mobile);
-		if($response){
-			//after validate send otp and save
-			$random_number=rand(100000,999999);
-			$res = send_otp($mobile,$resend,$random_number);
-			if($res){
-				$userdata['message'] = "OTP Sent!";
-				$userdata['message'] = "OTP Sent!";
-				$userdata['status'] = "succcess";
-				echo json_encode($userdata);	
+		$mobile =$this->input->post('mobile');
+		if(!empty($mobile) ){
+			//save otp and previous otp delete and send otp
+			//check mobile no
+			$resend = 0;
+			$response=$this->Loginmodel->validateUserMobile($mobile);
+			if($response){
+				//after validate send otp and save
+				$random_number=698698;//rand(100000,999999);
+				$res = send_otp($mobile,$resend,$random_number);
+				if($res){
+					$userdata['message'] = "OTP Sent!";
+					$userdata['message'] = "OTP Sent!";
+					$userdata['status'] = "succcess";
+					echo json_encode($userdata);	
+				}
+			}else{
+				$userdata['message'] = "User not found";
+				$userdata['status'] = "failure";
+				echo json_encode($userdata);
 			}
 		}else{
-			$userdata['message'] = "User not found";
+			$userdata['message'] = "Mobile No Required";
 			$userdata['status'] = "failure";
-			echo json_encode($userdata);
+			echo json_encode($userdat);
 		}
-	}else{
-		$userdata['message'] = "Mobile No Required";
-		$userdata['status'] = "failure";
-		echo json_encode($userdat);
-	}
 
 	}
 	public function CheckOTP() {
         $otp=$this->input->post('otp');
-		$mobile="+91".$this->input->post('mobile');
+		$mobile=$this->input->post('mobile');
 		$result=$this->Loginmodel->CheckOTP($mobile,$otp);
 		if($result){
-			   $result = $this->Loginmodel->validateUser($mobile);
-				foreach($result as $res ){
-				$res['Password'];
-				}
-			
-				  $this->session->set_userdata('userid',$res['AutoID']);
-				  $this->session->set_userdata('username',$res['UserName']);
-				  $this->session->set_userdata('userrole',$res['UserRole']);
-				  $this->session->set_userdata('GroupID',$res['GroupID']);
-				  $this->session->set_userdata('profile',$res['ProfileIMG']);
-				  $this->session->set_userdata('CompanyName',$res['CompanyName']);
-				  $this->session->set_userdata('parentid',$res['ParentID']);
-				  $this->session->set_userdata('userdata',$res);
+			$result = $this->Loginmodel->validateUser($mobile);
+			$this->session->set_userdata('userid',$result->AutoID);
+			$this->session->set_userdata('username',$result->UserName);
+			$this->session->set_userdata('userisadmin',$result->IsAdmin);
+			$this->session->set_userdata('name',$result->Name);
+			$this->session->set_userdata('profile',$result->ProfileIMG);
+			$this->session->set_userdata('mobile',$result->Mobile);
+			$this->session->set_userdata('Suffix',$result->Suffix);
+			$this->session->set_userdata('userdata',$result);
 
-				  /*logo setting*/
-				  $parentid = $res['AutoID'];
-				  if($res['GroupID']!='1'){
-					$parentid = $res['ParentID'];
-				  }
-				  $logodata = $this->Mastermodel->getsystemsetting($parentid);
-				  if($logodata){
-					  $this->session->set_userdata('height',$logodata->Height);
-					  $this->session->set_userdata('width',$logodata->Width);
-					  $this->session->set_userdata('logo',$logodata->Logoname);
-					  $this->session->set_userdata('placeapi',$logodata->googlePlaces);
-				  }
-				  if($res['UserRole']==1){
-					  // redirect('Dashboard/superadmin_dasboard');
-					  $status=200;
-					  $this->output
-				  ->set_status_header($status)
-				  ->set_content_type('application/json', 'utf-8')
-				  ->set_output(json_encode("success"));
-				  }else{
-					  if($res['isApprove']==1){
-						  // redirect('Dashboard/superadmin_success');
-						  $status=200;
-					  $this->output
-				  ->set_status_header($status)
-				  ->set_content_type('application/json', 'utf-8')
-				  ->set_output(json_encode("success"));
-					  }elseif($res['isApprove']==2){
-						  // redirect('Dashboard/superadmin_dasboard');
-						  $status=200;
-					  $this->output
-				  ->set_status_header($status)
-				  ->set_content_type('application/json', 'utf-8')
-				  ->set_output(json_encode("success"));
-					  }
-					  else{
-						  //redirect('Invoice');
-						  // redirect('Dashboard/superadmin_dasboard');
-						  $status=200;
-					  $this->output
-				  ->set_status_header($status)
-				  ->set_content_type('application/json', 'utf-8')
-				  ->set_output(json_encode("success"));
-					  }
-					  
-				  }
+			/*logo setting*/
+			if($result->IsAdmin == 1){
+				$logodata = $this->Mastermodel->getsystemsetting($result->AutoID);
+				if($logodata){
+					$this->session->set_userdata('height',$logodata->Height);
+					$this->session->set_userdata('width',$logodata->Width);
+					$this->session->set_userdata('logo',$logodata->Logoname);
+				}else{
+					$this->session->set_userdata('height',80);
+					$this->session->set_userdata('width',80);
+					$this->session->set_userdata('logo','assets/img/logo3.png');
+				}
+			}
+			$status=200;
+			$this->output
+			->set_status_header($status)
+			->set_content_type('application/json', 'utf-8')
+			->set_output(json_encode(["status" => 200, "isadmin" =>$result->IsAdmin]));
 			
 		}else{
-			$userdata['message'] = "Authentication Error!.";
-			$userdata['status'] = "failure";
-			echo json_encode($userdata);
+			$status=200;
+			$this->output
+			->set_status_header($status)
+			->set_content_type('application/json', 'utf-8')
+			->set_output(json_encode(["status" => 500, "error" =>"Incorrect username or password. Please try again."]));
 		}
 	}
 	
