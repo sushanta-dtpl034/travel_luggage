@@ -523,10 +523,17 @@ class Api extends REST_Controller {
 			$isOtpVerified=$this->Login_model->CheckOTP($mnowithcountrycode,$otp);
 			if($isOtpVerified){
 				$data = array(
-					'Suffix'   		=>$input_data['TitlePrefix'],
-					'Name'          =>trim($input_data['Name']),
-					'CountryCode'	=>trim($input_data['PhoneCountryCode']),
-					'Mobile'		=>trim($input_data['PhoneNumber']),
+					'Suffix'   			=>$input_data['TitlePrefix'],
+					'Name'          	=>trim($input_data['Name']),
+					'CountryCode'		=>trim($input_data['PhoneCountryCode']),
+					'Mobile'			=>trim($input_data['PhoneNumber']),
+					'Email'				=>strip_tags($input_data['Email']),
+					'Gender'			=>strip_tags($input_data['Gender']),
+					'Address'			=>strip_tags($input_data['Address']),
+					'AdressTwo'			=>strip_tags($input_data['AdressTwo']),
+					'Landmark'			=>strip_tags($input_data['Landmark']),
+					'WhatsAppCountryCode'=>strip_tags($input_data['WhatsAppCountryCode']),
+					'WhatsappNumber'	=>strip_tags($input_data['WhatsappNumber']),
 					'IsAdmin'		=>0,
 					'isActive'		=>1,
 					'IsDelete'		=>0,
@@ -549,6 +556,14 @@ class Api extends REST_Controller {
 					->set_content_type('application/json', 'utf-8')
 					->set_output(json_encode($result));
 
+			}else{
+				$result['message'] = "Incorrect OTP. ";
+				$result['status']=400;
+
+				$this->output
+					->set_status_header(400)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode($result));
 			}
 		}
 	}
