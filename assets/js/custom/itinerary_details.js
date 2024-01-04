@@ -1,5 +1,4 @@
 $(function () {
-  
     var travellerTable = $('#itinerary_details_table').DataTable({
         "processing": true,
         "serverSide": false,

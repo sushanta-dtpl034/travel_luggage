@@ -885,7 +885,12 @@ class Qrcode extends CI_Controller {
 		}
 		
 	}
-
+	function qrdownload($file_name){
+		$this->load->helper('download');
+        $path = file_get_contents(base_url().'upload/qr-code/'.$file_name); // Read the file's contents
+        $name = $file_name;
+        force_download($name, $path);
+    }
 
 
 	/** TESTING SECTION */

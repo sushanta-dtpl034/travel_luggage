@@ -409,6 +409,7 @@
 </div>
 <!--End Grid modal -->
 <script>
+
 const itineraryHeadId="<?php echo $this->uri->segment(3, 0); ?>";
 console.log(itineraryHeadId);
 </script>
