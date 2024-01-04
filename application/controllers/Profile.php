@@ -161,22 +161,46 @@ class Profile extends CI_Controller {
 	}
    
 	public function update_password(){
-		$password = $this->input->post('password');
 		$change_id = $this->input->post('change_id');
-		$data = array(
-			'Password'=>password_hash($password,PASSWORD_DEFAULT),
-			'ModifyBy'=>$this->session->userdata('userid'),
-			'ModifyDate'=>date('Y-m-d')	
-		);
-		$where = array(
-			'AutoID'=>$change_id,
-		);
+		$this->form_validation->set_rules('current_password', 'Current Password', 'required|callback_oldpassword_check['.$change_id.']');
+		$this->form_validation->set_rules('password', 'Password', 'required');
+		$this->form_validation->set_rules('Password_2', 'Confirm Password', 'required|matches[password]');
 
-		$resultId = $this->Commonmodel->common_update('RegisterMST',$where,$data);
-		echo  true;
-
+		if ($this->form_validation->run() == FALSE){
+			echo validation_errors();
+		}else{
+			$current_password = $this->input->post('current_password');
+			$password = $this->input->post('password');
+			$Password_2 = $this->input->post('Password_2');
+			$data = array(
+				'Password'=>password_hash($password,PASSWORD_DEFAULT),
+				'ModifyBy'=>$this->session->userdata('userid'),
+				'ModifyDate'=>date('Y-m-d')	
+			);
+			$where = array(
+				'AutoID'=>$change_id,
+			);
+			$resultId = $this->Commonmodel->common_update('RegisterMST',$where,$data);
+			if($resultId){
+				echo json_encode(array('status' => 1));
+			}else{
+				echo json_encode(array('status' => 0));
+			}
+		}
 
 	}
+	//duplicate account no check
+	function oldpassword_check($str,$AutoID){
+		$user_data= $this->Usermodel->get_user($AutoID);
+		if($user_data){
+			if(password_verify($str,$user_data->Password)){ 
+				return TRUE;
+			}else{
+				$this->form_validation->set_message('oldpassword_check', 'The Current Password not matched.');
+				return FALSE;
+			}
+		}
+    }
 
 		
 

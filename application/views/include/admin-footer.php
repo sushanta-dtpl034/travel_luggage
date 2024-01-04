@@ -810,34 +810,57 @@ window.Parsley.addValidator('number', {
 
 //has special char
 window.Parsley.addValidator('special', {
-  requirementType: 'number',
-  validateString: function(value, requirement) {
-    var specials = value.match(/[^a-zA-Z0-9]/g) || [];
-    return specials.length >= requirement;
-  },
-  messages: {
-    en: 'Your password must contain at least (%s) special characters.'
-  }
+	requirementType: 'number',
+	validateString: function(value, requirement) {
+		var specials = value.match(/[^a-zA-Z0-9]/g) || [];
+		return specials.length >= requirement;
+	},
+	messages: {
+		en: 'Your password must contain at least (%s) special characters.'
+	}
 });
 
-		$("#pass_change").click(function(){
-			if($('#change_password').parsley().validate())
-			{
-				$.ajax({
-					url : ' <?php echo base_url(); ?>Profile/update_password',
-					type: "POST",
-					data :  $("#change_password").serialize(),
-					success: function(result)
-					{
-						$('.change_success').show().focus();
-						setInterval(function(){ location.href="<?php echo base_url('profile/change_password'); ?>"; }, 3000);
-						
-					}
-				
-				});
+$("#pass_change").click(function(){
+	if($('#change_password').parsley().validate()){
+		let cpfrm = $('#change_password');
+        let passsword_save = new FormData(cpfrm[0]);
+
+		$.ajax({
+			url : ' <?php echo base_url(); ?>Profile/update_password',
+			type: "POST",
+			dataType: 'json',
+			contentType: false,
+			processData: false,
+			data :passsword_save ,// $("#change_password").serialize(),
+			success: function(result){
+				if (result.status === 1) {
+					$('.change_success').show().focus();
+					setTimeout(function(){ location.href="<?php echo base_url('profile/change_password'); ?>"; }, 3000);
+				}else{
+
+				}
+			},
+			error: function (xhr, status, errors) {
+				var pattern = /<p>(.*?)<\/p>/g;
+				var arrayOfStrings = [];
+				var match;
+				while ((match = pattern.exec(xhr.responseText)) !== null) {
+					arrayOfStrings.push(match[1]);
+				}
+				$('#form_errors').html(""); 
+				if(arrayOfStrings.length > 0){
+					$.each(arrayOfStrings, function (key, item) {
+						$("#change_password #form_errors").append("<li class='alert alert-danger m-0 border-0 p-1'>" + item + "</li>");
+					});
+					$("#change_password .print-error-msg").show();
+				}
 			
 			}
+		
 		});
+	
+	}
+});
 
 		$(".btnTooltip").on('click',function() {
 			var id = $(this).attr("data-id");
