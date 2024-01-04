@@ -457,35 +457,33 @@ datatable();
      {
          var planurl = $('#planurl').val();
          $.ajax({
-                 url : '<?php echo base_url('Material/save_material'); ?>',
-                 type: "POST",
-                 data : $("#material_form").serialize(),
-                 success: function(result)
-                 {
-                    var jsonData = JSON.parse(result);
-						 if(jsonData.status===1){
-						$("#materialmodal .btn-secondary").click()
-                         $('.insert').show();
-       					 $('#material_form').trigger("reset");
-                    setInterval(function(){
-                             $('.insert').hide();
-                            //  table.ajax.reload();
-                             location.href='<?php echo base_url('Material/materialcondotionlist') ?>';
-                         },2000);
-                     }else{
-						$("#materialmodal .btn-secondary").click()
-						 $('#material_form').trigger("reset");
-                         $('.alert-solid-warning').show();
-                          setInterval(function(){ 
-                            $('.alert-solid-warning').hide();
-                            // table.ajax.reload();
-                            location.href='<?php echo base_url('Material/materialcondotionlist') ?>';
-                            },2000);
-                     }
-                 },
-               
-             });
-     }
+            url : '<?php echo base_url('Material/save_material'); ?>',
+            type: "POST",
+            data : $("#material_form").serialize(),
+            success: function(result){
+				var jsonData = JSON.parse(result);
+						if(jsonData.status===1){
+					$("#materialmodal .btn-secondary").click()
+						$('.insert').show();
+						$('#material_form').trigger("reset");
+				setInterval(function(){
+							$('.insert').hide();
+						//  table.ajax.reload();
+							location.href='<?php echo base_url('Material/materialcondotionlist') ?>';
+						},2000);
+					}else{
+					$("#materialmodal .btn-secondary").click()
+						$('#material_form').trigger("reset");
+						$('.alert-solid-warning').show();
+						setInterval(function(){ 
+						$('.alert-solid-warning').hide();
+						// table.ajax.reload();
+						location.href='<?php echo base_url('Material/materialcondotionlist') ?>';
+						},2000);
+					}
+            },
+        });
+    }
 
 }); 
 
@@ -511,177 +509,155 @@ $("#material_table").on('click', '.update', function(){
 
 
 $("#updatematerial").click(function(){
-    if($('#updatematerialform').parsley().validate())
-     {
+    if($('#updatematerialform').parsley().validate()){
      
-         $.ajax({
-                 url : '<?php echo base_url('Material/material_update'); ?>',
-                 type: "POST",
-                 data : $("#updatematerialform").serialize(),
-                 success: function(result)
-                 {
-                     var jsonData = JSON.parse(result);
-                     if(jsonData.status===1){
-                         $('#updatematerialmodal').modal('toggle');
-                         $('.update').show();
-                         setInterval(function(){ 
-                             $('.update').hide();
-                             location.href='<?php echo base_url('Material/materialcondotionlist'); ?>';
-                            },2000);
-                     }else{
-                         $('#updatematerialmodal').modal('toggle');
-                         $('.alert-solid-warning').show();
-                         setInterval(function(){ 
-                             $('.alert-solid-warning').hide();
-                             location.href='<?php echo base_url('Material/materialcondotionliste'); ?>';
-                            },2000);
-                         
-                     }
-                 },
-                
-             });
-     }
+		$.ajax({
+			url : '<?php echo base_url('Material/material_update'); ?>',
+			type: "POST",
+			data : $("#updatematerialform").serialize(),
+			success: function(result){
+				var jsonData = JSON.parse(result);
+				if(jsonData.status===1){
+					$('#updatematerialmodal').modal('toggle');
+					$('.update').show();
+					setInterval(function(){ 
+						$('.update').hide();
+						location.href='<?php echo base_url('Material/materialcondotionlist'); ?>';
+					},2000);
+				}else{
+					$('#updatematerialmodal').modal('toggle');
+					$('.alert-solid-warning').show();
+					setInterval(function(){ 
+						$('.alert-solid-warning').hide();
+						location.href='<?php echo base_url('Material/materialcondotionliste'); ?>';
+					},2000);
+					
+				}
+			},
+		});
+    }
 
 }); 
 
 $('#material_table').on('click','.materialdelete',function(){
-    var id = $(this).attr('id');
-    var deleteConfirm = confirm("Are you sure?");
-    if (deleteConfirm == true) {
-       // AJAX request
-       $.ajax({
-         url: base_url+'Material/deletematerial',
-         type: 'post',
-         data: {id: id},
-         success: function(response){
-            if(response == 1){
+	var id = $(this).attr('id');
+	var deleteConfirm = confirm("Are you sure?");
+	if (deleteConfirm == true) {
+		// AJAX request
+		$.ajax({
+			url: base_url+'Material/deletematerial',
+			type: 'post',
+			data: {id: id},
+			success: function(response){
+			if(response == 1){
 				location.href='<?php echo base_url('Material/materialcondotionlist'); ?>';
-                table.ajax.reload();
-            }else{
-               alert("Invalid ID.");
-            }
-         }
-       });
+				table.ajax.reload();
+			}else{
+				alert("Invalid ID.");
+			}
+			}
+		});
     } 
 
- });
+});
 
-</script>   
-   
-     <script>
-		$('#mailsend').on('click', () => { 
-					// Get HTML content
-					var myEditor = document.querySelector('#quillEditor')
-					var html = myEditor.children[0].innerHTML
-					$('#hiddenArea').val( html )
-					$.ajax({
-						url: base_url+'Masters/Material_sendmail',
-						type:'post',
-						data :$("#sendmail_form").serialize(),
-						beforeSend: function() {
-                                $('#mailsend').hide();
-								$('.loading').show();
-                         },
-						success: function(response){
-							if(response == 1){
-							  location.href='<?php echo base_url('Masters/superad_materialcon'); ?>';
-							}else{
-							  location.href='<?php echo base_url('Masters/superad_materialcon'); ?>';
-							}
-						}
-					});
-			})
-     </script>
-	  <script>
-		$('#mailsetting-ins').on('click', () => { 
-					// Get HTML content
-					var myEditor = document.querySelector('#quillEditor')
-					var html = myEditor.children[0].innerHTML
-					$('#hiddenArea').val( html )
-					$.ajax({
-						url: base_url+'Masters/materialemailconf_save',
-						type:'post',
-						data :$("#mailconf").serialize(),
-						beforeSend: function() {
-                                $('#mailsetting-ins').hide();
-								$('.loading').show();
-                         },
-						success: function(response){
-							if(response == 1){
-							  location.href='<?php echo base_url('Masters/superad_materialcon'); ?>';
-							}else{
-							  location.href='<?php echo base_url('Masters/superad_materialcon'); ?>';
-							}
-						}
-					});
-			})
-     </script>	
-	 <script>
-		 $('#currency_country').on('change', function() {
-           var countryid = this.value;
- 
-  
-   
-    $.ajax({
-        url : '<?php echo base_url(); ?>/Common/getoneCountrydetails',
-        type: "POST",
-        dataType: "JSON",
-        data :  {countryid: countryid},
-        success: function(result)
-        {
-			 $('#currency_name').val(result.CurrencyName);
-             $('#currency_code').val(result.CurrencyCode);
-             $('#currency_symbole').val(result.CurrencySymbol);
-        },
-        error: function ()
-        {
-     
-        }
-    });
-    
 
+$('#mailsend').on('click', () => { 
+	// Get HTML content
+	var myEditor = document.querySelector('#quillEditor')
+	var html = myEditor.children[0].innerHTML
+	$('#hiddenArea').val( html )
+	$.ajax({
+		url: base_url+'Masters/Material_sendmail',
+		type:'post',
+		data :$("#sendmail_form").serialize(),
+		beforeSend: function() {
+			$('#mailsend').hide();
+			$('.loading').show();
+		},
+		success: function(response){
+			if(response == 1){
+				location.href='<?php echo base_url('Masters/superad_materialcon'); ?>';
+			}else{
+				location.href='<?php echo base_url('Masters/superad_materialcon'); ?>';
+			}
+		}
+	});
+})
+
+$('#mailsetting-ins').on('click', () => { 
+	// Get HTML content
+	var myEditor = document.querySelector('#quillEditor')
+	var html = myEditor.children[0].innerHTML
+	$('#hiddenArea').val( html )
+	$.ajax({
+		url: base_url+'Masters/materialemailconf_save',
+		type:'post',
+		data :$("#mailconf").serialize(),
+		beforeSend: function() {
+				$('#mailsetting-ins').hide();
+				$('.loading').show();
+			},
+		success: function(response){
+			if(response == 1){
+				location.href='<?php echo base_url('Masters/superad_materialcon'); ?>';
+			}else{
+				location.href='<?php echo base_url('Masters/superad_materialcon'); ?>';
+			}
+		}
+	});
+})
+
+$('#currency_country').on('change', function() {
+	var countryid = this.value;
+	$.ajax({
+		url : '<?php echo base_url(); ?>/Common/getoneCountrydetails',
+		type: "POST",
+		dataType: "JSON",
+		data :  {countryid: countryid},
+		success: function(result)
+		{
+			$('#currency_name').val(result.CurrencyName);
+			$('#currency_code').val(result.CurrencyCode);
+			$('#currency_symbole').val(result.CurrencySymbol);
+		},
+		error: function ()
+		{
+
+		}
+	});
 
 });
-	 </script>	 	
-	 <script>
-		 
-
-				$(document).ready(function() {
 
 
-				var readURL = function(input) {
-					if (input.files && input.files[0]) {
-						var reader = new FileReader();
-						reader.onload = function (e) {
-						$('.profile-pic').attr('src', e.target.result);
-						}
+$(document).ready(function() {
+	var readURL = function(input) {
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
+			reader.onload = function (e) {
+				$('.profile-pic').attr('src', e.target.result);
+			}
+		}
+		reader.readAsDataURL(input.files[0]);			
+	}
+	$(".file-upload").on('change', function(){
+		readURL(this);
+	});
 
-
-						}
-						reader.readAsDataURL(input.files[0]);
-
-						
-				}
-
-
-				$(".file-upload").on('change', function(){
-				   readURL(this);
-				});
-
-				$(".upload-button").on('click', function() {
-				$(".file-upload").click();
-				});
-				});
+	$(".upload-button").on('click', function() {
+		$(".file-upload").click();
+	});
+});
 				// $(document).on('click','.profile_remove',function(){
 				//     $(".profile-pic").attr("src","<?php echo base_url(); ?>/assets/img/users/1.jpg");
 				// });
 
-				$('#profile_city').on('change', function() {
-  var allDetails = this.value;
-  var cityDetails = allDetails.split("/");
-  var city = cityDetails[0];
-  var state = cityDetails[1];
-  var country = cityDetails[2];
+$('#profile_city').on('change', function() {
+	var allDetails = this.value;
+	var cityDetails = allDetails.split("/");
+	var city = cityDetails[0];
+	var state = cityDetails[1];
+	var country = cityDetails[2];
    
     $.ajax({
         url : ' <?php echo base_url(); ?>Common/getStatedetails',
@@ -704,64 +680,80 @@ $('#material_table').on('click','.materialdelete',function(){
      
         }
     });
-    
-
 
 });
-	 </script>	 
-	 <script>
+
 		 
-		 $('#profileedit_button').on('click', function() {
+$('#profileedit_button').on('click', function() {
+	let upfrm = $('#profile_edit');
+    let upfrm_save = new FormData(upfrm[0]);
 
-
-				$.ajax({
-					url : ' <?php echo base_url(); ?>Profile/profile_update',
-					type: "POST",
-					data :  $("#profile_edit").serialize(),
-					success: function(result)
-					{
-						$('.profile_data').show().focus();
-						
-					}
-				
-				});
-			
-
-		 });
-
-
-			$('#project_image').on('click', function() {
-
-					var fd = new FormData();
-					var files = $('#file')[0].files;
-
-					if(files.length > 0 ){
-					fd.append('file',files[0]);
-					}else{
-					alert("Please select a file.");
-					}
-					
-					var old_image =  $('#old_image').val();
-					var id =  $('#updated_id').val();
-					fd.append('id',id);
-					fd.append('old_image',old_image);
-						
-					$.ajax({
-						url: '<?php echo base_url(); ?>Profile/profileimage_save',
-						type: 'post',
-						data: fd,
-						contentType: false,
-						processData: false,
-						success: function(response){
-							if(response){
-                               $('.profile_success').show();
-							   setInterval(function(){ location.href="<?php echo base_url('profile/sup_profile'); ?>"; }, 3000);
-							}
-						},
+	$.ajax({
+		url : ' <?php echo base_url(); ?>Profile/profile_update',
+		type: "POST",
+		dataType: 'json',
+		contentType: false,
+		processData: false,
+		data : upfrm_save,
+		success: function(result){
+			if (result.status == 1) {
+				$('.profile_data').show().focus();
+				setTimeout(function(){ location.href="<?php echo base_url('profile/sup_profile'); ?>"; }, 2000);
+			}else{
+				alert('Something went wrong.')
+			}
+		},
+		error: function (xhr, status, errors) {
+				var pattern = /<p>(.*?)<\/p>/g;
+				var arrayOfStrings = [];
+				var match;
+				while ((match = pattern.exec(xhr.responseText)) !== null) {
+					arrayOfStrings.push(match[1]);
+				}
+				$('#form_errors').html(""); 
+				if(arrayOfStrings.length > 0){
+					$.each(arrayOfStrings, function (key, item) {
+						$("#profile_edit #form_errors").append("<li class='alert alert-danger m-0 border-0 p-1'>" + item + "</li>");
 					});
+					$("#profile_edit .print-error-msg").show();
+				}
+			
+			}
+	
+	});
+
+});
 
 
-			});
+$('#project_image').on('click', function() {
+	var fd = new FormData();
+	var files = $('#file')[0].files;
+
+	if(files.length > 0 ){
+		fd.append('file',files[0]);
+	}else{
+		alert("Please select a file.");
+	}
+	
+	var old_image =  $('#old_image').val();
+	var id =  $('#updated_id').val();
+	fd.append('id',id);
+	fd.append('old_image',old_image);
+		
+	$.ajax({
+		url: '<?php echo base_url(); ?>Profile/profileimage_save',
+		type: 'post',
+		data: fd,
+		contentType: false,
+		processData: false,
+		success: function(response){
+			if(response){
+				$('.profile_success').show();
+				setInterval(function(){ location.href="<?php echo base_url('profile/sup_profile'); ?>"; }, 3000);
+			}
+		},
+	});
+});
 
 
 			
@@ -833,11 +825,11 @@ $("#pass_change").click(function(){
 			processData: false,
 			data :passsword_save ,// $("#change_password").serialize(),
 			success: function(result){
-				if (result.status === 1) {
+				if (result.status == 1) {
 					$('.change_success').show().focus();
-					setTimeout(function(){ location.href="<?php echo base_url('profile/change_password'); ?>"; }, 3000);
+					setTimeout(function(){ location.href="<?php echo base_url('profile/change_password'); ?>"; }, 2000);
 				}else{
-
+					alert('Something went wrong.')
 				}
 			},
 			error: function (xhr, status, errors) {

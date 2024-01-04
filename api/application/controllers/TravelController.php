@@ -205,6 +205,13 @@ class TravelController extends REST_Controller {
 							}
 						}
 
+						/* if(!empty($OldProfileIMG)){
+							if (file_exists('../'.$OldProfileIMG)){
+								if (unlink('../'.$OldProfileIMG)) {   
+								}   
+							} 
+						} */
+
 						if(!empty($picture)){
 							$data['ProfileIMG']  =$picture;
 						}

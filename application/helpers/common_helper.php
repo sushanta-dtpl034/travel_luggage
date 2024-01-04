@@ -753,3 +753,27 @@ function getGoogleAddressByLatLong($lat, $long){
    
 
 }
+
+if (!function_exists('checkDuplicate')) {
+	function checkDuplicate($table,$column,$value,$condition=[]){
+		$ci=& get_instance();
+		$ci->load->database();
+		if ($ci->db->table_exists($table)){
+			$ci->db->where($column,$value); 
+			if(count($condition) > 0){
+				$ci->db->where($condition); 
+			}
+			$query =$ci->db->get($table);
+			$count_row = $query->num_rows();
+			//echo $ci->db->last_query();
+			if ($count_row > 0) {
+				return TRUE;
+			} else {
+				return FALSE;
+			}
+		}else{
+			log_message('error','File Name: ' . basename(__FILE__) . ', Function Name: ' . __FUNCTION__ .', => Error Message : Table does not exist -- '.$table);
+		}
+		//select count(*) from CurrencyMst where  Name='Abc' AND AutoID !=3
+	}
+}
