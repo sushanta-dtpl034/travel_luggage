@@ -76,7 +76,7 @@
                                                 <a href="#"  onclick="printSingleQrcode(<?= $data['AutoID'];?>)" >
                                                     <i class="fa fa-qrcode fa-lg" aria-hidden="true"></i>
                                                 </a>
-                                                <a href="<?= base_url();?>upload/qr-code/<?= $data['QRCodeText'];?>.png" download class="mx-2">
+                                                <a href="#"  onclick="downloadQRCode('<?= $data['QRCodeText'];?>.png')" data-image="<?= base_url();?>upload/qr-code/<?= $data['QRCodeText'];?>.png" class="mx-2">
                                                     <i class="fa fa-download fa-lg" aria-hidden="true"></i>
                                                 </a>
                                                 <?php if($data['status'] === 'Used'){ ?>
@@ -204,7 +204,13 @@
     </div>
 </div>
 
-
+<script>
+function downloadQRCode(image){
+   // alert(image)
+    const url =base_url + "Qrcode/qrdownload/"+image;
+    window.location.href=url
+}
+</script>
 
 
 
