@@ -66,7 +66,7 @@ class TravelLuggageController extends REST_Controller {
             try {
                 $arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
 				$userid=$arrdata['AutoID'];
-                $travelDetailsListObj = $this->TravelLuggageModel->travelLuggageList($input_data);
+                $travelDetailsListObj = $this->TravelLuggageModel->travelLuggageList($input_data,$arrdata);
                 if($travelDetailsListObj){
                     $this->output
                     ->set_status_header(200)

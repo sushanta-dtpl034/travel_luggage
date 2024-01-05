@@ -38,10 +38,14 @@ class TravelLuggageModel extends CI_Model {
 		}
 	}
 
-	public function travelLuggageList($data){
+	public function travelLuggageList($data,$arrdata){
         $this->db->select('tl.*,ih.ItineraryName, rm.Name,rm.Suffix,rm.ProfileIMG');
         $this->db->from('TravelLuggage as tl');
         $this->db->where('tl.IsDelete',0);
+		if($arrdata['IsAdmin'] == 0 ){
+			$this->db->where('tl.UserID',$arrdata['AutoID']);
+		}
+        
         $this->db->join('RegisterMST as rm','tl.UserID = rm.AutoID','LEFT');
         $this->db->join('ItineraryHead as ih','tl.ItineraryHeadId = ih.AutoID','LEFT');
 		if(isset($data['AutoID']) && !empty($data['AutoID'])){
