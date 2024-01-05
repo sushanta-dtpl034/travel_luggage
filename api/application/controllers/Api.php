@@ -100,27 +100,32 @@ class Api extends REST_Controller {
         $otp=$data['otp'];
 		$mobile=$data['mobile'];
 		$mnowithcountrycode=$data['countrycode'].$mobile;
-		$result=$this->Login_model->CheckOTP($mnowithcountrycode,$otp);
-		if($result){
+		$isOtpVerified=$this->Login_model->CheckOTP($mnowithcountrycode,$otp);
+		if($isOtpVerified){
 			$result = $this->Login_model->validateUserMobile($mobile);
-			$token['AutoID']=$result['AutoID'];
-			$token['Email']=$result['Email'];
-			$token['IsAdmin']=$result['IsAdmin'];
-
-			$userdata['token'] = $this->tokenHandler->GenerateToken($token);
-			$userdata['AutoID']	=$result['AutoID'];
-			$userdata['Suffix']	=$result['Suffix'];
-			$userdata['Name']	=$result['Name'];
-			$userdata['CountryCode']=$result['CountryCode'];
-			$userdata['Mobile']	=$result['Mobile'];
-			$userdata['Email']	=$result['Email'];
-			$userdata['Address']=$result['Address'];
-			$userdata['AdressTwo']=$result['AdressTwo'];
-			$userdata['ProfileIMG']='upload/profile/'.$result['ProfileIMG'];
-			$userdata['IsAdmin']=$result['IsAdmin'];
-			$userdata['message'] = "User authenticated successfully";
-			$userdata['status']=200;
-			return $this->set_response($userdata, REST_Controller::HTTP_OK);
+			if($result){
+				$token['AutoID']=$result['AutoID'];
+				$token['Email']=$result['Email'];
+				$token['IsAdmin']=$result['IsAdmin'];
+	
+				$userdata['token'] = $this->tokenHandler->GenerateToken($token);
+				$userdata['AutoID']	=$result['AutoID'];
+				$userdata['Suffix']	=$result['Suffix'];
+				$userdata['Name']	=$result['Name'];
+				$userdata['CountryCode']=$result['CountryCode'];
+				$userdata['Mobile']	=$result['Mobile'];
+				$userdata['Email']	=$result['Email'];
+				$userdata['Address']=$result['Address'];
+				$userdata['AdressTwo']=$result['AdressTwo'];
+				$userdata['ProfileIMG']='upload/profile/'.$result['ProfileIMG'];
+				$userdata['IsAdmin']=$result['IsAdmin'];
+				$userdata['message'] = "User authenticated successfully";
+				$userdata['status']=200;
+				return $this->set_response($userdata, REST_Controller::HTTP_OK);
+			}else{
+				return $this->set_response(["status"=>401,"errors"=>"Authentication Error!."], 401);
+			}
+			
 		}else{
 			return $this->set_response(["status"=>401,"errors"=>"Authentication Error!."], 401);
 		}
@@ -542,20 +547,45 @@ class Api extends REST_Controller {
 
 				$data['CreatedDate'] =date('Y-m-d H:i:s');
 				$response =$this->Commonmodel->common_insert('RegisterMST',$data);
-				if($response=1){
-					$result['message'] ="User registration successfully.";
-					$result['status']=201;
-					$status = 201;
+				if($response){
+					$result = $this->Login_model->getUserByID($response);
+					if($result){
+						$token['AutoID']=$result['AutoID'];
+						$token['Email']=$result['Email'];
+						$token['IsAdmin']=$result['IsAdmin'];
+			
+						$userdata['token'] = $this->tokenHandler->GenerateToken($token);
+						$userdata['AutoID']	=$result['AutoID'];
+						$userdata['Suffix']	=$result['Suffix'];
+						$userdata['Name']	=$result['Name'];
+						$userdata['CountryCode']=$result['CountryCode'];
+						$userdata['Mobile']	=$result['Mobile'];
+						$userdata['Email']	=$result['Email'];
+						$userdata['Address']=$result['Address'];
+						$userdata['AdressTwo']=$result['AdressTwo'];
+						$userdata['ProfileIMG']='upload/profile/'.$result['ProfileIMG'];
+						$userdata['IsAdmin']=$result['IsAdmin'];
+						$userdata['message'] = "User authenticated successfully";
+						$userdata['status']=200;
+						return $this->set_response($userdata, REST_Controller::HTTP_OK);
+					}else{
+						return $this->set_response(["status"=>401,"errors"=>"Authentication Error!."], 401);
+					}
+					// $result['message'] ="User registration successfully.";
+					// $result['status']=201;
+					// $status = 201;
 				}else{
 					$result['message'] ="Something went wrong.";
 					$result['status']=500;
 					$status = 500;
-				}
-				$this->output
+					$this->output
 					->set_status_header($status)
 					->set_content_type('application/json', 'utf-8')
 					->set_output(json_encode($result));
 
+				}
+
+				
 			}else{
 				$result['message'] = "Incorrect OTP. ";
 				$result['status']=400;
