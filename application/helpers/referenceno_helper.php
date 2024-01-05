@@ -20,6 +20,34 @@ function create_refno($index_assigned){
     return $format;
 }
 
+function generate_qrcode_number(){
+   /**
+    * AB-12345-CD-67890
+    * Generate a random 2-digit letter (uppercase)
+    * Generate a random 5-digit number
+    * Generate a random 2-digit letter (uppercase)
+    * Generate a random 5-digit number
+    */
+
+    $firstRandomLetter = chr(rand(65, 90)) . chr(rand(65, 90));
+    $firstRandomNumber = mt_rand(10000, 99999);
+    $secondRandomLetter = chr(rand(65, 90)) . chr(rand(65, 90));
+    $secondRandomNumber = mt_rand(10000, 99999);
+    return $randomQRcodeNumber=$firstRandomLetter.'-'.$firstRandomNumber.'-'.$secondRandomLetter.'-'.$secondRandomNumber;
+}
+function check_duplicate_qrcode_number($qrcode){
+    $ci=& get_instance();
+    $ci->load->database();
+    $sql="select * from QRCodeDetailsMst where QRCodeText='$qrcode'";
+    $query=$ci->db->query($sql);
+    if($query->num_rows() == 0){
+        return FALSE;
+    }else{
+        return TRUE;
+    }
+
+    //return $query->num_rows() > 0;
+}
 function  get_previous_qrcode_sequence($last_insert_id,$current_year_month){
     $ci=& get_instance();
     $ci->load->database();

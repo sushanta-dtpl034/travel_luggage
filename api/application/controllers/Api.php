@@ -535,13 +535,13 @@ class Api extends REST_Controller {
 					'Email'				=>strip_tags($input_data['Email']),
 					'Gender'			=>strip_tags($input_data['Gender']),
 					'Address'			=>strip_tags($input_data['Address']),
-					'AdressTwo'			=>strip_tags($input_data['AdressTwo']),
+					'AdressTwo'			=>strip_tags($input_data['Address2']),
 					'Landmark'			=>strip_tags($input_data['Landmark']),
 					'WhatsAppCountryCode'=>strip_tags($input_data['WhatsAppCountryCode']),
-					'WhatsappNumber'	=>strip_tags($input_data['WhatsappNumber']),
-					'IsAdmin'		=>0,
-					'isActive'		=>1,
-					'IsDelete'		=>0,
+					'WhatsappNumber'	=>strip_tags($input_data['WhatsAppNumber']),
+					'IsAdmin'			=>0,
+					'isActive'			=>1,
+					'IsDelete'			=>0,
 					
 				);
 
