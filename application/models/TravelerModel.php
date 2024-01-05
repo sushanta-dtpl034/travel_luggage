@@ -15,6 +15,7 @@ class TravelerModel extends CI_Model{
         $this->db->where('IsDelete',0);
         if($parentId > 0){
             $this->db->where('ParentId',$parentId);
+            $this->db->or_where('AutoID',$parentId);
         }
        
         $this->db->where('IsAdmin',0);
