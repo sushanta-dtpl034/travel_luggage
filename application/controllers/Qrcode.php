@@ -57,10 +57,25 @@ class Qrcode extends CI_Controller {
 		];
 		
 		$last_insert_id=$this->Qrcodemodel->qrcode_head_save($insert_data);
-
 		if($last_insert_id){
 			if(intval($noof_qrcode) > 0){
-				//check previous month in assetMst table
+				$i=1;
+				do {
+					$qrcode_no =generate_qrcode_number(); 
+					$details_data=[
+						'QRCodeId'		=>$last_insert_id,
+						'QRCodeText'	=>$qrcode_no,
+						'QRCodeImage'	=>$qrcode_no.'.png',
+						'IsUsed'		=>0
+					];
+					$this->Qrcodemodel->qrcode_details_save($details_data);
+					$this->mylibrary->generate($qrcode_no);
+					$i++;
+				} while ($i <= intval($noof_qrcode) && check_duplicate_qrcode_number($qrcode_no));
+
+				
+				/*
+				//check previous month in 
 				$prev_create_date_row=$this->Commonmodel->getlast_row();
 				if($prev_create_date_row){
 					$prv_year_month=date('Ym', strtotime($prev_create_date_row->CreatedDate));
@@ -70,11 +85,7 @@ class Qrcode extends CI_Controller {
 					//for existing month
 					$prv_month=date('m', strtotime($prv_year_month));
 					$prv_year=date('Y', strtotime($prv_year_month));
-					
 					$old_sequence_no= $this->Commonmodel->last_qrcode($prv_month,$prv_year);
-					//$prev_sequence_no =get_previous_qrcode_sequence($last_insert_id,$current_year_month);
-					//$total_sequence_no =$old_sequence_no_assets + 1;
-
 					
 					for($i=1; $i <= intval($noof_qrcode); $i++ ){
 						$refno=$old_sequence_no+$i; 
@@ -103,7 +114,7 @@ class Qrcode extends CI_Controller {
 					}
 					
 				}
-
+				*/
 				echo json_encode(array('status' => 1));
 			}else{
 				echo json_encode(array('status' => 0));
@@ -809,6 +820,9 @@ class Qrcode extends CI_Controller {
 		echo json_encode(['status' =>200]);
 		//print_r($scanned_data);
 	}
+	/**
+	 * Airline
+	 */
 	function airline(){
 		$data['page_title'] = 'Airline List';
 		$data['page_name'] = "Airline List";

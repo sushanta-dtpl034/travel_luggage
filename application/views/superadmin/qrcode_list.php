@@ -113,7 +113,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <p class="mg-b-10" >Number of QR Code Required<span class="tx-danger">*</span></p>
-                                <input type="number" class="form-control" id="noof_qrcode" min="1" name="noof_qrcode" placeholder="Number QR Code Required" required="">
+                                <input type="number" class="form-control" id="noof_qrcode" min="1" max="50" name="noof_qrcode" placeholder="Number QR Code Required" required="">
                             </div>
                         </div>
                        
