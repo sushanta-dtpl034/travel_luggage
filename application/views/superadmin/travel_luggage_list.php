@@ -34,9 +34,9 @@
                 </div>
                 <div class="d-flex">
                     <div class="justify-content-center">
-                        <button type="button" class="btn btn-primary my-2 btn-icon-text btn-sm" data-bs-target="#travel_luggage_modal" data-bs-toggle="modal" href="">
+                        <!-- <button type="button" class="btn btn-primary my-2 btn-icon-text btn-sm" data-bs-target="#travel_luggage_modal" data-bs-toggle="modal" href="">
                             Add Travel Luggage 
-                        </button>
+                        </button> -->
                         <!-- <a href="<?php echo base_url()."Company/excel_export"; ?>"><button type="button" class="btn btn-sm btn-warning my-2 btn-icon-text">Export</button></a> -->
                     </div>
                 </div>
@@ -72,7 +72,7 @@
                                             <th>Traveller Name</th>
                                             <th>Name</th>
                                             <th>Remarks</th>
-                                            <th>Action</th>
+                                            <!-- <th>Action</th> -->
                                         </tr>
                                     </thead>
                                     <tbody>

@@ -18,13 +18,19 @@ class TravelModel extends CI_Model {
 			return false;
 		}
 	}
-	public function travelerDetailsList($data){
+	public function travelerDetailsList($data,$parentId){
         $this->db->from('RegisterMST');
         $this->db->where('IsDelete',0);
 		$this->db->where('IsAdmin',0);
 		if(isset($data['AutoID']) && !empty($data['AutoID'])){
 			$this->db->where('AutoID',$data['AutoID']);
 		}else{	
+			if($parentId > 0){
+				$this->db->where('ParentId',$parentId);
+				$this->db->or_where('AutoID',$parentId);
+			}
+
+
 			if(!empty(trim($data['keyword']))) {
 				$this->db->group_start();
 				$this->db->like('Name', trim($data['keyword']));
@@ -199,9 +205,13 @@ class TravelModel extends CI_Model {
         $this->db->from('TravelDetails as td');
        // $this->db->join('QRScanHistory as qsh','td.AutoID = qsh.TravelDetailID','LEFT');
         $this->db->where('IsDelete',0);
+
+		
+
 		if(isset($data['AutoID']) && !empty($data['AutoID'])){
 			$this->db->where('AutoID',$data['AutoID']);
-		}else{	
+		}else{
+			
 			if(!empty(trim($data['keyword']))) {
 				$this->db->group_start();
 				$this->db->like('Name', trim($data['keyword']));

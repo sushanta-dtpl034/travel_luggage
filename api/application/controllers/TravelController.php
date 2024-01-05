@@ -111,7 +111,13 @@ class TravelController extends REST_Controller {
             try {
                 $arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
 				$userid=$arrdata['AutoID'];
-                $travelDetailsListObj = $this->TravelModel->travelerDetailsList($input_data);
+				if($arrdata['IsAdmin'] == 0){
+					$parentId =$userid;
+				}else{
+					$parentId =0;
+				}
+
+                $travelDetailsListObj = $this->TravelModel->travelerDetailsList($input_data,$parentId);
                 if($travelDetailsListObj){
                     $this->output
                     ->set_status_header(200)

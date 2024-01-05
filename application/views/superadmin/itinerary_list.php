@@ -34,9 +34,9 @@
                 </div>
                 <div class="d-flex">
                     <div class="justify-content-center">
-                        <button type="button" class="btn btn-primary my-2 btn-icon-text btn-sm" data-bs-target="#itinerary_modal" data-bs-toggle="modal" href="">
+                       <!--  <button type="button" class="btn btn-primary my-2 btn-icon-text btn-sm" data-bs-target="#itinerary_modal" data-bs-toggle="modal" href="">
                             Add Itinerary
-                        </button>
+                        </button> -->
                         <!-- <a href="<?php echo base_url()."Company/excel_export"; ?>"><button type="button" class="btn btn-sm btn-warning my-2 btn-icon-text">Export</button></a> -->
                     </div>
                 </div>
