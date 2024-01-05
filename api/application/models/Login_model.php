@@ -57,7 +57,13 @@ class Login_model extends CI_Model {
 		return ($result)?true :false;
 	}
 	
-	
+	function getUserByID($id){
+		$this->db->where('IsDelete',0);
+		$this->db->where('IsAdmin',0);
+		$this->db->where('AutoID',$id);
+		$query = $this->db->get('RegisterMST');
+        return $query->row_array();
+	}
 	
 	
 }
