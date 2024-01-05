@@ -154,6 +154,7 @@ class TravelController extends REST_Controller {
 			try {
 				$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
 				$userid=$arrdata['AutoID'];
+
 				$this->form_validation->set_data($this->post());
 				$this->form_validation->set_rules('TitlePrefix', 'Title Prefix', 'required|trim');
 				$this->form_validation->set_rules('Name', 'Name', 'required|trim');
@@ -161,7 +162,7 @@ class TravelController extends REST_Controller {
 				$this->form_validation->set_rules('PhoneNumber', 'Phone Number', 'required|trim');
 				$this->form_validation->set_rules('Address', 'Address', 'required|trim');
 				$this->form_validation->set_rules('Address2', 'Address2', 'required|trim');
-	
+
 				if ($this->form_validation->run() == FALSE){
 					$errors = $this->form_validation->error_array();
 					$this->output
@@ -174,6 +175,19 @@ class TravelController extends REST_Controller {
 					}else{
 						$dataRegID = $this->TravelModel->checkUserDuplicate($input_data['PhoneNumber'],$input_data['AutoID']);
 					}
+					if(empty($input_data['AutoID'])){
+						//Guest Traveller maximum 10 user
+						if($arrdata['IsAdmin'] == 0){
+							$noofGuestTraveller=$this->TravelModel->countGuestTraveller($userid);
+							if($noofGuestTraveller >= 10){
+								$result['message'] ="Maximum user limit reached.Cannot add a new guest traveller.";
+								$result['status']=403;
+								$status = 403;
+								return $this->set_response($result, 403);
+							}
+						}
+					}
+					
 					if($dataRegID > 0){
 						$result['message'] ="Phone Number already exists.";
 						$result['status']=403;

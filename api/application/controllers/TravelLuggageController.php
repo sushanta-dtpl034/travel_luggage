@@ -136,6 +136,7 @@ class TravelLuggageController extends REST_Controller {
 							'ItineraryHeadId'   =>$input_data['ItineraryHeadId'],
 							'LuggageName'       =>trim($input_data['LuggageName']),
 							'LuggageRemarks'    =>trim($input_data['LuggageRemarks']),
+							'LuggageColor'      =>trim($input_data['LuggageColor']),
 							'IsDelete'		    =>0,    //0-Active, 1-Inactive
 							'IsActive'		    =>0,    //0-Live, 1-Delete
 						);
