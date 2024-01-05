@@ -11,8 +11,12 @@ class TravelerModel extends CI_Model{
             return $query->result_array();
         }  
     }
-    function getTravelLuggageList(){
+    function getTravelLuggageList($parentId){
         $this->db->where('IsDelete',0);
+        if($parentId > 0){
+            $this->db->where('ParentId',$parentId);
+        }
+       
         $this->db->where('IsAdmin',0);
         $query = $this->db->get('RegisterMST');
         if($query){

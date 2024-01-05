@@ -25,7 +25,12 @@ class TravelerController extends CI_Controller {
 	}
     public function getTravelLuggageList(){
 		$IsAdmin = $this->session->userdata('userisadmin');
-		$data['data'] = $this->TravelerModel->getTravelLuggageList();
+		if($IsAdmin == 0){
+			$parentId =$this->session->userdata('userid');
+		}else{
+			$parentId=0;
+		}
+		$data['data'] = $this->TravelerModel->getTravelLuggageList($parentId);
 		echo  json_encode($data);
 	}
     function save_travel_luggage(){ 
@@ -83,7 +88,9 @@ class TravelerController extends CI_Controller {
 				'CreatedBy'			=>$this->session->userdata('userid'),
 				'CreatedDate'		=>date('Y-m-d'),
 			);
-			
+			if($this->session->userdata('userdata')->ParentId == 0){
+				$data['ParentId']  =$this->session->userdata('userid');
+			}
 			$resultId = $this->Commonmodel->common_insert('RegisterMST',$data);
 			if($resultId){
 				echo json_encode(array('status' => 1));
