@@ -159,7 +159,14 @@ class TravelModel extends CI_Model {
 			return false;
 		}
 	}
-
+	function countGuestTraveller($parentId){
+		$this->db->from('RegisterMST');
+        $this->db->where('IsDelete',0);
+		$this->db->where('IsAdmin',0);
+		$this->db->where('ParentId',$parentId);
+		$query=$this->db->get();
+		return $query->num_rows();
+	}
 
 
 

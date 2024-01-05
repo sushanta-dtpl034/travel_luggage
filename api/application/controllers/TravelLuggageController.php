@@ -66,7 +66,7 @@ class TravelLuggageController extends REST_Controller {
             try {
                 $arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
 				$userid=$arrdata['AutoID'];
-                $travelDetailsListObj = $this->TravelLuggageModel->travelLuggageList($input_data);
+                $travelDetailsListObj = $this->TravelLuggageModel->travelLuggageList($input_data,$arrdata);
                 if($travelDetailsListObj){
                     $this->output
                     ->set_status_header(200)
@@ -136,6 +136,7 @@ class TravelLuggageController extends REST_Controller {
 							'ItineraryHeadId'   =>$input_data['ItineraryHeadId'],
 							'LuggageName'       =>trim($input_data['LuggageName']),
 							'LuggageRemarks'    =>trim($input_data['LuggageRemarks']),
+							'LuggageColor'      =>trim($input_data['LuggageColor']),
 							'IsDelete'		    =>0,    //0-Active, 1-Inactive
 							'IsActive'		    =>0,    //0-Live, 1-Delete
 						);
