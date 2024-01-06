@@ -25,6 +25,11 @@ class Usercontroller extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
+		// Prevent caching
+		header("Cache-Control: no-cache, no-store, must-revalidate");
+		header("Pragma: no-cache");
+		header("Expires: 0");
+
 		$username = $this->session->userdata('username');
 		$userid = $this->session->userdata('userid');
 		if (!isset($username) && !isset($userid)) {

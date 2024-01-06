@@ -5,6 +5,11 @@ class TravelController extends REST_Controller {
     public function __construct(){
         parent::__construct();
 		$this->load->database();
+        // Prevent caching
+		header("Cache-Control: no-cache, no-store, must-revalidate");
+		header("Pragma: no-cache");
+		header("Expires: 0");
+        
 	    $this->tokenHandler = new TokenHandler();
 		$this->load->model('api_model');
         $this->load->library(array('form_validation', 'Authtoken'));

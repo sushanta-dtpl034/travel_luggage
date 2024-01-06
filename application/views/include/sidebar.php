@@ -64,7 +64,7 @@
 							<a class="nav-link tt" href="<?php echo base_url(); ?>TravelerController">
 								<span class="shape1"></span><span class="shape2"></span>
 								<i class="fa fa-user sidemenu-icon"></i>
-								<span class="sidemenu-label">Manage Traveller</span>
+								<span class="sidemenu-label">Manage User</span>
 							</a>
 						</li>
 						<li class="nav-item">
@@ -111,7 +111,7 @@
 							<a class="nav-link tt" href="<?php echo base_url(); ?>TravelerController">
 								<span class="shape1"></span><span class="shape2"></span>
 								<i class="fa fa-user sidemenu-icon"></i>
-								<span class="sidemenu-label">Manage Traveller</span>
+								<span class="sidemenu-label">Manage User</span>
 							</a>
 						</li>
 						

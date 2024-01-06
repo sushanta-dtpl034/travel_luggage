@@ -20,6 +20,10 @@ class Profile extends CI_Controller {
 	 */
 	public function __construct(){
 	  	parent::__construct();
+		header("Cache-Control: no-cache, no-store, must-revalidate");
+		header("Pragma: no-cache");
+		header("Expires: 0");
+
 		$username = $this->session->userdata('username');
 		$userid = $this->session->userdata('userid');
 		if (!isset($username) && !isset($userid)) { 
@@ -101,7 +105,7 @@ class Profile extends CI_Controller {
 	
 	public function profile_update(){
 		$data_id = $this->input->post('data_id');
-		$this->form_validation->set_rules('Profile_Gender', 'Gender', 'required');
+		// $this->form_validation->set_rules('Profile_Gender', 'Gender', 'required');
 		$this->form_validation->set_rules('Profile_Suffix', 'Title', 'required');
 		$this->form_validation->set_rules('Profile_Name', 'Name', 'required');
 
@@ -117,7 +121,7 @@ class Profile extends CI_Controller {
 				'Suffix'			=>strip_tags($this->input->post('Profile_Suffix')),
 				'Name'				=>strip_tags($this->input->post('Profile_Name')),
 				'Email'				=>strip_tags($this->input->post('Profile_Email')),
-				'Gender'			=>strip_tags($this->input->post('Profile_Gender')),
+				// 'Gender'			=>strip_tags($this->input->post('Profile_Gender')),
 				'Address'			=>strip_tags($this->input->post('Profile_Address')),
 				'AdressTwo'			=>strip_tags($this->input->post('Profile_AdressTwo')),
 				'Landmark'			=>strip_tags($this->input->post('Profile_Landmark')),

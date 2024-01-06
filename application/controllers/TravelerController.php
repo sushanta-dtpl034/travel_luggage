@@ -4,6 +4,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class TravelerController extends CI_Controller {
     function __construct(){
         parent ::__construct();
+		// Prevent caching
+		header("Cache-Control: no-cache, no-store, must-revalidate");
+		header("Pragma: no-cache");
+		header("Expires: 0");
+		
         $username = $this->session->userdata('username');
 		$userid = $this->session->userdata('userid');
         $this->load->library('form_validation');
@@ -12,8 +17,8 @@ class TravelerController extends CI_Controller {
 		$this->load->model('TravelerModel');
     }
 	function index(){
-		$data['page_title'] = 'Traveller  List';
-		$data['page_name'] = "Traveller  List";
+		$data['page_title'] = 'User  List';
+		$data['page_name'] = "User  List";
 		$travelTypesArray = TITLE_PREFIX;
 		$data['titles'] = $travelTypesArray;
 		$data['country_codes'] = $this->TravelerModel->getCountryCode();
@@ -198,6 +203,20 @@ class TravelerController extends CI_Controller {
 		}else{
 			echo json_encode(array('status' => 0));
 		}
+	}
+
+	function guestTravellerList($parentId){
+		$data['page_title'] = 'Guest Traveller  List';
+		$data['page_name'] = "Guest Traveller  List";
+		$travelTypesArray = TITLE_PREFIX;
+		$data['titles'] = $travelTypesArray;
+		$data['country_codes'] = $this->TravelerModel->getCountryCode();
+		$data['guest_travellers'] = $this->TravelerModel->getGuestTravellers($parentId);
+		$this->load->view('include/admin-header',$data);
+		$this->load->view('include/sidebar');
+		$this->load->view('include/topbar');
+		$this->load->view('superadmin/guest_traveller_list',$data);
+		$this->load->view('include/admin-footer');
 	}
 
 }

@@ -34,10 +34,10 @@
                 </div>
                 <div class="d-flex">
                     <div class="justify-content-center">
-                        <button type="button" class="btn btn-primary my-2 btn-icon-text btn-sm" data-bs-target="#traveller_modal" data-bs-toggle="modal" href="">
+                       <!--  <button type="button" class="btn btn-primary my-2 btn-icon-text btn-sm" data-bs-target="#traveller_modal" data-bs-toggle="modal" href="">
                             Add User
-                        </button>
-                        <!-- <a href="<?php echo base_url()."Company/excel_export"; ?>"><button type="button" class="btn btn-sm btn-warning my-2 btn-icon-text">Export</button></a> -->
+                        </button> -->
+                        <a href="<?php echo base_url()."TravelerController"; ?>"><button type="button" class="btn btn-sm btn-warning my-2 btn-icon-text">Back</button></a>
                     </div>
                 </div>
             </div>
@@ -65,7 +65,7 @@
                     <div class="card custom-card overflow-hidden">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="traveller_table" class="table table-bordered border-t0 key-buttons text-nowrap w-100" >
+                                <table id="" class="table table-bordered border-t0 key-buttons text-nowrap w-100" >
                                     <thead>
                                         <tr>
                                             <th>S.No</th>
@@ -73,10 +73,29 @@
                                             <th>Phone No</th>
                                             <th>Whatsapp No</th>
                                             <th>Email</th>
-                                            <th>Action</th>
+                                            <!-- <th>Action</th> -->
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <?php if(count($guest_travellers) > 0) { 
+                                         $i=0;foreach($guest_travellers as $guest_traveller){  $i++; ?>
+                                        <tr>
+                                            <td><?=  $i ?></td>
+                                            <td><img src="<?= base_url().$guest_traveller['ProfileIMG']?>" height="40" width="40"/> &nbsp; &nbsp;<?= $guest_traveller['Name']?> </td>
+                                            <td><?= $guest_traveller['CountryCode']?> <?= $guest_traveller['Mobile']?></td>
+                                            <td><?= ($guest_traveller['WhatsappNumber'])?$guest_traveller['WhatsAppCountryCode'].' '.$guest_traveller['WhatsappNumber'] :''?></td>
+                                            <td><?= $guest_traveller['Email']?></td>
+                                           <!--  <td>
+                                                <button class="btn btn-sm update_travel_luggage bg-success mx-2" id="<?= $guest_traveller['AutoID'] ?>"  datatype="edit"><i class="si si-pencil"></i></button>
+                                                <button class="btn btn-sm ripple delete_travel_luggage btn-danger" id="<?= $guest_traveller['AutoID'] ?>"><i class="fe fe-trash"></i></button>
+                                            </td> -->
+                                        </tr> 
+                                        <?php } ?>
+                                        <?php }else{  ?>
+                                            <tr align="center">
+                                                <td colspan="5" class="text-danger">No data found.</td>
+                                            </tr>
+                                        <?php } ?>
                                     </tbody>
                                 </table>
                             </div>

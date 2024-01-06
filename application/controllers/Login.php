@@ -19,9 +19,14 @@ class Login extends CI_Controller {
 	 * @see https://codeigniter.com/user_guide/general/urls.html
 	 */
 	public function __construct(){
-	  parent::__construct();
-	  $username = $this->session->userdata('username');
-	  $userid = $this->session->userdata('userid');
+	  	parent::__construct();
+	  	// Prevent caching
+		header("Cache-Control: no-cache, no-store, must-revalidate");
+		header("Pragma: no-cache");
+		header("Expires: 0");
+
+	  	$username = $this->session->userdata('username');
+	  	$userid = $this->session->userdata('userid');
 	  /*
 		if (!isset($username) && !isset($userid)) { 
 			redirect('Login');

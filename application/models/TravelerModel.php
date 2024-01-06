@@ -16,8 +16,19 @@ class TravelerModel extends CI_Model{
         if($parentId > 0){
             $this->db->where('ParentId',$parentId);
             $this->db->or_where('AutoID',$parentId);
+        }else{
+            $this->db->where('ParentId',$parentId);
         }
        
+        $this->db->where('IsAdmin',0);
+        $query = $this->db->get('RegisterMST');
+        if($query){
+            return $query->result_array();
+        }
+    }
+    function getGuestTravellers($parentId){
+        $this->db->where('IsDelete',0);
+        $this->db->where('ParentId',$parentId);
         $this->db->where('IsAdmin',0);
         $query = $this->db->get('RegisterMST');
         if($query){
@@ -31,6 +42,7 @@ class TravelerModel extends CI_Model{
             return $query->row_array();
         }
     }
+   
 
 
 }

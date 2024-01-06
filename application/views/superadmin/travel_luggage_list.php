@@ -71,6 +71,7 @@
                                             <th>S.No</th>
                                             <th>Traveller Name</th>
                                             <th>Name</th>
+                                            <th>QR Code</th>
                                             <th>Remarks</th>
                                             <!-- <th>Action</th> -->
                                         </tr>

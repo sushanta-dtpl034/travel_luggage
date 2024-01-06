@@ -20,13 +20,17 @@ class Register extends CI_Controller {
 	 */
 	public function __construct()
 	{
-	  parent::__construct();
-      $this->load->library('form_validation');
-	  $this->load->model('Registermodel');
-	  $this->load->model('Commonmodel');
-	  $this->load->library('phpmailer_lib');
-	  $this->load->model('Planmodel');	
-	  $this->load->library('upload');
+	  	parent::__construct();
+	  	// Prevent caching
+		header("Cache-Control: no-cache, no-store, must-revalidate");
+		header("Pragma: no-cache");
+		header("Expires: 0");
+		$this->load->library('form_validation');
+		$this->load->model('Registermodel');
+		$this->load->model('Commonmodel');
+		$this->load->library('phpmailer_lib');
+		$this->load->model('Planmodel');	
+		$this->load->library('upload');
 	}
 	public function index()
 	{
