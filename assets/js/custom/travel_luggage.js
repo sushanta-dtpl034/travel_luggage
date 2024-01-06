@@ -45,6 +45,9 @@ $(function () {
                 }
             },
             { 
+                "data": "QrCodeNo",
+            },
+            { 
                 "data": "LuggageRemarks",
             },
             /* {

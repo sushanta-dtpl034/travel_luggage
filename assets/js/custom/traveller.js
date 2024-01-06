@@ -54,7 +54,8 @@ $(function () {
             { "data": "Email" },
             {
                 "render": function (AutoID, type, row, meta) {
-                    return '<button class="btn btn-sm update_travel_luggage bg-success mx-2" id="' + row.AutoID + '"  datatype="edit"><i class="si si-pencil"></i></button><button class="btn btn-sm ripple delete_travel_luggage btn-danger" id="' + row.AutoID + '"><i class="fe fe-trash"></i></button>';
+                    return '<a href="'+base_url +'TravelerController/guestTravellerList/'+row.AutoID+'" class="btn btn-sm view_traveller bg-info mx-2" title="view guest traveller"><i class="si si-eye"></i></a><button class="btn btn-sm update_travel_luggage bg-success mx-2" id="' + row.AutoID + '"  datatype="edit"><i class="si si-pencil"></i></button><button class="btn btn-sm ripple delete_travel_luggage btn-danger" id="' + row.AutoID + '"><i class="fe fe-trash"></i></button>';
+                   
                 }
             },
         ],
@@ -66,6 +67,7 @@ $(function () {
         }
 
     });
+    
 
     /* save the material condiotn */
     // $("#mobile-number").intlTelInput();
@@ -305,6 +307,9 @@ $(function () {
 
     });
 
-    
+    $('#traveller_table').on('click', '.view_traveller', function () {
+        var id = $(this).attr('id');
+
+    });
    
 });

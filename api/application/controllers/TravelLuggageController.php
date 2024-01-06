@@ -137,6 +137,9 @@ class TravelLuggageController extends REST_Controller {
 							'LuggageName'       =>trim($input_data['LuggageName']),
 							'LuggageRemarks'    =>trim($input_data['LuggageRemarks']),
 							'LuggageColor'      =>trim($input_data['LuggageColor']),
+							'BrandName'      	=>trim($input_data['BrandName']),
+							'AppleAirTag'      	=>trim($input_data['AppleAirTag']),
+							'QrCodeNo'      	=>trim($input_data['QrCodeNo']),
 							'IsDelete'		    =>0,    //0-Active, 1-Inactive
 							'IsActive'		    =>0,    //0-Live, 1-Delete
 						);
