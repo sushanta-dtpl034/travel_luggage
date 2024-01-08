@@ -52,9 +52,9 @@ footer {
     <title>Terms and Conditions</title>
 </head>
 <body>
-    <header>
+   <!--  <header>
         <h1>Terms and Conditions</h1>
-    </header>
+    </header> -->
     <main>
         <section>
             <h2>1. Introduction</h2>

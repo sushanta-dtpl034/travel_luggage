@@ -116,12 +116,20 @@
 						</li>
 						
 
-						<li class="nav-item">
+						<!-- <li class="nav-item">
 							<a class="nav-link tt" href="<?php echo base_url(); ?>Qrcode/luggag_details">
 							<span class="shape1"></span><span class="shape2"></span>
 							<i class="fa fa-plane sidemenu-icon"></i>
 							<span class="sidemenu-label">Luggage Details</span></a>
-						</li>
+						</li> -->
+						<li class="nav-item">
+							<a class="nav-link tt" href="<?php echo base_url(); ?>TravelLuggageController">
+								<span class="shape1"></span><span class="shape2"></span>
+								<i class="fa fa-suitcase sidemenu-icon"></i>
+								<span class="sidemenu-label">Manage Luggage</span>
+							</a>
+						</li>	
+
 						<li class="nav-item">
 							<a class="nav-link tt" href="<?php echo base_url(); ?>Login/logout">
 							<span class="shape1"></span><span class="shape2"></span>

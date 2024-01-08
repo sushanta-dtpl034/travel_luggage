@@ -48,6 +48,7 @@ class TravelLuggageModel extends CI_Model {
         
         $this->db->join('RegisterMST as rm','tl.UserID = rm.AutoID','LEFT');
         $this->db->join('ItineraryHead as ih','tl.ItineraryHeadId = ih.AutoID','LEFT');
+		//$this->db->join('TravelLuggageImages as tli','tli.TravelLuggageID = tl.AutoID','LEFT');
 		if(isset($data['AutoID']) && !empty($data['AutoID'])){
 			$this->db->where('tl.AutoID',$data['AutoID']);
 		}else{	
@@ -70,14 +71,17 @@ class TravelLuggageModel extends CI_Model {
 		}
 		
 		if($Requestlist){
+			foreach($Requestlist as $reqData){
+				$images=$this->getTravelLuggageMoreImageList($reqData->AutoID);
+				$reqData->LuggageMoreImages=$images;
+			}
 			//get scaned history list
 			$Requestlist = json_decode(json_encode($Requestlist),true);
 			$draw = $this->input->post('draw');
 			$total = $this->db->count_all_results('TravelLuggage');
 			$totalFilter = count($Requestlist);
-			// if(!empty($keyword)) {
-			// 	$totalFilter = count($Requestlist);
-			// }
+			
+			//$images=$this->getTravelLuggageMoreImageList(22);
 			$contents = array(
 				"status"		=>200,
 				"msg"			=>"data found",
@@ -91,5 +95,39 @@ class TravelLuggageModel extends CI_Model {
 			return false;
 		}       
     }
+	public function getTravelLuggageMoreImageList($TravelLuggageID){
+		$this->db->select('AutoID,ImageName');
+		$this->db->where('TravelLuggageID',$TravelLuggageID);
+		$query=$this->db->get('TravelLuggageImages');
+		if(!$query){
+			return false;
+		}
+		return $query->result();
+	}
+	public function count_luggage_images($AutoID){
+		$this->db->where('TravelLuggageID',$AutoID);
+		$query=$this->db->get('TravelLuggageImages');
+		$count =$query->num_rows();
+		if($count >= 3){
+			return true;
+		}
+		return false;
+	}
+	public function travelLuggageImagesData($AutoID){
+		$this->db->where('AutoID',$AutoID);
+		$query=$this->db->get('TravelLuggageImages');
+		if(!$query){
+			return false;
+		}
+		return $query->row();
+	}
+	public function travelLuggageImagesDelete($AutoID){
+		$this->db->where('AutoID',$AutoID);
+		$query=$this->db->delete('TravelLuggageImages');
+		if(!$query){
+			return false;
+		}
+		return true;
+	}
 	
 }

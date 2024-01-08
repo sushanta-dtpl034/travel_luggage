@@ -1495,7 +1495,7 @@ class Asset extends REST_Controller {
 				// Store the decryption key
 				$decryption_key = "dahliatech";
 				$refno=openssl_decrypt ($encoded, $ciphering,$decryption_key, $options, $decryption_iv)??0;
-				$qrcode_data =false;//$this->TravelModel->getid_from_qrdata($refno);
+				$qrcode_data =$this->TravelModel->getid_from_qrdata($refno);
 				if($qrcode_data){
 					$result['data'] =$qrcode_data;
 				}else{

@@ -52,9 +52,9 @@ footer {
     <title>Privacy Policy</title>
 </head>
 <body>
-    <header>
+    <!-- <header>
         <h1>Privacy Policy</h1>
-    </header>
+    </header> -->
     <main>
     <section>
             <h2>1. Introduction</h2>
