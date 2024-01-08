@@ -113,6 +113,11 @@ class TravelLuggageController extends REST_Controller {
                         $this->form_validation->set_rules('LuggageImage', 'Luggage Image', 'required');	
                     }
                 }
+				if(!empty($input_data['AutoID'])){
+					$AutoID=$input_data['AutoID'];
+					$this->form_validation->set_rules('LuggageMoreImages', 'Luggage More Image', 'callback_image_check['.$AutoID.']');
+				}
+
 				if ($this->form_validation->run() == FALSE){
 					$errors = $this->form_validation->error_array();
 					$this->output
@@ -120,6 +125,7 @@ class TravelLuggageController extends REST_Controller {
 					->set_content_type('application/json', 'utf-8')
 					->set_output(json_encode(["status"=>406,"errors"=>$errors]));                    
 				}else{
+
 					/* if(empty($input_data['AutoID'])){				
 						$dataRegID = $this->TravelLuggageModel->checkItineraryLuggageDuplicate($input_data['UserID'], $input_data['ItineraryDetailId']);
 					}else{
@@ -163,11 +169,42 @@ class TravelLuggageController extends REST_Controller {
 						if(!empty($picture)){
 							$data['LuggageImage']  =$picture;
 						}
+
 						
 						if(empty($input_data['AutoID'])){
 							$data['CreatedBy']  =$userid;
 							$data['CreatedDate'] =date('Y-m-d H:i:s');
 							$response =$this->Commonmodel->common_insert('TravelLuggage',$data);
+
+							if(count($_FILES['LuggageMoreImages']) > 0){
+								for($i=0;$i< count($_FILES['LuggageMoreImages']['name']) ;$i++){
+									if(!empty($_FILES['LuggageMoreImages']['name'][$i])){
+										$_FILES['file']['name'] = $_FILES['LuggageMoreImages']['name'][$i];
+										$_FILES['file']['type'] = $_FILES['LuggageMoreImages']['type'][$i];
+										$_FILES['file']['tmp_name'] = $_FILES['LuggageMoreImages']['tmp_name'][$i];
+										$_FILES['file']['error'] = $_FILES['LuggageMoreImages']['error'][$i];
+										$_FILES['file']['size'] = $_FILES['LuggageMoreImages']['size'][$i];
+										$config['upload_path']   = '../upload/luggage/'; 
+										$config['allowed_types'] = 'jpg|png|jpeg'; 
+										$this->load->library('upload',$config);
+										$this->upload->initialize($config);
+										if($this->upload->do_upload('file')){
+											$uploadData2 = $this->upload->data();
+											$pic_filename ="upload/luggage/".$uploadData2['file_name'];
+											$moreImageData = array(
+												'TravelLuggageID'   =>$response,
+												'ImageName'         =>$pic_filename,
+												'CreatedBy'      	=>$userid,
+												'CreatedDate'      	=>date('Y-m-d H:i:s'),
+											);
+											$this->Commonmodel->common_insert('TravelLuggageImages',$moreImageData); 
+										}
+									}
+								}
+	
+							}
+
+
 							$result['message'] ="Created successfully.";
 							$result['status']=201;
 							$status = 201;
@@ -179,6 +216,34 @@ class TravelLuggageController extends REST_Controller {
 								'AutoID'    =>$input_data['AutoID'],
 							);
 							$response =$this->Commonmodel->common_update('TravelLuggage',$where,$data);
+
+							if(count($_FILES['LuggageMoreImages']) > 0){
+								for($i=0;$i< count($_FILES['LuggageMoreImages']['name']) ;$i++){
+									if(!empty($_FILES['LuggageMoreImages']['name'][$i])){
+										$_FILES['file']['name'] = $_FILES['LuggageMoreImages']['name'][$i];
+										$_FILES['file']['type'] = $_FILES['LuggageMoreImages']['type'][$i];
+										$_FILES['file']['tmp_name'] = $_FILES['LuggageMoreImages']['tmp_name'][$i];
+										$_FILES['file']['error'] = $_FILES['LuggageMoreImages']['error'][$i];
+										$_FILES['file']['size'] = $_FILES['LuggageMoreImages']['size'][$i];
+										$config['upload_path']   = '../upload/luggage/'; 
+										$config['allowed_types'] = 'jpg|png|jpeg'; 
+										$this->load->library('upload',$config);
+										$this->upload->initialize($config);
+										if($this->upload->do_upload('file')){
+											$uploadData2 = $this->upload->data();
+											$pic_filename ="upload/luggage/".$uploadData2['file_name'];
+											$moreImageData = array(
+												'TravelLuggageID'   =>$input_data['AutoID'],
+												'ImageName'         =>$pic_filename,
+												'CreatedBy'      	=>$userid,
+												'CreatedDate'      	=>date('Y-m-d H:i:s'),
+											);
+											$this->Commonmodel->common_insert('TravelLuggageImages',$moreImageData); 
+										}
+									}
+								}
+	
+							}
 							$result['message'] ="Updated successfully.";
 							$result['status']=200;
 							$status = 200;
@@ -204,7 +269,16 @@ class TravelLuggageController extends REST_Controller {
 		}
 		
     }
-	
+	function image_check($str, $AutoID){
+		$response =$this->TravelLuggageModel->count_luggage_images($AutoID);
+		if ($response){
+			$this->form_validation->set_message('image_check', 'The Luggage More Images field maximum 3 files upload.');
+			return FALSE;
+		}else{
+            return TRUE;
+        }
+	}
+
     /**
      * Delete : Travel luggage Delete
      */
@@ -251,4 +325,65 @@ class TravelLuggageController extends REST_Controller {
 
 		}
     }
+
+	function deleteTravelLuggageImages_delete($AutoId){
+		$headers = apache_request_headers();
+        //$input_data=$this->request->body;        
+		if (!empty($headers['Token'])) {
+            try {
+                $arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
+				$userid=$arrdata['AutoID'];
+
+				$travelLuggageImageObj = $this->TravelLuggageModel->travelLuggageImagesData($AutoId);
+				if($travelLuggageImageObj){
+					if (file_exists("../upload/luggage/".$travelLuggageImageObj->ImageName)) {
+						unlink("../upload/luggage/".$travelLuggageImageObj->ImageName);
+						$this->TravelLuggageModel->travelLuggageImagesDelete($AutoId);
+						$result['message'] ="Deleted successfully.";
+						$result['status']=200;
+						$status = 200;
+
+						$this->output
+							->set_status_header(200)
+							->set_content_type('application/json', 'utf-8')
+							->set_output(json_encode($result));
+					} else {
+						$this->output
+						->set_status_header(500)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode(["status"=>500,"message"=>"Error Occured."]));
+
+					}
+
+				}else{
+					$this->output
+                    ->set_status_header(404)
+                    ->set_content_type('application/json', 'utf-8')
+                    ->set_output(json_encode(["status"=>404,"message"=>"Data not found."]));
+				}
+			} catch (Exception $e) { 
+                $result['message'] = "Invalid Token";
+                $result['status']=false;
+                return $this->set_response($result, 401);
+            }
+        }else{
+			$result['message'] = "Token or oldpasswor / newpassword not Found";
+			$result['status']=false;
+			return $this->set_response($result, 400);
+
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

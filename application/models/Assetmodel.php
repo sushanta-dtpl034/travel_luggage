@@ -9,12 +9,22 @@ class Assetmodel extends CI_Model{
 	 * Customize Queruy for Dashboard 
 	 */
 	function get_dashboard_data(){
-		$sql="SELECT
-		(SELECT COUNT(*) FROM RegisterMST WHERE IsDelete = 0 AND IsAdmin=0) AS TOTAL_TRAVELler_COUNT,
-		(SELECT COUNT(*) FROM ItineraryDetails WHERE IsDelete = 0 ) AS TOTAL_ITINERARY_DETAILS,
-		(SELECT COUNT(*) FROM QRCodeDetailsMst ) AS TOTAL_QRCODE,
-		(SELECT COUNT(*) FROM QRCodeDetailsMst WHERE IsUsed = 1 ) AS TOTAL_QRCODE_USED,
-        (SELECT COUNT(*) FROM ItineraryHead WHERE IsDelete = 0) AS TOTAL_ITINERARY";
+		$userid = $this->session->userdata('userid');
+		if($this->session->userdata('userisadmin') == 1){
+			$sql="SELECT
+			(SELECT COUNT(*) FROM RegisterMST WHERE IsDelete = 0 AND IsAdmin=0) AS TOTAL_TRAVELler_COUNT,
+			(SELECT COUNT(*) FROM ItineraryDetails WHERE IsDelete = 0 ) AS TOTAL_ITINERARY_DETAILS,
+			(SELECT COUNT(*) FROM QRCodeDetailsMst ) AS TOTAL_QRCODE,
+			(SELECT COUNT(*) FROM QRCodeDetailsMst WHERE IsUsed = 1 ) AS TOTAL_QRCODE_USED,
+			(SELECT COUNT(*) FROM ItineraryHead WHERE IsDelete = 0) AS TOTAL_ITINERARY";
+		}else{
+			$sql="SELECT
+			(SELECT COUNT(*) FROM RegisterMST WHERE IsDelete = 0 AND IsAdmin=0 AND ParentId=$userid or AutoID=$userid) AS TOTAL_TRAVELler_COUNT,
+			(SELECT COUNT(*) FROM ItineraryDetails WHERE IsDelete = 0 ) AS TOTAL_ITINERARY_DETAILS,
+			(SELECT COUNT(*) FROM QRCodeDetailsMst ) AS TOTAL_QRCODE,
+			(SELECT COUNT(*) FROM QRCodeDetailsMst WHERE IsUsed = 1 ) AS TOTAL_QRCODE_USED,
+			(SELECT COUNT(*) FROM ItineraryHead WHERE IsDelete = 0 AND UserID=$userid) AS TOTAL_ITINERARY";
+		}
 		$query =$this->db->query($sql);
 		return $query->row();
 	}

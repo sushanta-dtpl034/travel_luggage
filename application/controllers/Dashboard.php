@@ -47,8 +47,9 @@ class Dashboard extends CI_Controller {
 	public function superadmin_dasboard(){
 		$userid = $this->session->userdata('userid');
 		$IsAdmin = $this->session->userdata('userisadmin');
+		
 		//get dashboard data count
-		$data['dashboard_data'] = $this->Assetmodel->get_dashboard_data();
+		$data['dashboard_data'] = $this->Assetmodel->get_dashboard_data($IsAdmin);
 
 		$data['page_title'] = 'Dashboard';
 		$data['page_name'] = "Welcome To Dashboard";

@@ -19,6 +19,7 @@ class TravelModel extends CI_Model {
 		}
 	}
 	public function travelerDetailsList($data,$parentId){
+		$this->db->select("*,(CASE WHEN ParentId=0 THEN 'Primary' ELSE 'Guest' END) AS TravellerType");
         $this->db->from('RegisterMST');
         $this->db->where('IsDelete',0);
 		$this->db->where('IsAdmin',0);
@@ -172,7 +173,7 @@ class TravelModel extends CI_Model {
 
 	
 	function getid_from_qrdata($qrtext){
-		$query=$this->db->select("TravelDetails.*, th.QrCodeNo");
+		/* $query=$this->db->select("TravelDetails.*, th.QrCodeNo");
 		$this->db->where('TravelHeadId',$travelHeadId);
 		$this->db->from('TravelDetails');
 		$this->db->join('TravelHead as th','th.AutoID = TravelDetails.TravelHeadId','LEFT');
@@ -181,14 +182,14 @@ class TravelModel extends CI_Model {
 			return $query->result();
 		}else{
 			return false;
-		}
-		/* $this->db->where('QrCodeNo',$qrtext);
-		$query=$this->db->get('TravelDetails');
+		} */
+		$this->db->where('QrCodeNo',$qrtext);
+		$query=$this->db->get('TravelLuggage');
 		if($query){
 			return $query->row();
 		}else{
 			return false;
-		} */
+		}
 	}
 	function alert_room_no($AutoID, $roomNo){
         $this->db->where('AutoID', $AutoID);
