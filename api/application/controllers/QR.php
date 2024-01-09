@@ -35,7 +35,7 @@ class QR extends REST_Controller {
 					return $this->set_response(['status'=>401,'error' => 'This QR Code Already Used.'], 401);
 				}
 			
-				$this->Commonmodel->common_update('QRCodeDetailsMst',['QRCodeText' => $qrcode],['alertedUserId' =>$userid,'alertedDateTime' =>date('Y-m-d H:i:s')]);
+				$this->Commonmodel->common_update('QRCodeDetailsMst',['QRCodeText' => $qrcode],['IsUsed'=>2,'alertedUserId' =>$userid,'alertedDateTime' =>date('Y-m-d H:i:s')]);
 
 				$result['message'] ="Assigned successfully.";
 				$result['status']=200;

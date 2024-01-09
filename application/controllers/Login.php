@@ -299,11 +299,12 @@ class Login extends CI_Controller {
 					$this->session->set_userdata('logo','assets/img/logo3.png');
 				}
 			}
+			$redirect_url = $this->session->userdata('redirect_url') ?? base_url('Dashboard/superadmin_dasboard');
 			$status=200;
 			$this->output
 			->set_status_header($status)
 			->set_content_type('application/json', 'utf-8')
-			->set_output(json_encode(["status" => 200, "isadmin" =>$result->IsAdmin]));
+			->set_output(json_encode(["status" => 200, "isadmin" =>$result->IsAdmin,"return_url"=>$redirect_url]));
 			
 		}else{
 			$status=200;
