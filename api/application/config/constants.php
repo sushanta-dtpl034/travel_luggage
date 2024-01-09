@@ -93,6 +93,11 @@ define('UPLOAD_CONSTANT_URL', 'http://plasser.myticket.solutions/employee');
  * Travel Details
  */
 
+//qrcode url
+// define('QRCODE_URL','http://localhost/travel_luggage/qr/');
+define('QRCODE_URL','https://sandbox.dahlia.tech/travel_luggage/qr/');
+
+
  // Define an Ttitle Prefix constant
 
 define('TITLE_PREFIX', [

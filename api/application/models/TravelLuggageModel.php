@@ -129,5 +129,24 @@ class TravelLuggageModel extends CI_Model {
 		}
 		return true;
 	}
+	public function checkQRCodeIsAssigned($qrcode){
+		$this->db->where('QRCodeText',$qrcode);
+		$this->db->where('alertedUserId IS NOT NULL', null, false);
+		// $this->db->where('IsUsed',1);
+		$query=$this->db->get('QRCodeDetailsMst');
+		$count =$query->num_rows();
+		if($count > 0){
+			return true;
+		}
+		return false;
+	}
+	public function getQRCodeListByUserId($userId){
+		$this->db->where('alertedUserId',$userId);
+		$query=$this->db->get('QRCodeDetailsMst');
+		if(!$query){
+			return false;
+		}
+		return $query->result();
+	}
 	
 }
