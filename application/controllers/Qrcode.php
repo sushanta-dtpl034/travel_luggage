@@ -536,8 +536,34 @@ class Qrcode extends CI_Controller {
 		$mpdf->Output(); // opens in browser
 		//$mpdf->Output('arjun.pdf','D');
 	}
-
-
+	public function delete_qrcode(){
+		$id = $this->input->post('id');
+		$data = array(
+			'IsDelete'  =>1,
+			'DeleteBy'  =>$this->session->userdata('userid'),
+			'DeleteDate'=>date('Y-m-d')	
+		);
+        
+        $response=$this->Commonmodel->ManageCrud($params);
+        if($response){
+		    echo TRUE;
+        }else{
+            echo FALSE;
+        }
+	}
+	function qrdownload($file_name){
+		// Find the last occurrence of the dot
+		$lastDotPosition = strrpos($file_name, '.');
+		if ($lastDotPosition !== false) {
+			// Extract the part before the last dot
+			$newFilename = substr($file_name, 0, $lastDotPosition);
+			$this->Commonmodel->common_update('QRCodeDetailsMst',['QRCodeText' => $newFilename],['isDownload' => 1]);
+		}
+		$this->load->helper('download');
+        $path = file_get_contents(base_url().'upload/qr-code/'.$file_name); // Read the file's contents
+        $name = $file_name;
+        force_download($name, $path);
+    }
 
 
 
@@ -904,12 +930,7 @@ class Qrcode extends CI_Controller {
 		}
 		
 	}
-	function qrdownload($file_name){
-		$this->load->helper('download');
-        $path = file_get_contents(base_url().'upload/qr-code/'.$file_name); // Read the file's contents
-        $name = $file_name;
-        force_download($name, $path);
-    }
+	
 
 
 	/** TESTING SECTION */

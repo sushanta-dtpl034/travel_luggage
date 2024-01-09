@@ -106,7 +106,7 @@ class TravelLuggageController extends REST_Controller {
 
 				$this->form_validation->set_data($input_data);
 				$this->form_validation->set_rules('UserID', 'User', 'required|trim');
-				$this->form_validation->set_rules('ItineraryHeadId', 'Itinerary Name', 'required|trim');
+				// $this->form_validation->set_rules('ItineraryHeadId', 'Itinerary Name', 'required|trim');
 				$this->form_validation->set_rules('LuggageName', 'Luggage Name', 'required|trim');
                 if(empty($input_data['AutoID'])){
                     if(empty($_FILES['LuggageImage']['name']) && $_FILES['LuggageImage']['error'] != 0){
@@ -139,7 +139,7 @@ class TravelLuggageController extends REST_Controller {
 					}else{
 						$data = array(
 							'UserID'            =>$input_data['UserID'],
-							'ItineraryHeadId'   =>$input_data['ItineraryHeadId'],
+							'ItineraryHeadId'   =>0,//$input_data['ItineraryHeadId'],
 							'LuggageName'       =>trim($input_data['LuggageName']),
 							'LuggageRemarks'    =>trim($input_data['LuggageRemarks']),
 							'LuggageColor'      =>trim($input_data['LuggageColor']),
@@ -149,6 +149,8 @@ class TravelLuggageController extends REST_Controller {
 							'IsDelete'		    =>0,    //0-Active, 1-Inactive
 							'IsActive'		    =>0,    //0-Live, 1-Delete
 						);
+
+						/*
 						$picture = '';
 						if(!empty($_FILES['LuggageImage']['name'])){
 							if (!file_exists('../upload/luggage')) {
@@ -169,39 +171,45 @@ class TravelLuggageController extends REST_Controller {
 						if(!empty($picture)){
 							$data['LuggageImage']  =$picture;
 						}
-
+						*/
 						
 						if(empty($input_data['AutoID'])){
 							$data['CreatedBy']  =$userid;
 							$data['CreatedDate'] =date('Y-m-d H:i:s');
 							$response =$this->Commonmodel->common_insert('TravelLuggage',$data);
-
-							if(count($_FILES['LuggageMoreImages']) > 0){
-								for($i=0;$i< count($_FILES['LuggageMoreImages']['name']) ;$i++){
-									if(!empty($_FILES['LuggageMoreImages']['name'][$i])){
-										$_FILES['file']['name'] = $_FILES['LuggageMoreImages']['name'][$i];
-										$_FILES['file']['type'] = $_FILES['LuggageMoreImages']['type'][$i];
-										$_FILES['file']['tmp_name'] = $_FILES['LuggageMoreImages']['tmp_name'][$i];
-										$_FILES['file']['error'] = $_FILES['LuggageMoreImages']['error'][$i];
-										$_FILES['file']['size'] = $_FILES['LuggageMoreImages']['size'][$i];
-										$config['upload_path']   = '../upload/luggage/'; 
-										$config['allowed_types'] = 'jpg|png|jpeg'; 
-										$this->load->library('upload',$config);
-										$this->upload->initialize($config);
-										if($this->upload->do_upload('file')){
-											$uploadData2 = $this->upload->data();
-											$pic_filename ="upload/luggage/".$uploadData2['file_name'];
-											$moreImageData = array(
-												'TravelLuggageID'   =>$response,
-												'ImageName'         =>$pic_filename,
-												'CreatedBy'      	=>$userid,
-												'CreatedDate'      	=>date('Y-m-d H:i:s'),
-											);
-											$this->Commonmodel->common_insert('TravelLuggageImages',$moreImageData); 
+							$countImageRow =$this->TravelLuggageModel->count_luggage_images($response);
+							if($countImageRow <= 3){
+								if(count($_FILES['LuggageMoreImages']) > 0){
+									for($i=0;$i< count($_FILES['LuggageMoreImages']['name']) ;$i++){
+										if(!empty($_FILES['LuggageMoreImages']['name'][$i])){
+											$_FILES['file']['name'] = $_FILES['LuggageMoreImages']['name'][$i];
+											$_FILES['file']['type'] = $_FILES['LuggageMoreImages']['type'][$i];
+											$_FILES['file']['tmp_name'] = $_FILES['LuggageMoreImages']['tmp_name'][$i];
+											$_FILES['file']['error'] = $_FILES['LuggageMoreImages']['error'][$i];
+											$_FILES['file']['size'] = $_FILES['LuggageMoreImages']['size'][$i];
+											$config['upload_path']   = '../upload/luggage/'; 
+											$config['allowed_types'] = 'jpg|png|jpeg'; 
+											$this->load->library('upload',$config);
+											$this->upload->initialize($config);
+											if($this->upload->do_upload('file')){
+												$uploadData2 = $this->upload->data();
+												$pic_filename ="upload/luggage/".$uploadData2['file_name'];
+												$moreImageData = array(
+													'TravelLuggageID'   =>$response,
+													'ImageName'         =>$pic_filename,
+													'CreatedBy'      	=>$userid,
+													'CreatedDate'      	=>date('Y-m-d H:i:s'),
+												);
+												$this->Commonmodel->common_insert('TravelLuggageImages',$moreImageData);
+												if($i == 0){
+													$this->Commonmodel->common_update('TravelLuggage',['LuggageImage' => $pic_filename],['AutoID' => $response]); 
+												}
+												
+											}
 										}
 									}
+		
 								}
-	
 							}
 
 
@@ -217,33 +225,43 @@ class TravelLuggageController extends REST_Controller {
 							);
 							$response =$this->Commonmodel->common_update('TravelLuggage',$where,$data);
 
-							if(count($_FILES['LuggageMoreImages']) > 0){
-								for($i=0;$i< count($_FILES['LuggageMoreImages']['name']) ;$i++){
-									if(!empty($_FILES['LuggageMoreImages']['name'][$i])){
-										$_FILES['file']['name'] = $_FILES['LuggageMoreImages']['name'][$i];
-										$_FILES['file']['type'] = $_FILES['LuggageMoreImages']['type'][$i];
-										$_FILES['file']['tmp_name'] = $_FILES['LuggageMoreImages']['tmp_name'][$i];
-										$_FILES['file']['error'] = $_FILES['LuggageMoreImages']['error'][$i];
-										$_FILES['file']['size'] = $_FILES['LuggageMoreImages']['size'][$i];
-										$config['upload_path']   = '../upload/luggage/'; 
-										$config['allowed_types'] = 'jpg|png|jpeg'; 
-										$this->load->library('upload',$config);
-										$this->upload->initialize($config);
-										if($this->upload->do_upload('file')){
-											$uploadData2 = $this->upload->data();
-											$pic_filename ="upload/luggage/".$uploadData2['file_name'];
-											$moreImageData = array(
-												'TravelLuggageID'   =>$input_data['AutoID'],
-												'ImageName'         =>$pic_filename,
-												'CreatedBy'      	=>$userid,
-												'CreatedDate'      	=>date('Y-m-d H:i:s'),
-											);
-											$this->Commonmodel->common_insert('TravelLuggageImages',$moreImageData); 
+							$countImageRow =$this->TravelLuggageModel->count_luggage_images($input_data['AutoID']);
+							if($countImageRow <= 3){
+								if(count($_FILES['LuggageMoreImages']) > 0){
+									for($i=0;$i< count($_FILES['LuggageMoreImages']['name']) ;$i++){
+										if(!empty($_FILES['LuggageMoreImages']['name'][$i])){
+											$_FILES['file']['name'] = $_FILES['LuggageMoreImages']['name'][$i];
+											$_FILES['file']['type'] = $_FILES['LuggageMoreImages']['type'][$i];
+											$_FILES['file']['tmp_name'] = $_FILES['LuggageMoreImages']['tmp_name'][$i];
+											$_FILES['file']['error'] = $_FILES['LuggageMoreImages']['error'][$i];
+											$_FILES['file']['size'] = $_FILES['LuggageMoreImages']['size'][$i];
+											$config['upload_path']   = '../upload/luggage/'; 
+											$config['allowed_types'] = 'jpg|png|jpeg'; 
+											$this->load->library('upload',$config);
+											$this->upload->initialize($config);
+											if($this->upload->do_upload('file')){
+												$uploadData2 = $this->upload->data();
+												$pic_filename ="upload/luggage/".$uploadData2['file_name'];
+												$moreImageData = array(
+													'TravelLuggageID'   =>$input_data['AutoID'],
+													'ImageName'         =>$pic_filename,
+													'CreatedBy'      	=>$userid,
+													'CreatedDate'      	=>date('Y-m-d H:i:s'),
+												);
+												$this->Commonmodel->common_insert('TravelLuggageImages',$moreImageData); 
+	
+												if($i == 0){
+													$this->Commonmodel->common_update('TravelLuggage',['AutoID' => $input_data['AutoID']],['LuggageImage' => $pic_filename]); 
+												}
+											}
 										}
 									}
+		
 								}
-	
 							}
+
+							
+
 							$result['message'] ="Updated successfully.";
 							$result['status']=200;
 							$status = 200;

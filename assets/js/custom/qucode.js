@@ -40,7 +40,7 @@ $(function () {
 
             {
                 "render": function (AutoID, type, row, meta) {
-                    return '<button class="btn btn-sm update_qrcode bg-success mx-2 " id="' + row.AutoID +  '"  datatype="edit"><i class="si si-eye"></i></button><button class="btn btn-sm ripple projectdelete btn-danger" id="' + row.AutoID + '"><i class="fe fe-trash"></i></button>';
+                    return '<button class="btn btn-sm update_qrcode bg-success mx-2 " id="' + row.AutoID +  '"  datatype="edit"><i class="si si-eye"></i></button><button class="btn btn-sm ripple qrdelete btn-danger d-none" id="' + row.AutoID + '"><i class="fe fe-trash"></i></button>';
                 }
             }
 
@@ -117,7 +117,33 @@ $(function () {
         console.log(id);
         window.location.href = base_url + "Qrcode/get_qrcode_details/" + id;
     });
-
+    //Delete QR Code
+    $("#qrcode_table").on('click','qrdelete',function(){
+        var id = $(this).attr("id");
+        if(id != undefined && parseInt(id) > 0){
+            var deleteConfirm = confirm("Are you sure?");
+            if (deleteConfirm == true) {
+                // AJAX request
+                $.ajax({
+                    url: base_url+'Qrcode/delete_qrcode',
+                    type: 'post',
+                    data: {id: id},
+                    success: function(response){
+                        if(response == 1){
+                            swal("Deleted!", "Deleted Successfully", "success");
+                            setInterval(function () {
+                                location.href= base_url+'Masters/currency_list';
+                                table.ajax.reload();
+                            }, 2000);
+                        
+                        }else{
+                            alert("Invalid ID.");
+                        }
+                    }
+                });
+            } 
+        }
+    })
 
 
 
