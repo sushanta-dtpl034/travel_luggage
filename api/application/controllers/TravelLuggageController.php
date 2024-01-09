@@ -177,6 +177,9 @@ class TravelLuggageController extends REST_Controller {
 							$data['CreatedBy']  =$userid;
 							$data['CreatedDate'] =date('Y-m-d H:i:s');
 							$response =$this->Commonmodel->common_insert('TravelLuggage',$data);
+
+							//$this->Commonmodel->common_update('QRCodeDetailsMst',['QRCodeText' => $qrcode],['IsUsed'=>1,'alertedUserId' =>$userid,'alertedDateTime' =>date('Y-m-d H:i:s')]);
+
 							$countImageRow =$this->TravelLuggageModel->count_luggage_images($response);
 							if($countImageRow <= 3){
 								if(count($_FILES['LuggageMoreImages']) > 0){

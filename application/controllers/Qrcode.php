@@ -16,7 +16,7 @@ class Qrcode extends CI_Controller {
 		$username = $this->session->userdata('username');
 		$userid = $this->session->userdata('userid');
 		/* 
-		if($this->uri->segment(2) != 'scanQrCodeDetails'){
+		if($this->uri->segment(2) != 'qrcode_save'){
 			if (!isset($username) && !isset($userid)) { 
 				redirect('Login');
 			} 
@@ -591,7 +591,7 @@ class Qrcode extends CI_Controller {
 	}
 
 	// scan qrcode and view luggage details
-	function scanQrCodeDetails(){
+	function scanQr(){
 		$enc = $_GET['ref_no'];
 		if (isset($_GET['type'])) {
 			$type = $_GET['type'];

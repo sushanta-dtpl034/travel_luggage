@@ -12,9 +12,17 @@ class QR extends CI_Controller {
 		header("Cache-Control: no-cache, no-store, must-revalidate");
 		header("Pragma: no-cache");
 		header("Expires: 0");
-		
 		$username = $this->session->userdata('username');
 		$userid = $this->session->userdata('userid');
+
+		if($this->uri->segment(1) != 'qr'){
+			if (!isset($username) && !isset($userid)) { 
+				//$this->session->set_userdata('redirect_url', current_url());
+				redirect('Login');
+			} 
+		}
+		
+		
 		$this->load->helper('referenceno_helper');
 		$this->load->helper('quarters_helper');
 
@@ -22,10 +30,19 @@ class QR extends CI_Controller {
 		$this->load->model('Assetmodel');
 		$this->load->model('Companymodel');
 		$this->load->model('Commonmodel');
+		
 	}
     function index($url){
+		//$this->session->unset_userdata('redirect_url');
 		$qrcode = $this->uri->segment(2);
-        echo $qrcode;
+		$data['luggage_details'] =$this->Qrcodemodel->get_qrcode_details_qrcode($qrcode);
+		$data['page_title'] = 'QR Code Details';
+		$data['page_name'] = "QR Code Details";
+		$this->load->view('include/admin-header',$data);
+		$this->load->view('include/sidebar');
+		$this->load->view('include/topbar');
+		$this->load->view('superadmin/travel_luggage_details', $data);
+		$this->load->view('include/admin-footer');
     }
 	
 }

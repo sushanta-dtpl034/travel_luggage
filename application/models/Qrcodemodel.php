@@ -39,7 +39,7 @@ class Qrcodemodel extends CI_Model{
         return true;
     }
     function get_qrcode_details($id){
-        $sql="CASE WHEN (qdt.IsUsed = 0) THEN 'Not Use' ELSE 'Used' END as status";
+        $sql="CASE WHEN (qdt.IsUsed = 1) THEN 'Alerted to luggage' WHEN (qdt.IsUsed = 2) THEN 'Alerted to user' ELSE 'Not used' END as status";
         $this->db->select("qdt.AutoID,qdt.QRCodeText,FORMAT(qr.CreatedDate, 'dd-MM-yyyy') as create_date,$sql");
         $this->db->from('QRCodeDetailsMst as qdt');
         $this->db->join('QRCodeHeadMst as qr', 'qr.AutoID = qdt.QRCodeId','left');
@@ -92,11 +92,10 @@ class Qrcodemodel extends CI_Model{
         }
     } */
 	function get_qrcode_details_qrcode($QrCodeNo){
-        $this->db->select("reg.AutoID as regId,CONCAT(reg.Suffix, reg.Name) as Name,reg.Mobile,reg.Address,reg.City,reg.State,reg.ProfileIMG,reg.ContactPersonMobile,reg.CompanyCode,CONCAT(reg.CompanyCode,' ',reg.ContactPersonMobile) as WhatsappNo, th.QrCodeNo,th.AutoID as TravelHeadId");
-        $this->db->from('TravelHead as th');
-        $this->db->join('RegisterMST as reg', 'th.UserID = reg.AutoID','left');
-        $this->db->where('th.IsDelete',0);
-        $this->db->where('th.QrCodeNo',$QrCodeNo); 
+        $this->db->select("reg.AutoID as regId,CONCAT(reg.Suffix, reg.Name) as Name,reg.Mobile,reg.Address,reg.AdressTwo,reg.Landmark,reg.ProfileIMG,reg.CountryCode,reg.WhatsAppCountryCode,reg.WhatsappNumber,CONCAT(reg.WhatsAppCountryCode,' ',reg.WhatsappNumber) as WhatsappNo, QDM.QRCodeText,QDM.alertedDateTime, QDM.IsUsed,QDM.alertedUserId");
+        $this->db->from('QRCodeDetailsMst as QDM');
+        $this->db->join('RegisterMST as reg', 'QDM.alertedUserId = reg.AutoID','left');
+        $this->db->where('QDM.QRCodeText',$QrCodeNo); 
         $query = $this->db->get();
         if($query){
             return $query->row();

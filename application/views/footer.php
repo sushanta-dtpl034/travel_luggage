@@ -251,7 +251,8 @@ $(document).ready(function() {
 			success: function(response){
 				console.log(response);
 				if(response.status == 200){
-					window.location= "<?php echo base_url('Dashboard/superadmin_dasboard'); ?>";
+					window.location= response.return_url;
+					//window.location= "<?php echo base_url('Dashboard/superadmin_dasboard'); ?>";
 				}else{
 					$(".verifyerror").show();
 				}
@@ -263,11 +264,12 @@ $(document).ready(function() {
 
 
 });
-
+console.log(sessionStorage.getItem('returnurl'));
 
 
 
 $(document).ready(
+
 	function(){
 		$('#otpbutton').on('click',function(){
 			$('#mobileotpform').show();

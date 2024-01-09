@@ -51,6 +51,7 @@ class Mylibrary {
         $encryption = openssl_encrypt($simple_string, $ciphering,
         $encryption_key, $options, $encryption_iv);
         //$url_text = base_url()."Qrcode/scanQrCodeDetails?ref_no=".$encryption.'&type=3';
+        //$url_text = base_url()."Qrcode/scanQr/".$code;
         $url_text =QRCODE_URL.$code;
         if (! is_dir($targetPath)) {
             mkdir($targetPath, 0777, true);

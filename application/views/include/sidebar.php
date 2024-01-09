@@ -1,4 +1,4 @@
-<?php $IsAdmin = $this->session->userdata('userisadmin'); ?>
+
 <body class="main-body leftmenu hover-submenu">
 	<!-- Loader -->
 	<div id="global-loader">
@@ -51,6 +51,7 @@
 			</div>
 			<div class="main-sidebar-body">
 				<ul class="nav mt-4">
+					<?php $IsAdmin = $this->session->userdata('userisadmin');?>
 					<?php if(intval($IsAdmin) === 1){ ?>
 						<li class="nav-item">
 							<a class="nav-link tt" href="<?php echo base_url(); ?>Dashboard/superadmin_dasboard">
@@ -101,7 +102,7 @@
 								<span class="sidemenu-label">Manage Airlines</span>
 							</a>
 						</li>
-					<?php }else{ ?>
+					<?php } if($this->session->userdata('userisadmin') === 0){ ?>
 						<!--<li class="nav-item">
 						<a class="nav-link tt" href="<?php echo base_url(); ?>Dashboard/superadmin_dasboard">
 							<span class="shape1"></span><span class="shape2"></span><i class="ti-home sidemenu-icon"></i>
@@ -137,6 +138,13 @@
 							<span class="sidemenu-label">Sign Out</span></a>
 						</li>
 
+					<?php }else{ ?>
+						<li class="nav-item">
+						<a class="nav-link tt" href="<?php echo base_url(); ?>Login/logout">
+						<span class="shape1"></span><span class="shape2"></span>
+						<i class="fa fa-sign-in-alt sidemenu-icon"></i>
+						<span class="sidemenu-label">Login</span></a>
+					</li>
 					<?php } ?>
 				</ul>
 			</div>
