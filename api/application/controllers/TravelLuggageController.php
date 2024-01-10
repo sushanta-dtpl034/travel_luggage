@@ -106,16 +106,17 @@ class TravelLuggageController extends REST_Controller {
 
 				$this->form_validation->set_data($input_data);
 				$this->form_validation->set_rules('UserID', 'User', 'required|trim');
-				// $this->form_validation->set_rules('ItineraryHeadId', 'Itinerary Name', 'required|trim');
 				$this->form_validation->set_rules('LuggageName', 'Luggage Name', 'required|trim');
-                if(empty($input_data['AutoID'])){
-                    if(empty($_FILES['LuggageImage']['name']) && $_FILES['LuggageImage']['error'] != 0){
-                        $this->form_validation->set_rules('LuggageImage', 'Luggage Image', 'required');	
-                    }
-                }
+				
 				if(!empty($input_data['AutoID'])){
 					$AutoID=$input_data['AutoID'];
-					$this->form_validation->set_rules('LuggageMoreImages', 'Luggage More Image', 'callback_image_check['.$AutoID.']');
+					//$this->form_validation->set_rules('QrCodeNo', 'QR Code', 'required|trim|callback_qrcode_check['.$userid.','.$AutoID.']');
+					if(count($_FILES) > 0){
+						$this->form_validation->set_rules('LuggageMoreImages', 'Luggage More Image', 'callback_image_check['.$AutoID.']');
+					}
+				}else{
+					$this->form_validation->set_rules('QrCodeNo', 'QR Code', 'required|trim|callback_qrcode_check['.$userid.']');
+					$this->form_validation->set_rules('LuggageMoreImages', 'Luggage More Image', 'callback_image_check');
 				}
 
 				if ($this->form_validation->run() == FALSE){
@@ -141,80 +142,59 @@ class TravelLuggageController extends REST_Controller {
 							'UserID'            =>$input_data['UserID'],
 							'ItineraryHeadId'   =>0,//$input_data['ItineraryHeadId'],
 							'LuggageName'       =>trim($input_data['LuggageName']),
-							'LuggageRemarks'    =>trim($input_data['LuggageRemarks']),
+							// 'LuggageRemarks'    =>trim($input_data['LuggageRemarks']),
 							'LuggageColor'      =>trim($input_data['LuggageColor']),
+							'LuggageType'      	=>trim($input_data['LuggageType']),
 							'BrandName'      	=>trim($input_data['BrandName']),
 							'AppleAirTag'      	=>trim($input_data['AppleAirTag']),
-							'QrCodeNo'      	=>trim($input_data['QrCodeNo']),
 							'IsDelete'		    =>0,    //0-Active, 1-Inactive
 							'IsActive'		    =>0,    //0-Live, 1-Delete
 						);
-
-						/*
-						$picture = '';
-						if(!empty($_FILES['LuggageImage']['name'])){
-							if (!file_exists('../upload/luggage')) {
-								mkdir('../upload/luggage', 0777, true);
-							}
-							$config['upload_path']   = '../upload/luggage/'; 
-							$config['allowed_types'] = 'jpg|png|jpeg'; 
-							$this->load->library('upload',$config);
-							$this->upload->initialize($config);
-							if($this->upload->do_upload('LuggageImage')){
-								$uploadData = $this->upload->data();
-								$picture ="upload/luggage/".$uploadData['file_name'];
-							}else{ 
-								$picture = '';  
-							}
-						}
-
-						if(!empty($picture)){
-							$data['LuggageImage']  =$picture;
-						}
-						*/
 						
 						if(empty($input_data['AutoID'])){
+							$data['QrCodeNo']  =trim($input_data['QrCodeNo']);
 							$data['CreatedBy']  =$userid;
 							$data['CreatedDate'] =date('Y-m-d H:i:s');
 							$response =$this->Commonmodel->common_insert('TravelLuggage',$data);
 
-							//$this->Commonmodel->common_update('QRCodeDetailsMst',['QRCodeText' => $qrcode],['IsUsed'=>1,'alertedUserId' =>$userid,'alertedDateTime' =>date('Y-m-d H:i:s')]);
+							$this->Commonmodel->common_update('QRCodeDetailsMst',['QRCodeText' => trim($input_data['QrCodeNo'])],['IsUsed'=>1,'alertedUserId' =>$userid,'alertedDateTime' =>date('Y-m-d H:i:s')]);
 
 							$countImageRow =$this->TravelLuggageModel->count_luggage_images($response);
 							if($countImageRow <= 3){
-								if(count($_FILES['LuggageMoreImages']) > 0){
-									for($i=0;$i< count($_FILES['LuggageMoreImages']['name']) ;$i++){
-										if(!empty($_FILES['LuggageMoreImages']['name'][$i])){
-											$_FILES['file']['name'] = $_FILES['LuggageMoreImages']['name'][$i];
-											$_FILES['file']['type'] = $_FILES['LuggageMoreImages']['type'][$i];
-											$_FILES['file']['tmp_name'] = $_FILES['LuggageMoreImages']['tmp_name'][$i];
-											$_FILES['file']['error'] = $_FILES['LuggageMoreImages']['error'][$i];
-											$_FILES['file']['size'] = $_FILES['LuggageMoreImages']['size'][$i];
-											$config['upload_path']   = '../upload/luggage/'; 
-											$config['allowed_types'] = 'jpg|png|jpeg'; 
-											$this->load->library('upload',$config);
-											$this->upload->initialize($config);
-											if($this->upload->do_upload('file')){
-												$uploadData2 = $this->upload->data();
-												$pic_filename ="upload/luggage/".$uploadData2['file_name'];
-												$moreImageData = array(
-													'TravelLuggageID'   =>$response,
-													'ImageName'         =>$pic_filename,
-													'CreatedBy'      	=>$userid,
-													'CreatedDate'      	=>date('Y-m-d H:i:s'),
-												);
-												$this->Commonmodel->common_insert('TravelLuggageImages',$moreImageData);
-												if($i == 0){
-													$this->Commonmodel->common_update('TravelLuggage',['LuggageImage' => $pic_filename],['AutoID' => $response]); 
+								if(count($_FILES) > 0){
+									if(count($_FILES['LuggageMoreImages']['name']) > 0){
+										for($i=0;$i< count($_FILES['LuggageMoreImages']['name']) ;$i++){
+											if(!empty($_FILES['LuggageMoreImages']['name'][$i])){
+												$_FILES['file']['name'] = $_FILES['LuggageMoreImages']['name'][$i];
+												$_FILES['file']['type'] = $_FILES['LuggageMoreImages']['type'][$i];
+												$_FILES['file']['tmp_name'] = $_FILES['LuggageMoreImages']['tmp_name'][$i];
+												$_FILES['file']['error'] = $_FILES['LuggageMoreImages']['error'][$i];
+												$_FILES['file']['size'] = $_FILES['LuggageMoreImages']['size'][$i];
+												$config['upload_path']   = '../upload/luggage/'; 
+												$config['allowed_types'] = 'jpg|png|jpeg'; 
+												$this->load->library('upload',$config);
+												$this->upload->initialize($config);
+												if($this->upload->do_upload('file')){
+													$uploadData2 = $this->upload->data();
+													$pic_filename ="upload/luggage/".$uploadData2['file_name'];
+													$moreImageData = array(
+														'TravelLuggageID'   =>$response,
+														'ImageName'         =>$pic_filename,
+														'CreatedBy'      	=>$userid,
+														'CreatedDate'      	=>date('Y-m-d H:i:s'),
+													);
+													$this->Commonmodel->common_insert('TravelLuggageImages',$moreImageData);
+													if($i == 0){
+														$this->Commonmodel->common_update('TravelLuggage',['AutoID' => $response],['LuggageImage' => $pic_filename]); 
+													}
+													
 												}
-												
 											}
 										}
+			
 									}
-		
 								}
 							}
-
 
 							$result['message'] ="Created successfully.";
 							$result['status']=201;
@@ -230,36 +210,38 @@ class TravelLuggageController extends REST_Controller {
 
 							$countImageRow =$this->TravelLuggageModel->count_luggage_images($input_data['AutoID']);
 							if($countImageRow <= 3){
-								if(count($_FILES['LuggageMoreImages']) > 0){
-									for($i=0;$i< count($_FILES['LuggageMoreImages']['name']) ;$i++){
-										if(!empty($_FILES['LuggageMoreImages']['name'][$i])){
-											$_FILES['file']['name'] = $_FILES['LuggageMoreImages']['name'][$i];
-											$_FILES['file']['type'] = $_FILES['LuggageMoreImages']['type'][$i];
-											$_FILES['file']['tmp_name'] = $_FILES['LuggageMoreImages']['tmp_name'][$i];
-											$_FILES['file']['error'] = $_FILES['LuggageMoreImages']['error'][$i];
-											$_FILES['file']['size'] = $_FILES['LuggageMoreImages']['size'][$i];
-											$config['upload_path']   = '../upload/luggage/'; 
-											$config['allowed_types'] = 'jpg|png|jpeg'; 
-											$this->load->library('upload',$config);
-											$this->upload->initialize($config);
-											if($this->upload->do_upload('file')){
-												$uploadData2 = $this->upload->data();
-												$pic_filename ="upload/luggage/".$uploadData2['file_name'];
-												$moreImageData = array(
-													'TravelLuggageID'   =>$input_data['AutoID'],
-													'ImageName'         =>$pic_filename,
-													'CreatedBy'      	=>$userid,
-													'CreatedDate'      	=>date('Y-m-d H:i:s'),
-												);
-												$this->Commonmodel->common_insert('TravelLuggageImages',$moreImageData); 
-	
-												if($i == 0){
-													$this->Commonmodel->common_update('TravelLuggage',['AutoID' => $input_data['AutoID']],['LuggageImage' => $pic_filename]); 
+								if(count($_FILES) > 0){
+									if(count($_FILES['LuggageMoreImages']['name']) > 0){
+										for($i=0;$i< count($_FILES['LuggageMoreImages']['name']) ;$i++){
+											if(!empty($_FILES['LuggageMoreImages']['name'][$i])){
+												$_FILES['file']['name'] = $_FILES['LuggageMoreImages']['name'][$i];
+												$_FILES['file']['type'] = $_FILES['LuggageMoreImages']['type'][$i];
+												$_FILES['file']['tmp_name'] = $_FILES['LuggageMoreImages']['tmp_name'][$i];
+												$_FILES['file']['error'] = $_FILES['LuggageMoreImages']['error'][$i];
+												$_FILES['file']['size'] = $_FILES['LuggageMoreImages']['size'][$i];
+												$config['upload_path']   = '../upload/luggage/'; 
+												$config['allowed_types'] = 'jpg|png|jpeg'; 
+												$this->load->library('upload',$config);
+												$this->upload->initialize($config);
+												if($this->upload->do_upload('file')){
+													$uploadData2 = $this->upload->data();
+													$pic_filename ="upload/luggage/".$uploadData2['file_name'];
+													$moreImageData = array(
+														'TravelLuggageID'   =>$input_data['AutoID'],
+														'ImageName'         =>$pic_filename,
+														'CreatedBy'      	=>$userid,
+														'CreatedDate'      	=>date('Y-m-d H:i:s'),
+													);
+													$this->Commonmodel->common_insert('TravelLuggageImages',$moreImageData); 
+		
+													if($i == 0){
+														$this->Commonmodel->common_update('TravelLuggage',['AutoID' => $input_data['AutoID']],['LuggageImage' => $pic_filename]); 
+													}
 												}
 											}
 										}
+			
 									}
-		
 								}
 							}
 
@@ -290,14 +272,52 @@ class TravelLuggageController extends REST_Controller {
 		}
 		
     }
-	function image_check($str, $AutoID){
-		$response =$this->TravelLuggageModel->count_luggage_images($AutoID);
-		if ($response){
-			$this->form_validation->set_message('image_check', 'The Luggage More Images field maximum 3 files upload.');
+	function image_check($files, $AutoID=""){
+		if (count($_FILES['LuggageMoreImages']['name']) > 3) {
+			$this->form_validation->set_message('image_check', 'You can only upload a maximum of 3 files.');
 			return FALSE;
+		} else {
+			return TRUE;
+		}
+		if(!empty($AutoID)){
+			$response =$this->TravelLuggageModel->count_luggage_images($AutoID);
+			if ($response){
+				$this->form_validation->set_message('image_check', 'You can only upload a maximum of 3 files.');
+				return FALSE;
+			}else{
+				return TRUE;
+			}
+		}		
+	}
+	function qrcode_check($str, $userId,$AutoID=""){
+		if(!empty($AutoID)){
+			$response =$this->TravelLuggageModel->check_qrcode_assigned_or_used($str,$userId, $AutoID);
+			if ($response){
+				$this->form_validation->set_message('qrcode_check', 'The QR Code not assigned you.');
+				return FALSE;
+			}else{
+				return TRUE;
+			}
+
 		}else{
-            return TRUE;
-        }
+			// Remove the prefix using str_replace
+			//$qrcode = str_replace(QRCODE_URL, '', $str);
+			$response =$this->TravelLuggageModel->check_qrcode_assigned_or_used($str,$userId);
+			if($response){
+				if($response->IsUsed == 1){
+					$this->form_validation->set_message('qrcode_check', 'The QR code already alloted to luggage.');
+					return FALSE;
+				}else{
+					return TRUE;
+				}
+			}else{
+				$this->form_validation->set_message('qrcode_check', 'The QR code not assigned you.');
+				return FALSE;
+			}
+			
+
+		}		
+		
 	}
 
     /**

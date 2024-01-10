@@ -92,8 +92,8 @@ define('tbl_company','CompanyMst');
 define('tbl_asset_subcat_file','AssetSubcatFileMst');
 
 //qrcode url
-define('QRCODE_URL','http://localhost/travel_luggage/qr/');
-// define('QRCODE_URL','https://sandbox.dahlia.tech/travel_luggage/qr/');
+// define('QRCODE_URL','http://localhost/travel_luggage/qr/');
+define('QRCODE_URL','https://sandbox.dahlia.tech/travel_luggage/qr/');
 
 
 // Define an Ttitle Prefix constant
