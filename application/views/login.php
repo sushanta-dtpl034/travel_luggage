@@ -76,7 +76,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" id="basic-addon1"><i class="fas fa-user"></i></span>
                                                 </div>
-                                                <input class="form-control" placeholder="Enter your username or email" type="text" name="username" required="required">
+                                                <input class="form-control" placeholder="Enter your phone or email id" type="text" name="username" required="required">
                                             </div>
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
