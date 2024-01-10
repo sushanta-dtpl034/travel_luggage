@@ -18,13 +18,13 @@
 					<div class="card custom-card">
 						<div class="card-body">
 							<div class="card-order">
-								<label class="main-content-label mb-3 pt-1">Total Traveller</label>
+								<label class="main-content-label mb-3 pt-1">Total User</label>
 								<h2 class="text-end"><a href="<?php echo base_url('TravelerController'); ?>"><i class="mdi mdi-airplane icon-size float-start text-primary"></i><span class="font-weight-bold"><?php echo $dashboard_data->TOTAL_TRAVELler_COUNT; ?></span></a></h2>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+				<!-- <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
 					<div class="card custom-card">
 						<div class="card-body">
 							<div class="card-order">
@@ -33,7 +33,7 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</div> -->
 				<div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
 					<div class="card custom-card">
 						<div class="card-body">

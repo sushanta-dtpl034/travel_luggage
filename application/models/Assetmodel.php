@@ -12,7 +12,7 @@ class Assetmodel extends CI_Model{
 		$userid = $this->session->userdata('userid');
 		if($this->session->userdata('userisadmin') == 1){
 			$sql="SELECT
-			(SELECT COUNT(*) FROM RegisterMST WHERE IsDelete = 0 AND IsAdmin=0) AS TOTAL_TRAVELler_COUNT,
+			(SELECT COUNT(*) FROM RegisterMST WHERE IsDelete = 0 AND IsAdmin=0 AND ParentId=0) AS TOTAL_TRAVELler_COUNT,
 			(SELECT COUNT(*) FROM ItineraryDetails WHERE IsDelete = 0 ) AS TOTAL_ITINERARY_DETAILS,
 			(SELECT COUNT(*) FROM QRCodeDetailsMst ) AS TOTAL_QRCODE,
 			(SELECT COUNT(*) FROM QRCodeDetailsMst WHERE IsUsed = 1 ) AS TOTAL_QRCODE_USED,

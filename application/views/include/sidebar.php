@@ -68,13 +68,13 @@
 								<span class="sidemenu-label">Manage User</span>
 							</a>
 						</li>
-						<li class="nav-item">
+						<!-- <li class="nav-item">
 							<a class="nav-link tt" href="<?php echo base_url(); ?>ItineraryController">
 								<span class="shape1"></span><span class="shape2"></span>
 								<i class="fa  fa-list-alt sidemenu-icon"></i>
 								<span class="sidemenu-label">Manage Itinerary</span>
 							</a>
-						</li>
+						</li> -->
 						<li class="nav-item">
 							<a class="nav-link tt" href="<?php echo base_url(); ?>TravelLuggageController">
 								<span class="shape1"></span><span class="shape2"></span>
