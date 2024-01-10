@@ -305,7 +305,7 @@ class TravelLuggageController extends REST_Controller {
 			$response =$this->TravelLuggageModel->check_qrcode_assigned_or_used($str,$userId);
 			if($response){
 				if($response->IsUsed == 1){
-					$this->form_validation->set_message('qrcode_check', 'The QR code already alloted to luggage.');
+					$this->form_validation->set_message('qrcode_check', 'The QR code already alloted to another luggage.');
 					return FALSE;
 				}else{
 					return TRUE;
