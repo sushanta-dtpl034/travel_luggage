@@ -191,6 +191,55 @@ class TravelModel extends CI_Model {
 			return false;
 		}
 	}
+	function get_qrcode_details_qrcode($QrCodeNo,$userId){
+        $this->db->select("reg.AutoID as regId,CONCAT(reg.Suffix, reg.Name) as Name,reg.Mobile,reg.Address,reg.AdressTwo,reg.Landmark,reg.ProfileIMG,reg.CountryCode,reg.WhatsAppCountryCode,reg.WhatsappNumber,CONCAT(reg.WhatsAppCountryCode,' ',reg.WhatsappNumber) as WhatsappNo, QDM.QRCodeText,QDM.alertedDateTime, QDM.IsUsed,QDM.alertedUserId");
+        $this->db->from('QRCodeDetailsMst as QDM');
+        $this->db->join('RegisterMST as reg', 'QDM.alertedUserId = reg.AutoID','left');
+        $this->db->where('QDM.QRCodeText',$QrCodeNo); 
+        $query = $this->db->get();
+        if($query){
+            $row =$query->row();
+			if($row->alertedUserId == $userId){
+				return $row=[
+					"regId"			=> $row->regId,
+					"Name"			=> $row->Name,
+					"Mobile"		=> $row->Mobile,
+					"Address"		=> $row->Address,
+					"AdressTwo"		=> $row->AdressTwo,
+					"Landmark"		=> $row->Landmark,
+					"ProfileIMG"	=> $row->ProfileIMG,
+					"CountryCode"	=> $row->CountryCode,
+					"WhatsAppCountryCode"=> $row->WhatsAppCountryCode,
+					"WhatsappNumber"	=> $row->WhatsappNumber,
+					"WhatsappNo"		=> $row->WhatsappNo,
+					"QRCodeText"		=> $row->QRCodeText,
+					"alertedDateTime"	=> $row->alertedDateTime,
+					"IsUsed"			=> $row->IsUsed,
+					"alertedUserId"		=> $row->alertedUserId
+				];
+			}else{
+				return $row=[
+					"regId"			=> $row->regId,
+					"Name"			=> $row->Name,
+					"Mobile"		=> $row->Mobile,
+					"Address"		=> $row->Address,
+					"AdressTwo"		=> $row->AdressTwo,
+					"Landmark"		=> $row->Landmark,
+					"ProfileIMG"	=> $row->ProfileIMG,
+					"CountryCode"	=> $row->CountryCode,
+					"WhatsAppCountryCode"=> $row->WhatsAppCountryCode,
+					"WhatsappNumber"	=> $row->WhatsappNumber,
+					"WhatsappNo"		=> $row->WhatsappNo,
+					"QRCodeText"		=> $row->QRCodeText,
+					"alertedDateTime"	=> $row->alertedDateTime,
+					"IsUsed"			=> $row->IsUsed,
+					"alertedUserId"		=> $row->alertedUserId
+				];
+			}
+        }else{
+            return false;
+        }
+    }
 	function alert_room_no($AutoID, $roomNo){
         $this->db->where('AutoID', $AutoID);
         $result = $this->db->update('TravelDetails', ['RoomNo' =>$roomNo]);

@@ -96,5 +96,43 @@ class QR extends REST_Controller {
 
 		}
 	}
+
+	/**
+	 * Get Know and Unknown QR data
+	 */
+	public function qrcodedata_post(){
+		$headers = apache_request_headers();
+		$body=$this->request->body;
+		if (!empty($headers['Token'])) {
+			try {
+				$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
+				$userid=$arrdata['AutoID'];
+
+				$url=$body['url'];
+				// Remove the prefix using str_replace
+				$qrcode = str_replace(QRCODE_URL, '', $url);
+
+				$qrcode_data =$this->TravelModel->get_qrcode_details_qrcode($qrcode,$userid);
+				if($qrcode_data){
+					$result['data'] =$qrcode_data;
+				}else{
+					$result['refno'] =$refno;
+				}
+				
+				$result['message'] = "success";
+				$result['status']=true;
+				return $this->set_response($result, REST_Controller::HTTP_OK);
+			} catch (Exception $e) { 
+				$result['message'] = "invalid data";
+				$result['status']=false;
+				return $this->set_response($result, 401);
+			}
+		}
+		else{
+			$result['message'] = "Token not Found";
+			$result['status']=false;
+			return $this->set_response($result, 400);
+		}
+	}
 	
 }
