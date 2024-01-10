@@ -148,5 +148,18 @@ class TravelLuggageModel extends CI_Model {
 		}
 		return $query->result();
 	}
+	public function check_qrcode_assigned_or_used($qrcode, $userId,$AutoID=""){
+		if(!empty($AutoID)){
+		}else{
+			//1-Alloted to Luggage, 2-Alloted to User
+			$sql="SELECT * FROM QRCodeDetailsMst WHERE QRCodeText='$qrcode' AND alertedUserId=$userId";
+			$query=$this->db->query($sql);
+			if($query){
+				return $query->row();
+			}
+			return false;
+		}		
+	}
+
 	
 }
