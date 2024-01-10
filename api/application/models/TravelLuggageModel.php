@@ -131,8 +131,8 @@ class TravelLuggageModel extends CI_Model {
 	}
 	public function checkQRCodeIsAssigned($qrcode){
 		$this->db->where('QRCodeText',$qrcode);
-		$this->db->where('alertedUserId IS NOT NULL', null, false);
-		// $this->db->where('IsUsed',1);
+		//$this->db->where('alertedUserId IS NOT NULL', null, false);
+		$this->db->where('IsUsed !=',0);
 		$query=$this->db->get('QRCodeDetailsMst');
 		$count =$query->num_rows();
 		if($count > 0){

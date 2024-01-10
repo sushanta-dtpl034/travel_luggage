@@ -68,8 +68,8 @@
                                     <div class="form-group">
                                         <p class="mg-b-10"> Contact Number </p>
                                         <!-- <p><b><?= ($luggage_details)?$luggage_details->CountryCode.' '.$luggage_details->Mobile:"";?></b></p> -->
-                                        <p><a  href="tel:<?= ($luggage_details)?$luggage_details->CountryCode.' '.$luggage_details->Mobile:"";?>">
-                                        <img src="<?= base_url('assets/img/callnow.png');?>" alt="Call Now" style="height: 50px;width: 162px;margin-top: -16px;" >
+                                        <p><a class="btn btn-sm btn-success p-2 m-2" href="tel:<?= ($luggage_details)?$luggage_details->CountryCode.' '.$luggage_details->Mobile:"";?>" style="height:30px;border-radius:7px;font-weight: 500;">
+                                        <i class="fa fa-phone fa-lg" aria-hidden="true" style="transform: rotate(90deg);"></i>&nbsp; &nbsp;Call on Phone
                                         </a></p>
                                     </div>
                                 </div>
