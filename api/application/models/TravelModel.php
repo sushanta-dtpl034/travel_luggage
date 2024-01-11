@@ -40,6 +40,7 @@ class TravelModel extends CI_Model {
 			}else{
 				$this->db->limit($data['length']);
 				$this->db->offset($data['start']);
+				$this->db->order_by('ParentId','asc');
 				$this->db->order_by('AutoID','desc');
 			}
 		}

@@ -129,17 +129,45 @@ class TravelLuggageModel extends CI_Model {
 		}
 		return true;
 	}
-	public function checkQRCodeIsAssigned($qrcode){
+	/**
+	 * Assign QR Code 
+	 */
+	public function checkIsValidQRCode($qrcode){
 		$this->db->where('QRCodeText',$qrcode);
-		//$this->db->where('alertedUserId IS NOT NULL', null, false);
-		$this->db->where('IsUsed !=',0);
 		$query=$this->db->get('QRCodeDetailsMst');
-		$count =$query->num_rows();
-		if($count > 0){
-			return true;
+		if($query){
+			return $query->row();
 		}
 		return false;
 	}
+	public function checkQRCodeIsUsed($qrcode){
+		$this->db->where('QRCodeText',$qrcode);
+		$this->db->where('IsUsed',1);
+		$query=$this->db->get('QRCodeDetailsMst');
+		if($query){
+			$count =$query->num_rows();
+			if($count > 0){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public function checkQRCodeIsAssigned($qrcode,$userid){
+		$this->db->where('QRCodeText',$qrcode);
+		// $this->db->where('IsUsed !=',0);
+		$this->db->where('IsUsed',2);
+		$this->db->where('alertedUserId !=',$userid);
+		$query=$this->db->get('QRCodeDetailsMst');
+		if($query){
+			$count =$query->num_rows();
+			if($count > 0){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public function getQRCodeListByUserId($userId){
 		$this->db->where('alertedUserId',$userId);
 		$query=$this->db->get('QRCodeDetailsMst');
@@ -151,9 +179,10 @@ class TravelLuggageModel extends CI_Model {
 	public function check_qrcode_assigned_or_used($qrcode, $userId,$AutoID=""){
 		if(!empty($AutoID)){
 		}else{
+			//$sql="SELECT * FROM QRCodeDetailsMst WHERE QRCodeText='$qrcode' AND alertedUserId=$userId";
 			//1-Alloted to Luggage, 2-Alloted to User
-			$sql="SELECT * FROM QRCodeDetailsMst WHERE QRCodeText='$qrcode' AND alertedUserId=$userId";
-			$query=$this->db->query($sql);
+			$this->db->where('QRCodeText',$qrcode);
+			$query=$this->db->get('QRCodeDetailsMst');
 			if($query){
 				return $query->row();
 			}

@@ -78,7 +78,7 @@
         <div class="modal-content modal-content-demo">
             <div class="modal-header">
                 <h6 class="modal-title">Airline Creation</h6>
-                <button aria-label="Close" class="btn-close btn-secondary" data-bs-dismiss="modal" type="button">&times;</button>
+                <button aria-label="Close" class="btn-close btn-dark" data-bs-dismiss="modal" type="button">&times;</button>
             </div>
             <form id="airlineform" >
                 <div class="modal-body">
@@ -106,7 +106,7 @@
     <div class="modal-dialog modal-md" role="document">
         <div class="modal-content modal-content-demo">
             <div class="modal-header">
-                <h6 class="modal-title">Airline Update</h6><button aria-label="Close" class="btn-close btn-secondary" data-bs-dismiss="modal" type="button">&times;</button>
+                <h6 class="modal-title">Airline Update</h6><button aria-label="Close" class="btn-close btn-dark" data-bs-dismiss="modal" type="button">&times;</button>
             </div>
             <form id="up_airlineform">
                 <div class="modal-body">

@@ -515,6 +515,7 @@ class Api extends REST_Controller {
 		$this->form_validation->set_rules('Name', 'Name', 'required|trim');
 		$this->form_validation->set_rules('PhoneCountryCode', 'Country Code', 'required|trim');
 		$this->form_validation->set_rules('PhoneNumber', 'Phone Number', 'required|trim|callback_mobile_check');
+		$this->form_validation->set_rules('Password', 'Password', 'required|trim');
 
 		if ($this->form_validation->run() == FALSE){
 			$errors = $this->form_validation->error_array();
@@ -539,12 +540,13 @@ class Api extends REST_Controller {
 					'Landmark'			=>strip_tags($input_data['Landmark']),
 					'WhatsAppCountryCode'=>strip_tags($input_data['WhatsAppCountryCode']),
 					'WhatsappNumber'	=>strip_tags($input_data['WhatsAppNumber']),
+					'Password'			=>password_hash(strip_tags($input_data['Password']),PASSWORD_DEFAULT),
 					'IsAdmin'			=>0,
 					'isActive'			=>1,
 					'IsDelete'			=>0,
 					
 				);
-
+				
 				$data['CreatedDate'] =date('Y-m-d H:i:s');
 				$response =$this->Commonmodel->common_insert('RegisterMST',$data);
 				if($response){
