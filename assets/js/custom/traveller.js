@@ -35,7 +35,7 @@ $(function () {
             { 
                 "data": "Name" ,
                 "render": function(data, type, full, meta) {
-                    return `<img src="${base_url}${full.ProfileIMG}" height="40" width="40"/> &nbsp; &nbsp;${full.Suffix} ${full.Name}`;
+                    return `<img class="rounded rounded-circle" src="${base_url}${full.ProfileIMG}" height="50" width="50"/> &nbsp; &nbsp;${full.Suffix} ${full.Name}`;
                 }
             },
             { 

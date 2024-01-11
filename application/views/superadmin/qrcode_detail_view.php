@@ -73,9 +73,9 @@
                                             <td><?= $data['QRCodeText'];?> </td>
                                             <td><?= $data['status'];?></td>
                                             <td>
-                                                <a href="#"  onclick="printSingleQrcode(<?= $data['AutoID'];?>)" >
+                                              <!--   <a href="#"  onclick="printSingleQrcode(<?= $data['AutoID'];?>)" >
                                                     <i class="fa fa-qrcode fa-lg" aria-hidden="true"></i>
-                                                </a>
+                                                </a> -->
                                                 <a href="#"  onclick="downloadQRCode('<?= $data['QRCodeText'];?>.png')" data-image="<?= base_url();?>upload/qr-code/<?= $data['QRCodeText'];?>.png" class="mx-2">
                                                     <i class="fa fa-download fa-lg" aria-hidden="true"></i>
                                                 </a>

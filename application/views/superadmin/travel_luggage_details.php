@@ -18,6 +18,51 @@
 		bottom: 80px !important;
 		height: 100px !important;
 	}
+    .mobile-no{
+        height:30px;
+        border-radius:7px;
+        font-weight: 500;
+        width:145px
+    }
+    .whatsapp-no-div{
+        height:30px;
+        width:145px 
+    }
+    .whatsapp-no{
+        height:30px;
+        width:145px;
+        object-fit:content;
+    }
+    .btn-success {
+        color: #ffffff;
+        background-color: #14d565;
+        border-color: #14d565;
+    }
+    /* Media query for devices with a maximum width of 768 pixels (typical for tablets and mobiles) */
+    @media screen and (max-width: 768px) {
+        body{
+            font-size:16px;
+        }
+        .mobile-no{
+            height:40px;
+            border-radius:7px;
+            font-weight: 500;
+            width:58%;
+            line-height: 30px;
+            text-align: left;
+            padding-left: 14px;
+            font-size: 15px;
+        }
+
+        .whatsapp-no{
+            height: 40px;
+            width: 58%;
+            object-fit: contain;
+}
+        }
+
+    }
+
 </style>
 <div class="main-content side-content pt-0">
 
@@ -68,7 +113,7 @@
                                     <div class="form-group">
                                         <p class="mg-b-10"> Contact Number </p>
                                         <!-- <p><b><?= ($luggage_details)?$luggage_details->CountryCode.' '.$luggage_details->Mobile:"";?></b></p> -->
-                                        <p><a class="btn btn-sm btn-success p-2 m-2" href="tel:<?= ($luggage_details)?$luggage_details->CountryCode.' '.$luggage_details->Mobile:"";?>" style="height:30px;border-radius:7px;font-weight: 500;">
+                                        <p><a class="btn btn-sm btn-success mobile-no" href="tel:<?= ($luggage_details)?$luggage_details->CountryCode.' '.$luggage_details->Mobile:"";?>">
                                         <i class="fa fa-phone fa-lg" aria-hidden="true" style="transform: rotate(90deg);"></i>&nbsp; &nbsp;Call on Phone
                                         </a></p>
                                     </div>
@@ -76,7 +121,11 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <p class="mg-b-10"> Whatsapp  Number</p> 
-                                        <p><a aria-label="Chat on WhatsApp" href="https://wa.me/<?= str_replace('+', '',  $luggage_details->WhatsAppCountryCode)?><?= $luggage_details->WhatsappNumber ?>" target="_blank"> <img alt="Chat on WhatsApp" src="https://static.xx.fbcdn.net/assets/?revision=197739703408370&name=platform-agnostic-green-medium-en-us&density=1" height="30" /> </a></p>
+                                        <p >
+                                            <a class="whatsapp-no-div" aria-label="Chat on WhatsApp" href="https://wa.me/<?= str_replace('+', '',  $luggage_details->WhatsAppCountryCode)?><?= $luggage_details->WhatsappNumber ?>" target="_blank">
+                                                <img alt="Chat on WhatsApp" src="https://static.xx.fbcdn.net/assets/?revision=197739703408370&name=platform-agnostic-green-medium-en-us&density=1"  class="whatsapp-no"/> 
+                                            </a>
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="col-md-4">

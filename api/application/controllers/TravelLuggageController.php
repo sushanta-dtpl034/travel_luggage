@@ -127,6 +127,8 @@ class TravelLuggageController extends REST_Controller {
 					->set_output(json_encode(["status"=>406,"errors"=>$errors]));                    
 				}else{
 
+
+					exit;
 					/* if(empty($input_data['AutoID'])){				
 						$dataRegID = $this->TravelLuggageModel->checkItineraryLuggageDuplicate($input_data['UserID'], $input_data['ItineraryDetailId']);
 					}else{
@@ -273,11 +275,13 @@ class TravelLuggageController extends REST_Controller {
 		
     }
 	function image_check($files, $AutoID=""){
-		if (count($_FILES['LuggageMoreImages']['name']) > 3) {
-			$this->form_validation->set_message('image_check', 'You can only upload a maximum of 3 files.');
-			return FALSE;
-		} else {
-			return TRUE;
+		if(count($_FILES) > 0){
+			if (count($_FILES['LuggageMoreImages']['name']) > 3) {
+				$this->form_validation->set_message('image_check', 'You can only upload a maximum of 3 files.');
+				return FALSE;
+			} else {
+				return TRUE;
+			}
 		}
 		if(!empty($AutoID)){
 			$response =$this->TravelLuggageModel->count_luggage_images($AutoID);
@@ -302,19 +306,25 @@ class TravelLuggageController extends REST_Controller {
 		}else{
 			// Remove the prefix using str_replace
 			//$qrcode = str_replace(QRCODE_URL, '', $str);
-			$response =$this->TravelLuggageModel->check_qrcode_assigned_or_used($str,$userId);
+			$response =$this->TravelLuggageModel->checkIsValidQRCode($str);
 			if($response){
-				if($response->IsUsed == 1){
-					$this->form_validation->set_message('qrcode_check', 'The QR code already alloted to another luggage.');
+				//1-Alloted to Luggage, 2-Alloted to User
+				if($response->IsUsed == 0){
+					$this->form_validation->set_message('qrcode_check', 'This QR code is not belongs to you.');
+					return FALSE;
+				}else if($response->IsUsed == 1){
+					$this->form_validation->set_message('qrcode_check', 'The QR code is alloted one of your luggage.');
+					return FALSE;
+				}else if($response->IsUsed == 2 && $response->alertedUserId != $userId){
+					$this->form_validation->set_message('qrcode_check', 'This QR code is not belongs to you.');
 					return FALSE;
 				}else{
 					return TRUE;
 				}
 			}else{
-				$this->form_validation->set_message('qrcode_check', 'The QR code not assigned you.');
+				$this->form_validation->set_message('qrcode_check', 'This QR code is Invalid.');
 				return FALSE;
 			}
-			
 
 		}		
 		
