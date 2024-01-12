@@ -30,30 +30,30 @@ class QR extends REST_Controller {
 
         		$url=$body['url'];
 				// Remove the prefix using str_replace
-				//$qrcode = str_replace(QRCODE_URL,'', $url);
-				$qrcode = explode('/', $url);
-				$qrcode = $qrcode[5];
+				$qrcode = str_replace(QRCODE_URL,'', $url);
+				// $qrcode = explode('/', $url);
+				// $qrcode = $qrcode[5];
 				//check qr code is avaliable or not
 				$isValidQrcode=$this->TravelLuggageModel->checkIsValidQRCode($qrcode);
 				if(!$isValidQrcode){
-					return $this->set_response(['status'=>200,'error' => 'This QR code is Invalid.'], 200);
+					return $this->set_response(['status'=>401,'error' => 'This QR code is Invalid.'], 401);
 				}
 
 				//check qr code is used
 				//$isUsed=$this->TravelLuggageModel->checkQRCodeIsUsed($qrcode);
 				$isUsed=$this->TravelLuggageModel->checkQRCodeIsAssigned($qrcode, $userid);
 				if($isUsed){
-					return $this->set_response(['status'=>200,'error' => 'This QR code is already alloted one of your luggage.'], 200);
+					return $this->set_response(['status'=>401,'error' => 'This QR code is already alloted one of your luggage.'], 401);
 				}
 
 				//check qr code is assigned
 				$isAssigned=$this->TravelLuggageModel->checkQRCodeIsAssigned($qrcode,$userid);
 				if($isAssigned){
-					return $this->set_response(['status'=>200,'error' => 'This QR code is not belongs to you.'], 200);
+					return $this->set_response(['status'=>401,'error' => 'This QR code is not belongs to you.'], 401);
 				}
 
 				$this->Commonmodel->common_update('QRCodeDetailsMst',['QRCodeText' => $qrcode],['IsUsed'=>2,'alertedUserId' =>$userid,'alertedDateTime' =>date('Y-m-d H:i:s')]);
-				$result['message'] ="This QR code Assigned successfully.";
+				$result['message'] ="This QR code assigned successfully.";
 				$result['status']=200;
 				//$result['data']=$this->TravelLuggageModel->getQRCodeListByUserId($userid);
 				$status = 200;

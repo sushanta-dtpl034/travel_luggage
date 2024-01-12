@@ -78,9 +78,10 @@ class Api extends REST_Controller {
 				$response=$this->Login_model->validateUserMobile($mobile);
 				if($response){
 					//after validate send otp and save
-					//$random_number=rand(100000,999999);
-					$random_number='898989';
+					$random_number=rand(100000,999999);
+					//$random_number='898989';
 					$mobilenowithcountrycode = $countrycode.$mobile;
+					
 					$res =send_otp($mobilenowithcountrycode,$resend,$random_number);
 					if($res){
 						//$userdata['otp']=$random_number;
@@ -498,8 +499,9 @@ class Api extends REST_Controller {
 			$mobile=$input_data['PhoneNumber'];
 			$resend=$input_data['Resend'];
 			$countrycode=$input_data['PhoneCountryCode'];
-			$random_number='898989';
-			$mobilenowithcountrycode = $mobile;
+			//$random_number='898989';
+			$random_number=rand(100000,999999);
+			$mobilenowithcountrycode = $countrycode.$mobile;
 			$res =send_otp($mobilenowithcountrycode,$resend,$random_number);
 			if($res){
 				//$userdata['otp']=$random_number;

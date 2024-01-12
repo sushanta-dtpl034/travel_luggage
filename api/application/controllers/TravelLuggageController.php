@@ -74,9 +74,9 @@ class TravelLuggageController extends REST_Controller {
                     ->set_output(json_encode($travelDetailsListObj));
                 }else{
                     $this->output
-                    ->set_status_header(404)
+                    ->set_status_header(200)
                     ->set_content_type('application/json', 'utf-8')
-                    ->set_output(json_encode(["status"=>404,"message"=>"No Data Found."]));
+                    ->set_output(json_encode(["status"=>200,"message"=>"No Data Found."]));
                 }
                 
                
