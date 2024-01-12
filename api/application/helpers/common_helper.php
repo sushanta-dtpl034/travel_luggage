@@ -293,7 +293,11 @@ function send_otp($mobile,$resend,$random_number){
 		if($total === 0){
 			$CI->db->insert('OTP',$insert_otp); 
 			//send_otp_whatsapp($mobile,$random_number);
-			//Sendsms($mobile,$message);
+            $sendingResponse=Sendsms($mobile,$message);	
+            if($sendingResponse){
+                return true;
+            }		
+            return false;
 			
 		}else{
 			$CI->db->where('Phone',$mobile);
@@ -301,9 +305,12 @@ function send_otp($mobile,$resend,$random_number){
 			
 			$CI->db->insert('OTP',$insert_otp); 
 			//send_otp_whatsapp($mobile,$random_number);
-			//Sendsms($mobile,$message);
+			$sendingResponse=Sendsms($mobile,$message);	
+            if($sendingResponse){
+                return true;
+            }		
+            return false;
 		}
-		return true;
 	}else{
 		//send old otp
 		$CI->db->where('Phone',$mobile);
@@ -313,8 +320,11 @@ function send_otp($mobile,$resend,$random_number){
 		
 		$message="Dear User, Your OTP for login to AMT is $otp. Please do not share this OTP.Regards, WLG Team";
 		send_otp_whatsapp($mobile,$otp);
-		Sendsms($mobile,$message);			
-		return true;
+		$sendingResponse=Sendsms($mobile,$message);	
+        if($sendingResponse){
+            return true;
+        }		
+		return false;
 	}
 }
 function send_otp_whatsapp($mobile,$random_number){
@@ -381,7 +391,16 @@ function Sendsms($mobile,$message){
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);/* Ignore SSL certificate verification */
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
     $output = curl_exec($ch);/* get response */
-    curl_close($ch);                           
+    curl_close($ch);     
+    if($output){
+		return true;
+	}else{
+        echo "Send Otp Error : ". $output;
+    }
+    //else{
+	// 	log_message('error','Error Generated Url : '.GetFullUrl());
+	// 	log_message('error','File Name: ' . basename(__FILE__) . ', Function Name: ' . __FUNCTION__ .', => MTS Ticket Error Message :'.$response);
+	// }                      
 }
 
 function getGoogleAddressByLatLong($lat, $long){

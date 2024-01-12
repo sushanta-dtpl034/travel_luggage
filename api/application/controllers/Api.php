@@ -78,9 +78,10 @@ class Api extends REST_Controller {
 				$response=$this->Login_model->validateUserMobile($mobile);
 				if($response){
 					//after validate send otp and save
-					//$random_number=rand(100000,999999);
-					$random_number='898989';
+					$random_number=rand(100000,999999);
+					//$random_number='898989';
 					$mobilenowithcountrycode = $countrycode.$mobile;
+					
 					$res =send_otp($mobilenowithcountrycode,$resend,$random_number);
 					if($res){
 						//$userdata['otp']=$random_number;
@@ -254,40 +255,42 @@ class Api extends REST_Controller {
 	//change password
 
 	public function change_password_post() {
-
 		$body=$this->request->body;
 		$headers = apache_request_headers();
-
-		if (!empty($headers['Token']) && !empty($body['newpassword']) && !empty($body['oldpassword']) && !empty($body)) {
-		
-			try {
+		if (!empty($headers['Token'])) {
+            try {
+				$this->form_validation->set_data($body);
+				$this->form_validation->set_rules('oldpassword', 'Current Password', 'required|trim');
+				$this->form_validation->set_rules('newpassword', 'New Password', 'required|trim');
+				if ($this->form_validation->run() == FALSE){
+					$errors = $this->form_validation->error_array();
+					return $this->set_response(["status"=>406,"errors"=>$errors], 406);                
+				}else{
 					$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
-					$username=$arrdata['Email'];
+					$userid=$arrdata['AutoID'];
+
 					$oldpassword=$body['oldpassword'];
 					$newpassword=password_hash($body['newpassword'],PASSWORD_DEFAULT);
-					$user = $this->Login_model->validateUser($username);
-					if ($user) {
-						
-						if (password_verify($oldpassword,$user['Password'])) {
-							 $this->Login_model->chnage_password($username,$newpassword);
+					$user = $this->Login_model->getuserdata_byid($userid);
+					if($user){
+						if (password_verify($oldpassword,$user->Password)) {
+							$this->Login_model->chnage_password($userid,$newpassword);
 							$result['message'] = "success";
 					        $result['status']=true;
 					   		return $this->set_response($result, REST_Controller::HTTP_OK);
 						}else{
-							$result['message'] = "Wrong Password";
+							$result['message'] = "Current Password is Wrong.";
 							$result['status']=false;
-						return $this->set_response($result, 403);
-
+							return $this->set_response($result, 403);
 						}
 					}
-				} catch (\Exception $e) 
-					{ 
-	   					 $result['message'] = "Invalid Token";
-						$result['status']=false;
-						return $this->set_response($result, 401);
-					}
-		}
-		else{
+				}
+			} catch (Exception $e) { 
+				$result['message'] = "Invalid Token";
+				$result['status']=false;
+				return $this->set_response($result, 401);
+			}
+		}else{
 			$result['message'] = "Token or oldpasswor / newpassword not Found";
 			$result['status']=false;
 			return $this->set_response($result, 400);
@@ -485,7 +488,7 @@ class Api extends REST_Controller {
 		$input_data=$this->request->body;
 		$this->form_validation->set_data($input_data);
 		$this->form_validation->set_rules('PhoneCountryCode', 'Country Code', 'required|trim');
-		$this->form_validation->set_rules('PhoneNumber', 'Phone Number', 'required|trim|callback_mobile_check');
+		$this->form_validation->set_rules('PhoneNumber', 'Phone Number', 'required|trim|callback_mobile_check');//
 		if ($this->form_validation->run() == FALSE){
 			$errors = $this->form_validation->error_array();
 			$this->output
@@ -496,7 +499,8 @@ class Api extends REST_Controller {
 			$mobile=$input_data['PhoneNumber'];
 			$resend=$input_data['Resend'];
 			$countrycode=$input_data['PhoneCountryCode'];
-			$random_number='898989';
+			//$random_number='898989';
+			$random_number=rand(100000,999999);
 			$mobilenowithcountrycode = $countrycode.$mobile;
 			$res =send_otp($mobilenowithcountrycode,$resend,$random_number);
 			if($res){

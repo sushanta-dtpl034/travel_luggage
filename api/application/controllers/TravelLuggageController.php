@@ -74,9 +74,9 @@ class TravelLuggageController extends REST_Controller {
                     ->set_output(json_encode($travelDetailsListObj));
                 }else{
                     $this->output
-                    ->set_status_header(404)
+                    ->set_status_header(200)
                     ->set_content_type('application/json', 'utf-8')
-                    ->set_output(json_encode(["status"=>404,"message"=>"No Data Found."]));
+                    ->set_output(json_encode(["status"=>200,"message"=>"No Data Found."]));
                 }
                 
                
@@ -128,7 +128,7 @@ class TravelLuggageController extends REST_Controller {
 				}else{
 
 
-					exit;
+					//exit;
 					/* if(empty($input_data['AutoID'])){				
 						$dataRegID = $this->TravelLuggageModel->checkItineraryLuggageDuplicate($input_data['UserID'], $input_data['ItineraryDetailId']);
 					}else{

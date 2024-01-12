@@ -161,7 +161,7 @@ class TravelController extends REST_Controller {
 				$this->form_validation->set_rules('PhoneCountryCode', 'Country Code', 'required');
 				$this->form_validation->set_rules('PhoneNumber', 'Phone Number', 'required|trim');
 				$this->form_validation->set_rules('Address', 'Address', 'required|trim');
-				$this->form_validation->set_rules('Address2', 'Address2', 'required|trim');
+				//$this->form_validation->set_rules('Address2', 'Address2', 'required|trim');
 
 				if ($this->form_validation->run() == FALSE){
 					$errors = $this->form_validation->error_array();
