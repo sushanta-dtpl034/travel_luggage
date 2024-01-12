@@ -128,7 +128,7 @@ class TravelLuggageController extends REST_Controller {
 				}else{
 
 
-					exit;
+					//exit;
 					/* if(empty($input_data['AutoID'])){				
 						$dataRegID = $this->TravelLuggageModel->checkItineraryLuggageDuplicate($input_data['UserID'], $input_data['ItineraryDetailId']);
 					}else{

@@ -13,9 +13,9 @@ class Login_model extends CI_Model {
 	}
 	public function validateUser($username){
         $this->db->where('IsDelete',0);
-		$this->db->where('IsAdmin',1);
+		// $this->db->where('IsAdmin',1);
 		$this->db->group_start();
-        $this->db->where('UserName',$username);
+        $this->db->where('Mobile',$username);
         $this->db->or_where('Email',$username);
 		$this->db->group_end();
         $result = $this->db->get('RegisterMST');
@@ -30,12 +30,12 @@ class Login_model extends CI_Model {
 		return $query->row();
     }
 
-    public function chnage_password($username,$password){
-        $this->db->where('UserName',$username);
-        $this->db->or_where('Email',$username);
+    public function chnage_password($userid,$password){
+        $this->db->where('AutoID',$userid);
+        //$this->db->or_where('Email',$username);
         $this->db->update('RegisterMST',array('Password' => $password));
         // $result = $this->db->get('RegisterMST');
-          return 1;
+        return 1;
     }
 	
 	/**

@@ -30,8 +30,9 @@ class QR extends REST_Controller {
 
         		$url=$body['url'];
 				// Remove the prefix using str_replace
-				$qrcode = str_replace(QRCODE_URL,'', $url);
-
+				//$qrcode = str_replace(QRCODE_URL,'', $url);
+				$qrcode = explode('/', $url);
+				$qrcode = $qrcode[5];
 				//check qr code is avaliable or not
 				$isValidQrcode=$this->TravelLuggageModel->checkIsValidQRCode($qrcode);
 				if(!$isValidQrcode){
@@ -39,7 +40,8 @@ class QR extends REST_Controller {
 				}
 
 				//check qr code is used
-				$isUsed=$this->TravelLuggageModel->checkQRCodeIsUsed($qrcode);
+				//$isUsed=$this->TravelLuggageModel->checkQRCodeIsUsed($qrcode);
+				$isUsed=$this->TravelLuggageModel->checkQRCodeIsAssigned($qrcode, $userid);
 				if($isUsed){
 					return $this->set_response(['status'=>200,'error' => 'This QR code is already alloted one of your luggage.'], 200);
 				}
