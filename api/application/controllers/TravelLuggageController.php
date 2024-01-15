@@ -173,7 +173,7 @@ class TravelLuggageController extends REST_Controller {
 												$_FILES['file']['error'] = $_FILES['LuggageMoreImages']['error'][$i];
 												$_FILES['file']['size'] = $_FILES['LuggageMoreImages']['size'][$i];
 												$config['upload_path']   = '../upload/luggage/'; 
-												$config['allowed_types'] = 'jpg|png|jpeg'; 
+												$config['allowed_types'] = '*'; 
 												$this->load->library('upload',$config);
 												$this->upload->initialize($config);
 												if($this->upload->do_upload('file')){
@@ -222,7 +222,7 @@ class TravelLuggageController extends REST_Controller {
 												$_FILES['file']['error'] = $_FILES['LuggageMoreImages']['error'][$i];
 												$_FILES['file']['size'] = $_FILES['LuggageMoreImages']['size'][$i];
 												$config['upload_path']   = '../upload/luggage/'; 
-												$config['allowed_types'] = 'jpg|png|jpeg'; 
+												$config['allowed_types'] = '*'; 
 												$this->load->library('upload',$config);
 												$this->upload->initialize($config);
 												if($this->upload->do_upload('file')){
@@ -282,6 +282,9 @@ class TravelLuggageController extends REST_Controller {
 			} else {
 				return TRUE;
 			}
+		}else{
+			$this->form_validation->set_message('image_check', 'You can only upload a maximum of 3 files.');
+			return FALSE;
 		}
 		if(!empty($AutoID)){
 			$response =$this->TravelLuggageModel->count_luggage_images($AutoID);

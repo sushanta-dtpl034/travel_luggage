@@ -215,7 +215,7 @@ class TravelController extends REST_Controller {
 								mkdir('../upload/profile', 0777, true);
 							}
 							$config['upload_path']   = '../upload/profile/'; 
-							$config['allowed_types'] = 'jpg|png|jpeg'; 
+							$config['allowed_types'] = '*'; 
 							$this->load->library('upload',$config);
 							$this->upload->initialize($config);
 							if($this->upload->do_upload('ProfileIMG')){
