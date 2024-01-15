@@ -81,6 +81,7 @@ class TravelModel extends CI_Model {
     }
 	function checkUserDuplicate($mob, $AutoID=""){
 		$this->db->where('IsDelete',0);
+		$this->db->where('ParentId',0);
 		$this->db->where('Mobile',$mob);
 		if(!empty($AutoID)){
 			$this->db->where_not_in('AutoID',$AutoID);

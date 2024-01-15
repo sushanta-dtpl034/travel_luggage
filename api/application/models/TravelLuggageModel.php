@@ -73,7 +73,13 @@ class TravelLuggageModel extends CI_Model {
 		if($Requestlist){
 			foreach($Requestlist as $reqData){
 				$images=$this->getTravelLuggageMoreImageList($reqData->AutoID);
-				$reqData->LuggageMoreImages=$images;
+				$imagArr = array();
+				if($images){
+					foreach($images AS $key=>$val){
+						$imagArr[]=$val->ImageName;
+					}
+				}
+				$reqData->LuggageMoreImages=$imagArr;
 			}
 			//get scaned history list
 			$Requestlist = json_decode(json_encode($Requestlist),true);

@@ -90,9 +90,9 @@ class QR extends REST_Controller {
 					$status = 200;
 				}else{
 					$result['message'] ="No data found.";
-					$result['status']=404;
+					$result['status']=200;
 					$result['data']=null;
-					$status = 404;
+					$status = 200;
 				}
 				$this->output
 					->set_status_header($status)

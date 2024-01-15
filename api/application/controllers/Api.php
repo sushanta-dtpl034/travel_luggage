@@ -604,7 +604,7 @@ class Api extends REST_Controller {
 		}
 	}
 	function mobile_check($str){
-		$response =checkDuplicate('RegisterMST', 'Mobile',$str,["IsDelete"=>0]);
+		$response =checkDuplicate('RegisterMST', 'Mobile',$str,["IsDelete"=>0,"ParentId"=>0]);
 		if ($response){
 			$this->form_validation->set_message('mobile_check', 'The Phone Number field must be unique.');
 			return FALSE;
