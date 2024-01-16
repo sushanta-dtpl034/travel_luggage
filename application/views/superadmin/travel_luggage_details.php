@@ -58,14 +58,11 @@
             height: 40px;
             width: 58%;
             object-fit: contain;
-}
         }
-
     }
 
 </style>
 <div class="main-content side-content pt-0">
-
     <div class="container-fluid">
         <div class="inner-body">
 
@@ -99,7 +96,7 @@
                                     <?php }else{  ?>
                                     <img src="<?= base_url().'/'.$luggage_details->ProfileIMG;?>"alt="img" class="profile-pic" height="80" width="80">
                                     <?php } ?> 
-                                    <h3 class="h3"><?= ($luggage_details)?$luggage_details->Name:"";?></h3>
+                                    <h3 class="h3"> <?= $luggage_details->Suffix;?>  <?= ($luggage_details)?masking($luggage_details->Name,5):"";?></h3>
                                     <!-- <p><b><?= $luggage_details->QRCodeText;?></b></p> -->
                                 </div>
                                 <div class="profile-cover__action2 bg-img"></div>
@@ -113,17 +110,39 @@
                                     <div class="form-group">
                                         <p class="mg-b-10"> Contact Number </p>
                                         <!-- <p><b><?= ($luggage_details)?$luggage_details->CountryCode.' '.$luggage_details->Mobile:"";?></b></p> -->
-                                        <p><a class="btn btn-sm btn-success mobile-no" href="tel:<?= ($luggage_details)?$luggage_details->CountryCode.' '.$luggage_details->Mobile:"";?>">
+                                        <!-- <p><a class="btn btn-sm btn-success mobile-no" href="tel:<?= ($luggage_details)?$luggage_details->CountryCode.' '.$luggage_details->Mobile:"";?>">
                                         <i class="fa fa-phone fa-lg" aria-hidden="true" style="transform: rotate(90deg);"></i>&nbsp; &nbsp;Call on Phone
-                                        </a></p>
+                                        </a></p> -->
+
+                                        <p >
+                                            <a class="btn btn-sm btn-success mobile-no callMobileModal" href="#" data-qrcode="<?= $luggage_details->QRCodeText;?>" data-alertuserid="<?= $luggage_details->alertedUserId;?>" >
+                                                <i class="fa fa-phone fa-lg" aria-hidden="true" style="transform: rotate(90deg);"></i>&nbsp; &nbsp;Call the Owner
+                                            </a>
+                                        </p>
+
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <p class="mg-b-10"> Whatsapp  Number</p> 
-                                        <p >
+                                        <!-- <p >
                                             <a class="whatsapp-no-div" aria-label="Chat on WhatsApp" href="https://wa.me/<?= str_replace('+', '',  $luggage_details->WhatsAppCountryCode)?><?= $luggage_details->WhatsappNumber ?>" target="_blank">
                                                 <img alt="Chat on WhatsApp" src="https://static.xx.fbcdn.net/assets/?revision=197739703408370&name=platform-agnostic-green-medium-en-us&density=1"  class="whatsapp-no"/> 
+                                            </a>
+                                        </p> -->
+                                        <p >
+                                            <a class="whatsapp-no-div callMobileWhatsappModal" href="#" data-qrcode="<?= $luggage_details->QRCodeText;?>" data-alertuserid="<?= $luggage_details->alertedUserId;?>">
+                                                <img alt="Chat on WhatsApp" src="https://static.xx.fbcdn.net/assets/?revision=197739703408370&name=platform-agnostic-green-medium-en-us&density=1"  class="whatsapp-no"/> 
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <p class="mg-b-10">Email </p>
+                                        <p >
+                                            <a class="btn btn-sm btn-success mobile-no" href = "mailto: <?= $luggage_details->Email;?>">
+                                                <i class="fa fa-envelope fa-lg" aria-hidden="true" style="transform: rotate(0deg);"></i>&nbsp; &nbsp;Send Email the Owner
                                             </a>
                                         </p>
                                     </div>
@@ -155,6 +174,51 @@
         </div>
     </div>
 </div>
+<input type="hidden" name="client_ip" id="clientIP" value="">
+<!-- Register Mobile no  -->
+<div class="modal fade" id="callModal" tabindex="-1" role="dialog" aria-labelledby="callModal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="callModal">Enter Your Details to Contact</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal('#callModal')">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>      
+            <form id="myForm" method="POST">     
+                <div class="modal-body">
+               
+                    <div class="row row-sm">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <p class="mg-b-10">Mobile No <span class="text-danger">*</span></p>
+                                <input type="tel" name="mobileNo" id="mobileNo" class="form-control" placeholder="Mobile no" required>
+                            </div>
+                        </div> 
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <p class="mg-b-10">Name </p>
+                                <input type="text" name="name" id="name"  placeholder="Name" class="form-control">
+                            </div>
+                        </div> 
+                    </div>  
+                    <input type="hidden" name="status" id="status" value="">   
+                    <input type="hidden" name="qrcode" id="qrcode" value="">                   
+                    <input type="hidden" name="regid" id="regid" value="">   
+                    <input type="hidden" name="latitude" id="latitude" value="">                   
+                    <input type="hidden" name="longitude" id="longitude" value="">  
+                    <input type="hidden" name="ipaddress" id="ipaddress" value="">                   
+                                 
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal('#callModal')">Close</button>
+                    <button type="submit" class="btn btn-primary updateCallerInfo">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 <!-- Single QR Code Print-->
 <div class="modal fade" id="UpdateTravelModal" tabindex="-1" role="dialog" aria-labelledby="UpdateTravelModal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
@@ -189,7 +253,7 @@
 <script>
 sessionStorage.removeItem('returnurl');
 sessionStorage.setItem("returnurl",window.location.href);
-/*
+
 function getLocation() {
     return new Promise((resolve, reject) => {
         if ('geolocation' in navigator) {
@@ -207,41 +271,88 @@ function getLocation() {
             }
         );
         } else {
-        // Geolocation is not supported
-        reject('Geolocation is not supported by this browser.');
+            // Geolocation is not supported
+            reject('Geolocation is not supported by this browser.');
         }
     });
 }
 
 (function (){ 
+    fetch('https://api.ipify.org?format=json')
+    .then(response => response.json())
+    .then(data => {
+        const ipAddress = data.ip;
+        $('#ipaddress').val(ipAddress);
+        $('#clientIP').val(ipAddress);
+        //console.log(ipAddress);
+    })
+    .catch(error => {
+        console.error('Error fetching IP address:', error);
+    });
+
     getLocation()
     .then((coordinates) => {
+        $('#latitude').val(coordinates.latitude);
+	    $('#longitude').val(coordinates.longitude);
+
+        var qrCode="<?= $luggage_details->QRCodeText;?>";
+        const clientIP =$('#clientIP').val();
+        if(qrCode != "" && qrCode.length > 0){
+            $.ajax({
+                url: "<?= base_url('TravelLuggageController/update_scan_history');?>",
+                type: 'post',
+                data: {
+                    qrCode,
+                    Lattitude: `${coordinates.latitude}`, 
+                    Longitude: `${coordinates.longitude}`,
+                    clientIP:clientIP
+                },
+                dataType: 'json',
+                success: function(response){
+                    console.log(response);
+                }
+            })
+        }
+
+    })
+    .catch((error) => {
+        console.error(error);
+    });
+})();
+
+/*
+(function (){ 
+    getLocation()
+    .then((coordinates) => { 
         // Use coordinates.latitude and coordinates.longitude as needed
        // console.log(`Latitude: ${coordinates.latitude}, Longitude: ${coordinates.longitude}`);
-        const curLocation =window.location.href;
+        //const curLocation =window.location.href;
         // Get the current URL
-        var url = new URL(curLocation);
+       // var url = new URL(curLocation);
         // Use URLSearchParams to get the value of 'ref_no'
-        var refNo = url.searchParams.get("ref_no");
-        $.ajax({
-			url: "<?= base_url('Qrcode/update_scan_history');?>",
-			type: 'post',
-			data: {
-                refNo:refNo,
-				Lattitude: `${coordinates.latitude}`, 
-                Longitude: `${coordinates.longitude}`
-			},
-			dataType: 'json',
-			success: function(response){
-                console.log(response);
-				// if(response.status == 200){
-				// 	$('#UpdateTravelModal').modal('hide'); 
-				// 	alert('Room no alerted Successfully.')  
-				// }else{
-				// 	alert("Invalid ID.");
-				// }
-			}
-		})
+        //var refNo = url.searchParams.get("ref_no");
+        var qrCode="<?= $luggage_details->QRCodeText;?>";
+        if(qrCode != "" && qrCode.length > 0){
+            $.ajax({
+                url: "<?= base_url('TravelLuggageController/update_scan_history');?>",
+                type: 'post',
+                data: {
+                    qrCode,
+                    Lattitude: `${coordinates.latitude}`, 
+                    Longitude: `${coordinates.longitude}`
+                },
+                dataType: 'json',
+                success: function(response){
+                    console.log(response);
+                    // if(response.status == 200){
+                    // 	$('#UpdateTravelModal').modal('hide'); 
+                    // 	alert('Room no alerted Successfully.')  
+                    // }else{
+                    // 	alert("Invalid ID.");
+                    // }
+                }
+            })
+        }
     })
     .catch((error) => {
         console.error(error);

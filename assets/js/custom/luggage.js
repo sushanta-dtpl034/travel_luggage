@@ -113,7 +113,73 @@ $('.updateRoom').click(function(){
 	}else{
 		alert('Enter Room No.')
 	}
+})
+
+
+
+// call by mobile no
+$('.callMobileModal').click(function(){
+	const qrcode=$(this).data("qrcode") 
+	const alertuserid=$(this).data("alertuserid") 
+    //status => 1-Scan, 2-Call on owner, 3- Call in Whatsapp,4-Email
+    $('#status').val(2);
+	$('#qrcode').val(qrcode);
+	$('#regid').val(alertuserid);	
+	$('#callModal').modal('show');
+})
+
+
+// call by whats app no
+$('.callMobileWhatsappModal').click(function(){
+	const qrcode=$(this).data("qrcode") 
+	const alertuserid=$(this).data("alertuserid") 
+    //status => 1-Scan, 2-Call on owner, 3- Call in Whatsapp,4-Email
+    $('#status').val(3);
+	$('#qrcode').val(qrcode);
+	$('#regid').val(alertuserid);	
+	$('#callModal').modal('show');
+})
+$('.updateCallerInfo').click(function(){
+	const qrcode =$('#qrcode').val();
+	const mobileNo =$('#mobileNo').val();
+	const status =$('#status').val();
+	const name =$('#name').val();
+	const alertuserid =$('#regid').val();
+	const latitude =$('#latitude').val();
+	const longitude =$('#longitude').val();
+	const ipaddress =$('#ipaddress').val();
+	if(mobileNo !="" && mobileNo.length > 0){
+		$.ajax({
+			url: base_url+'TravelLuggageController/updateCallerInfo',
+			type: 'post',
+			data: {
+				qrcode,
+				mobileNo,
+				name,
+                alertuserid,
+                latitude,
+                longitude,
+                status,
+                ipaddress
+			},
+			dataType: 'json',
+			success: function(response){
+                console.log(response);
+				if(response.status == 200){
+					$('#callModal').modal('hide'); 
+					alert('your request is sent to the owner of this luggage.once the request is accepted you can contact.') ;
+                    var form = document.getElementById("myForm");
+                    form.reset();
+				}else{
+					alert("Error.");
+				}
+			}
+		});
+	}else{
+		alert('Enter Phone No.')
+	}
 }) 
+ 
  
 
 //Scaned History Data Table Assign
