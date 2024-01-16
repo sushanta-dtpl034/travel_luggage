@@ -92,7 +92,7 @@ class Qrcodemodel extends CI_Model{
         }
     } */
 	function get_qrcode_details_qrcode($QrCodeNo){
-        $this->db->select("reg.AutoID as regId,CONCAT(reg.Suffix, reg.Name) as Name,reg.Mobile,reg.Address,reg.AdressTwo,reg.Landmark,reg.ProfileIMG,reg.CountryCode,reg.WhatsAppCountryCode,reg.WhatsappNumber,CONCAT(reg.WhatsAppCountryCode,' ',reg.WhatsappNumber) as WhatsappNo, QDM.QRCodeText,QDM.alertedDateTime, QDM.IsUsed,QDM.alertedUserId");
+        $this->db->select("reg.AutoID as regId,reg.Suffix, reg.Name,reg.Mobile,reg.Email,reg.Address,reg.AdressTwo,reg.Landmark,reg.ProfileIMG,reg.CountryCode,reg.WhatsAppCountryCode,reg.WhatsappNumber,CONCAT(reg.WhatsAppCountryCode,' ',reg.WhatsappNumber) as WhatsappNo, QDM.QRCodeText,QDM.alertedDateTime, QDM.IsUsed,QDM.alertedUserId");
         $this->db->from('QRCodeDetailsMst as QDM');
         $this->db->join('RegisterMST as reg', 'QDM.alertedUserId = reg.AutoID','left');
         $this->db->where('QDM.QRCodeText',$QrCodeNo); 
@@ -160,8 +160,8 @@ class Qrcodemodel extends CI_Model{
         }
     }
     function getid_from_qrdata($qrtext){
-		$this->db->where('QrCodeNo',$qrtext);
-		$query=$this->db->get('TravelHead');
+		$this->db->where('QRCodeText',$qrtext);
+		$query=$this->db->get('QRCodeDetailsMst');
 		if($query){
 			return $query->row();
 		}else{

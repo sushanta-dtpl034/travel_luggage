@@ -777,3 +777,9 @@ if (!function_exists('checkDuplicate')) {
 		//select count(*) from CurrencyMst where  Name='Abc' AND AutoID !=3
 	}
 }
+
+function masking($value,$start){
+	$replacementString = str_repeat("x", $start);
+  	$mask_number =  substr_replace($value, $replacementString, 0, $start);
+    return $mask_number;
+}
