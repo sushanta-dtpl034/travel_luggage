@@ -117,8 +117,8 @@ class TravelModel extends CI_Model {
 		$Requestlist = $query->result();
 		if($Requestlist){
 			foreach($Requestlist as $res){
-				$scan_history_data = $this->getTravelItineraryDetails($res->ItineraryHeadId);
-				$res->Itinerary=$scan_history_data;
+				$itineararyDetailsData = $this->getTravelItineraryDetails($res->ItineraryHeadId);
+				$res->Itinerary=$itineararyDetailsData;
 				$scan_history_data=$this->getQRScanHistory($res->ItineraryHeadId);
 				$res->scan_history_data=$scan_history_data;
 			}
@@ -145,7 +145,13 @@ class TravelModel extends CI_Model {
 		$this->db->from('ItineraryDetails');
 		$query=$this->db->get();
 		if($query){
-			return $query->result();
+			$results=$query->result();
+			foreach($results as $res){
+				$res->NotifyScheduleInMin=intval($res->NotifyScheduleInMin);
+				$res->NotifyType =json_decode($res->NotifyType, true);
+			}
+			return $results;
+			//return $query->result();
 		}else{
 			return false;
 		}
