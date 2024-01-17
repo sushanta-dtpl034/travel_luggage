@@ -783,3 +783,87 @@ function masking($value,$start){
   	$mask_number =  substr_replace($value, $replacementString, 0, $start);
     return $mask_number;
 }
+
+function pushNotification($to, $title, $message, $img = "", $datapayload = ""){
+	$msg = urlencode($message);
+	$data = array(
+		'title'=>$title,
+		'sound' => "default",
+		'msg'=>$msg,
+		'data'=>$datapayload,
+		'body'=>$message,
+		'color' => "#79bc64"
+	);
+	if($img){
+		$data["image"] = $img;
+		$data["style"] = "picture";
+		$data["picture"] = $img;
+	}
+	$fields = array(
+		'to'=>$to,
+		'notification'=>$data,
+		'data'=>$datapayload,
+		"priority" => "high",
+	);
+	//for test push-notificaction(firebase)
+	$SERVER_API_KEY='AAAAvq1M-T0:APA91bHRP2spXd3hFyh87Y13Y90_LX7r_SPOcKNqc2SMKHRauL2--hC4nnTaoGPJ9IeWOvVRdCLXT-jNhzyMtvrh8W-CKzeIBp3OJEaYwCYMhtP6FVnp-z5ihiX3c2ltI68PmQxyPLfE'; 
+
+	$headers = array(
+		'Authorization: key='.$SERVER_API_KEY,
+		'Content-Type: application/json'
+	);
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+	$result = curl_exec($ch);
+	curl_close( $ch );
+	return $result;
+	}
+
+	function sendNotification($params=[]){   
+
+	//for test push-notificaction(firebase)
+	$SERVER_API_KEY='AAAAvq1M-T0:APA91bHRP2spXd3hFyh87Y13Y90_LX7r_SPOcKNqc2SMKHRauL2--hC4nnTaoGPJ9IeWOvVRdCLXT-jNhzyMtvrh8W-CKzeIBp3OJEaYwCYMhtP6FVnp-z5ihiX3c2ltI68PmQxyPLfE'; 
+
+	$data = [
+		"registration_ids" => $firebaseToken,
+		"notification" => [
+			"title"             => $params['title'],
+			"body"              => $params['body'],
+			"content_available" => true,
+			"priority"          => "high",
+		],
+		"data"              => $params['data'],
+	];
+	$dataString = json_encode($data);
+
+	$headers = [
+		'Authorization: key=' . $SERVER_API_KEY,
+		'Content-Type: application/json',
+	];
+
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
+	$response = curl_exec($ch);
+	$status =200;
+	// Execute post
+	if ($response === FALSE) {
+		$status =401; 
+		die('Curl failed: ' . curl_error($ch));
+	}        
+	// Close connection
+	curl_close($ch);
+	// FCM response
+	return $status;
+	//dd($response);
+}

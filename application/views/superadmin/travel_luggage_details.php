@@ -26,12 +26,18 @@
     }
     .whatsapp-no-div{
         height:30px;
-        width:145px 
+        width:165px 
     }
     .whatsapp-no{
         height:30px;
-        width:145px;
-        object-fit:content;
+        width:165px;
+        object-fit:cover;
+    }
+    .email{
+        height:30px;
+        border-radius:7px;
+        font-weight: 500;
+        width:165px
     }
     .btn-success {
         color: #ffffff;
@@ -47,7 +53,7 @@
             height:40px;
             border-radius:7px;
             font-weight: 500;
-            width:58%;
+            width:65%;
             line-height: 30px;
             text-align: left;
             padding-left: 14px;
@@ -56,9 +62,20 @@
 
         .whatsapp-no{
             height: 40px;
-            width: 58%;
-            object-fit: contain;
+            width: 65%;
+            object-fit: cover;
         }
+        .email{
+            height:40px;
+            border-radius:7px;
+            font-weight: 500;
+            width:65%;
+            line-height: 30px;
+            text-align: left;
+            padding-left: 14px;
+            font-size: 15px;
+        }
+
     }
 
 </style>
@@ -141,7 +158,7 @@
                                     <div class="form-group">
                                         <p class="mg-b-10">Email </p>
                                         <p >
-                                            <a class="btn btn-sm btn-success mobile-no" href = "mailto: <?= $luggage_details->Email;?>">
+                                            <a class="btn btn-sm btn-success email" href = "mailto: <?= $luggage_details->Email;?>">
                                                 <i class="fa fa-envelope fa-lg" aria-hidden="true" style="transform: rotate(0deg);"></i>&nbsp; &nbsp;Send Email the Owner
                                             </a>
                                         </p>
@@ -169,6 +186,39 @@
                         </div>
                     </div>
                 <?php } ?>
+                
+                <!-- Scan History -->
+                <?php /* if($luggage_details){    ?>
+                    <div class="card custom-card overflow-hidden">
+                        <div class="card-body">
+                            <h4 class="tx-15 text-uppercase mb-3 mt-3">Scan History</h4>
+                            <div class="row row-sm mt-4">
+                                <div class="col-md-6">
+                                    <div class="table-responsive">
+                                        <table id="scanHistory" class="table table-bordered border-t0 key-buttons text-nowrap w-100 table-responsive">
+                                            <thead>
+                                                <tr>
+                                                    <th>S.No</th>
+                                                    <th>Contact Person Name</th>
+                                                    <th>Contact Person Mobile No</th>
+                                                    <th>Location</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>Sushanta Patra</td>
+                                                    <td>1236549870</td>
+                                                    <td>Bhubaneswar</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php } */ ?>
 
             <?php } ?>
         </div>

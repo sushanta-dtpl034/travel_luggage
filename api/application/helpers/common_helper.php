@@ -465,3 +465,10 @@ if (!function_exists('checkDuplicate')) {
 		//select count(*) from CurrencyMst where  Name='Abc' AND AutoID !=3
 	}
 }
+
+//json encode
+if (!function_exists('jsonEncodeIntArr')) { 
+	function jsonEncodeIntArr($arr = []){
+		return !empty($arr) ? json_encode(array_map('intval',array_values($arr))) : NULL;
+	}
+}
