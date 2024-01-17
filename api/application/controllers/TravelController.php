@@ -289,7 +289,7 @@ class TravelController extends REST_Controller {
 		$headers = apache_request_headers();
 		$this->load->library('myLibrary');
 		$input_data=$this->request->body;
-		$TravelUserId = $input_data['UserID'];
+		// $TravelUserId = $input_data['UserID'];
 		//$Type = isset($input_data['Type']) ? $input_data['Type'] : '';
 		$Hotel = isset($input_data['Hotel']) ? $input_data['Hotel'] : [];
 		$Airtravel = isset($input_data['Airtravel']) ? $input_data['Airtravel'] : []; 
@@ -309,7 +309,7 @@ class TravelController extends REST_Controller {
 					->set_output(json_encode(["status"=>406,"errors"=>$errors]));                    
 				}else{
 					$dataHead = array(
-						'UserID'		=>$TravelUserId,
+						'UserID'		=>$userid,
 						'ItineraryName'	=>trim($input_data['ItineraryName']),
 						'StartDate'		=>date('Y-m-d H:i:s', strtotime($input_data['StartDate'])),
 						'EndDate'		=>date('Y-m-d H:i:s', strtotime($input_data['EndDate'])),
