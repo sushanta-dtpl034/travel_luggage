@@ -35,12 +35,18 @@ $(function () {
             { 
                 "data": "Name" ,
                 "render": function(data, type, full, meta) {
+                     if(full.ProfileIMG === null){
+                        return `<img class="rounded rounded-circle" src="${base_url}assets/img/noimage.png" height="50" width="50"/> &nbsp; &nbsp;${full.Suffix} ${full.Name}`;
+                    }
                     return `<img src="${base_url}${full.ProfileIMG}" height="40" width="40"/> &nbsp; &nbsp;${full.Suffix} ${full.Name}`;
                 }
             },
             { 
                 "data": "LuggageName",
                 "render": function(data, type, full, meta) {
+                    if(full.LuggageImage === null){
+                        return `<img class="rounded rounded-circle" src="${base_url}assets/img/noimage.png" height="50" width="50"/> &nbsp; &nbsp;${full.LuggageName}`;
+                    }
                     return `<img src="${base_url}${full.LuggageImage}" height="40" width="40"/> &nbsp; &nbsp; ${full.LuggageName}`;
                 }
             },

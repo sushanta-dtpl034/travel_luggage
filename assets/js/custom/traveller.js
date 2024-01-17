@@ -35,6 +35,9 @@ $(function () {
             { 
                 "data": "Name" ,
                 "render": function(data, type, full, meta) {
+                    if(full.ProfileIMG === null){
+                        return `<img class="rounded rounded-circle" src="${base_url}assets/img/noimage.png" height="50" width="50"/> &nbsp; &nbsp;${full.Suffix} ${full.Name}`;
+                    }
                     return `<img class="rounded rounded-circle" src="${base_url}${full.ProfileIMG}" height="50" width="50"/> &nbsp; &nbsp;${full.Suffix} ${full.Name}`;
                 }
             },
@@ -47,11 +50,22 @@ $(function () {
             { 
                 "data": "WhatsappNumber",
                 "render": function(data, type, full, meta) {
+                    if(full.WhatsappNumber === null || full.WhatsappNumber == ""){
+                        return `-`;
+                    }
                     return `${full.WhatsappNumber?full.WhatsAppCountryCode:''} ${data}`;
                 }
             
             },
-            { "data": "Email" },
+            { 
+                "data": "Email" ,
+                "render": function(data, type, full, meta) {
+                    if(full.Email === null || full.Email == ""){
+                        return `-`;
+                    }
+                    return `${data}`;
+                }
+            },
             {
                 "render": function (AutoID, type, row, meta) {
                     return '<a href="'+base_url +'TravelerController/guestTravellerList/'+row.AutoID+'" class="btn btn-sm view_traveller bg-info mx-2" title="view guest traveller"><i class="si si-eye"></i></a><button class="btn btn-sm update_travel_luggage bg-success mx-2" id="' + row.AutoID + '"  datatype="edit"><i class="si si-pencil"></i></button><button class="btn btn-sm ripple delete_travel_luggage btn-danger" id="' + row.AutoID + '"><i class="fe fe-trash"></i></button>';
