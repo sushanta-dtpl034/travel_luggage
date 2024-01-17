@@ -137,7 +137,7 @@ class TravelController extends REST_Controller {
                 return $this->set_response($result, 401);
             }
         }else{
-			$result['message'] = "Token or oldpasswor / newpassword not Found";
+			$result['message'] = "Token or oldpassword / newpassword not Found";
 			$result['status']=false;
 			return $this->set_response($result, 400);
 
@@ -315,6 +315,7 @@ class TravelController extends REST_Controller {
 						'EndDate'		=>date('Y-m-d H:i:s', strtotime($input_data['EndDate'])),
 						'IsDelete'		=>0,
 					); 
+					
 					if(empty($input_data['AutoID'])){	
 						$dataHead['CreatedBy']  =$userid;
 						$dataHead['CreatedDate'] =date('Y-m-d H:i:s');
@@ -329,7 +330,7 @@ class TravelController extends REST_Controller {
 						$QrCodeID =$input_data['AutoID'];
 						$this->Commonmodel->common_update('ItineraryHead',$where,$dataHead);					
 					}
-				
+					
 					if(isset($Hotel) && count($Hotel) > 0){
 						foreach($Hotel as $key => $val){
 							$dataHotel = array(
@@ -342,7 +343,10 @@ class TravelController extends REST_Controller {
 								'CheckInDate'	=>date('Y-m-d H:i:s', strtotime($val['CheckInDate'])),
 								'CheckOutDate'	=>date('Y-m-d H:i:s', strtotime($val['CheckOutDate'])),
 								'IsDelete'  	=> 0,
+								'NotifyScheduleInMin'=>$val['NotifyScheduleInMin'],
+								'NotifyType'	=>jsonEncodeIntArr($val['NotifyType']),////1-Email, 2-Whatsapp, 3-In App Nofication
 							);
+
 							if(empty($val['AutoID'])){
 								$dataHotel['CreatedBy']  =$userid;
 								$dataHotel['CreatedDate'] =date('Y-m-d H:i:s');
@@ -361,7 +365,6 @@ class TravelController extends REST_Controller {
 						$result['status']=201;
 						$status = 201;
 					}
-					
 					if(isset($Airtravel) && count($Airtravel) > 0){
 						foreach($Airtravel AS $key => $val){
 							$dataTravel = array(
@@ -375,6 +378,8 @@ class TravelController extends REST_Controller {
 								'TravelStartDateTime'=>date('Y-m-d H:i:s', strtotime($val['TravelStartDateTime'])),
 								'TravelEndDateTime'	=>date('Y-m-d H:i:s', strtotime($val['TravelEndDateTime'])),
 								'IsDelete'  		=> 0,
+								'NotifyScheduleInMin'=>$val['NotifyScheduleInMin'],
+								'NotifyType'	=>jsonEncodeIntArr($val['NotifyType']),//1-Email, 2-Whatsapp, 3-In App Nofication
 							);
 							if(empty($val['AutoID'])){
 								$dataTravel['CreatedBy']  =$userid;
@@ -406,6 +411,8 @@ class TravelController extends REST_Controller {
 								'TravelFrom'	=>$val['TravelFrom'],
 								'TravelTo'		=>$val['TravelTo'],
 								'IsDelete'  	=> 0,
+								'NotifyScheduleInMin'=>$val['NotifyScheduleInMin'],
+								'NotifyType'	=>jsonEncodeIntArr($val['NotifyType']),//1-Email, 2-Whatsapp, 3-In App Nofication
 							);
 							if(empty($val['AutoID'])){
 								$dataTravel['CreatedBy']  =$userid;
@@ -438,6 +445,8 @@ class TravelController extends REST_Controller {
 								'TravelFrom'	=>$val['TravelFrom'],
 								'TravelTo'		=>$val['TravelTo'],
 								'IsDelete'  	=> 0,
+								'NotifyScheduleInMin'=>$val['NotifyScheduleInMin'],
+								'NotifyType'	=>jsonEncodeIntArr($val['NotifyType']),//1-Email, 2-Whatsapp, 3-In App Nofication
 							);
 							if(empty($val['AutoID'])){
 								$dataTraintravel['CreatedBy']  =$userid;
