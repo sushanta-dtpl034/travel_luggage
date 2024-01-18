@@ -94,7 +94,7 @@ class TravelModel extends CI_Model {
 			return false;
 		}
 	}
-	public function travelerItineraryListDetails($data){ 
+	public function travelerItineraryListDetails($data,$parentId){ 
         $query=$this->db->select("rm.AutoID,rm.Name,rm.Mobile,rm.Suffix AS TitlePrefix,rm.ProfileIMG,ih.AutoID AS ItineraryHeadId,ih.UserID,ih.StartDate,ih.EndDate, ih.CreatedDate,ih.ModifiedDate,ih.ItineraryName");
         $this->db->from('ItineraryHead as ih');//ItineraryDetails
 		$this->db->join('RegisterMST as rm','ih.UserID = rm.AutoID','LEFT');
@@ -102,6 +102,9 @@ class TravelModel extends CI_Model {
 		if(isset($data['AutoID']) && !empty($data['AutoID'])){
 			$this->db->where('ih.AutoID',$data['AutoID']);
 		}else{	
+			if($parentId > 0){
+				$this->db->where('UserID',$parentId);
+			}
 			if(!empty(trim($data['keyword']))) {
 				$this->db->group_start();
 				$this->db->like('Name', trim($data['keyword']));
@@ -119,9 +122,11 @@ class TravelModel extends CI_Model {
 			foreach($Requestlist as $res){
 				$itineararyDetailsData = $this->getTravelItineraryDetails($res->ItineraryHeadId);
 				$res->Itinerary=$itineararyDetailsData;
-				$scan_history_data=$this->getQRScanHistory($res->ItineraryHeadId);
-				$res->scan_history_data=$scan_history_data;
+				// $scan_history_data=$this->getQRScanHistory($res->ItineraryHeadId);
+				// $scan_history_data=$this->getQRScanHistory($res->AutoID);
+				// $res->scan_history_data=$scan_history_data;
 			}
+			
 			$Requestlist = json_decode(json_encode($Requestlist),true);
 			$draw = $this->input->post('draw');
 			$total = $this->db->where('ItineraryHead.IsDelete',0)->count_all_results('ItineraryHead');
@@ -158,7 +163,8 @@ class TravelModel extends CI_Model {
 	}
 	function getQRScanHistory($travelId){
 		$query=$this->db->select("qsh.*,rm.Name as ScanedByName");
-		$this->db->where('TravelDetailID',$travelId);
+		// $this->db->where('TravelDetailID',$travelId);
+		$this->db->where('rm.AutoID ',$travelId);
 		$this->db->from('QRScanHistory as qsh');
 		$this->db->join('RegisterMST as rm','rm.AutoID = qsh.ScanedBy','LEFT');
 		$query=$this->db->get();
@@ -176,10 +182,14 @@ class TravelModel extends CI_Model {
 		$query=$this->db->get();
 		return $query->num_rows();
 	}
-	function checkItineraryExistsOrNot($userId){
+	function checkItineraryExistsOrNot($userId,$parentId){
 		$currentDate=date('Y-m-d');
 		// $this->db->where('StartDate >=',$currentDate);
 		$this->db->where('EndDate >',$currentDate);
+		if($parentId > 0){
+			$this->db->where('UserID',$parentId);
+		}
+
 		$this->db->from('ItineraryHead');
 		$query=$this->db->get();
 		if($query){
