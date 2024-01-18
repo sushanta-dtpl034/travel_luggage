@@ -176,7 +176,18 @@ class TravelModel extends CI_Model {
 		$query=$this->db->get();
 		return $query->num_rows();
 	}
-
+	function checkItineraryExistsOrNot($userId){
+		$currentDate=date('Y-m-d');
+		// $this->db->where('StartDate >=',$currentDate);
+		$this->db->where('EndDate >',$currentDate);
+		$this->db->from('ItineraryHead');
+		$query=$this->db->get();
+		if($query){
+			return $query->num_rows();
+		}else{
+			return false;
+		} 
+	}
 
 
 	

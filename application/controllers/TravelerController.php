@@ -11,12 +11,16 @@ class TravelerController extends CI_Controller {
 		
         $username = $this->session->userdata('username');
 		$userid = $this->session->userdata('userid');
+		if (!isset($username) && !isset($userid)) {
+			redirect('Login');
+		}
         $this->load->library('form_validation');
 		$this->load->library('upload');
 		$this->load->model('Commonmodel');
 		$this->load->model('TravelerModel');
     }
 	function index(){
+		 
 		$data['page_title'] = 'User  List';
 		$data['page_name'] = "User  List";
 		$travelTypesArray = TITLE_PREFIX;
