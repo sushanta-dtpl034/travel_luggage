@@ -299,6 +299,12 @@ class TravelController extends REST_Controller {
 			try {
 				$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
 				$userid=$arrdata['AutoID'];
+				if($arrdata['IsAdmin'] == 0){
+					$parentId =$userid;
+				}else{
+					$parentId =0;
+				}
+
 				$this->form_validation->set_data($this->post());
 				$this->form_validation->set_rules('ItineraryName', 'Itinerary Name', 'required|trim');
 				if ($this->form_validation->run() == FALSE){
@@ -315,7 +321,7 @@ class TravelController extends REST_Controller {
 						'EndDate'		=>date('Y-m-d', strtotime($input_data['EndDate'])),
 						'IsDelete'		=>0,
 					); 
-					$checkItineraryExistsOrNot = $this->TravelModel->checkItineraryExistsOrNot($userid);
+					$checkItineraryExistsOrNot = $this->TravelModel->checkItineraryExistsOrNot($userid,$parentId);
 					if($checkItineraryExistsOrNot > 0){
 						$result['message'] = "Already data exists.";
 						$result['status']=200;
@@ -508,7 +514,12 @@ class TravelController extends REST_Controller {
 			try {
 				$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
 				$userid=$arrdata['AutoID'];
-				$travelDetailsListObj = $this->TravelModel->travelerItineraryListDetails($input_data);
+				if($arrdata['IsAdmin'] == 0){
+					$parentId =$userid;
+				}else{
+					$parentId =0;
+				}
+				$travelDetailsListObj = $this->TravelModel->travelerItineraryListDetails($input_data,$parentId);
 				if($travelDetailsListObj){
 					$this->output
 					->set_status_header(200)
