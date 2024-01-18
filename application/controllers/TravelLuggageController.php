@@ -11,6 +11,9 @@ class TravelLuggageController extends CI_Controller {
         
         $username = $this->session->userdata('username');
 		$userid = $this->session->userdata('userid');
+        if (!isset($username) && !isset($userid)) {
+			redirect('Login');
+		}
         $this->load->library('form_validation');
 		$this->load->library('upload');
         $this->load->model('Commonmodel');
@@ -18,6 +21,7 @@ class TravelLuggageController extends CI_Controller {
         $this->load->model('Qrcodemodel');
     }
     function index(){
+       
         $data['page_title'] = 'Travel Luggage  List';
 		$data['page_name'] = "Travel Luggage  List";
 		$this->load->view('include/admin-header',$data);

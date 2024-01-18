@@ -129,6 +129,10 @@ class Qrcode extends CI_Controller {
 	}
 
 	public function get_qrcode_details($id){
+		if (!isset($this->username) && !isset($this->userid)) { 
+			redirect('Login');
+		} 
+
 		$data['qrcode_data'] = $this->Qrcodemodel->get_qrcode_details($id);	
 		$data['qrcode'] = $this->Qrcodemodel->get_qrcode_data();	
 		$data['page_title'] = 'QR Code Details';

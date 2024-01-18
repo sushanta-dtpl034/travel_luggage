@@ -311,15 +311,19 @@ class TravelController extends REST_Controller {
 					$dataHead = array(
 						'UserID'		=>$userid,
 						'ItineraryName'	=>trim($input_data['ItineraryName']),
-						'StartDate'		=>date('Y-m-d H:i:s', strtotime($input_data['StartDate'])),
-						'EndDate'		=>date('Y-m-d H:i:s', strtotime($input_data['EndDate'])),
+						'StartDate'		=>date('Y-m-d', strtotime($input_data['StartDate'])),
+						'EndDate'		=>date('Y-m-d', strtotime($input_data['EndDate'])),
 						'IsDelete'		=>0,
 					); 
-					
+					$checkItineraryExistsOrNot = $this->TravelModel->checkItineraryExistsOrNot($userid);
+					if($checkItineraryExistsOrNot > 0){
+						$result['message'] = "Already data exists.";
+						$result['status']=200;
+						return $this->set_response($result, 200);
+					}
 					if(empty($input_data['AutoID'])){	
 						$dataHead['CreatedBy']  =$userid;
 						$dataHead['CreatedDate'] =date('Y-m-d H:i:s');
-
 						$QrCodeID =$this->Commonmodel->common_insert('ItineraryHead',$dataHead);
 					}else{
 						$dataHead['ModifiedBy']  =$userid;
