@@ -3,7 +3,7 @@
     .sp-container.sp-hidden{z-index: 20000 !important;}
     .profile-cover__action2{
         display: flex;
-        padding: 216px 30px 10px 185px;
+        padding: 160px 30px 10px 185px;
         border-radius: 5px 5px 0 0;
         -ms-flex-wrap: wrap;
         flex-wrap: wrap;
@@ -20,9 +20,10 @@
 	}
     .mobile-no{
         height:30px;
-        border-radius:7px;
+        border-radius:4px;
         font-weight: 500;
-        width:145px
+        width:145px;
+        line-height: 22px;
     }
     .whatsapp-no-div{
         height:30px;
@@ -35,9 +36,10 @@
     }
     .email{
         height:30px;
-        border-radius:7px;
+        border-radius:4px;
         font-weight: 500;
-        width:165px
+        width:165px;
+        line-height: 22px;
     }
     .btn-success {
         color: #ffffff;
@@ -51,7 +53,7 @@
         }
         .mobile-no{
             height:40px;
-            border-radius:7px;
+            border-radius:4px;
             font-weight: 500;
             width:65%;
             line-height: 30px;
@@ -67,7 +69,7 @@
         }
         .email{
             height:40px;
-            border-radius:7px;
+            border-radius:4px;
             font-weight: 500;
             width:65%;
             line-height: 30px;
@@ -79,6 +81,7 @@
     }
 
 </style>
+
 <div class="main-content side-content pt-0">
     <div class="container-fluid">
         <div class="inner-body">
@@ -86,7 +89,7 @@
             <!-- Page Header -->
             <div class="page-header">
                 <div>
-                    <h2 class="main-content-title tx-24 mg-b-5">Travel Luggage details</h2>
+                    <!-- <h2 class="main-content-title tx-24 mg-b-5">Travel Luggage details</h2> -->
                 </div>
             </div>
 
@@ -121,11 +124,11 @@
 
 
                             <div style="height:0.5px; width:100%; border:1px solid #dfdfdf;"></div>
-                            <h4 class="tx-15 text-uppercase mb-3 mt-3">User Details</h4>
+                            <h4 class="tx-15 text-uppercase mb-3 mt-3">Contact Details</h4>
                             <div class="row row-sm mt-4">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <p class="mg-b-10"> Contact Number </p>
+                                        <!-- <p class="mg-b-10"> Contact Number </p> -->
                                         <!-- <p><b><?= ($luggage_details)?$luggage_details->CountryCode.' '.$luggage_details->Mobile:"";?></b></p> -->
                                         <!-- <p><a class="btn btn-sm btn-success mobile-no" href="tel:<?= ($luggage_details)?$luggage_details->CountryCode.' '.$luggage_details->Mobile:"";?>">
                                         <i class="fa fa-phone fa-lg" aria-hidden="true" style="transform: rotate(90deg);"></i>&nbsp; &nbsp;Call on Phone
@@ -141,7 +144,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <p class="mg-b-10"> Whatsapp  Number</p> 
+                                        <!-- <p class="mg-b-10"> Whatsapp  Number</p>  -->
                                         <!-- <p >
                                             <a class="whatsapp-no-div" aria-label="Chat on WhatsApp" href="https://wa.me/<?= str_replace('+', '',  $luggage_details->WhatsAppCountryCode)?><?= $luggage_details->WhatsappNumber ?>" target="_blank">
                                                 <img alt="Chat on WhatsApp" src="https://static.xx.fbcdn.net/assets/?revision=197739703408370&name=platform-agnostic-green-medium-en-us&density=1"  class="whatsapp-no"/> 
@@ -156,10 +159,10 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <p class="mg-b-10">Email </p>
+                                        <!-- <p class="mg-b-10">Email </p> -->
                                         <p >
                                             <a class="btn btn-sm btn-success email" href = "mailto: <?= $luggage_details->Email;?>">
-                                                <i class="fa fa-envelope fa-lg" aria-hidden="true" style="transform: rotate(0deg);"></i>&nbsp; &nbsp;Send Email the Owner
+                                                <i class="fa fa-envelope fa-lg" aria-hidden="true" style="transform: rotate(0deg);"></i>&nbsp; &nbsp;Send Email to Owner
                                             </a>
                                         </p>
                                     </div>
@@ -167,7 +170,12 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <p class="mg-b-10">Address </p>
-                                        <p><b><?= ($luggage_details)?$luggage_details->Address:"";?></b></p>
+                                        <p><b><?= ($luggage_details)?$luggage_details->Address:"";?></b>  <a href="http://maps.google.com/?q=<?= $luggage_details->Address;?>" >
+                                        <img src="https://www.pngmart.com/files/23/Google-Maps-Logo-PNG-Photos.png" alt="" height="25">
+                                        <span class="badge bg-success">Clik to open in Map</span> 
+                                    </a>      
+                                    </p>
+                                       
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -369,6 +377,10 @@ function getLocation() {
         console.error(error);
     });
 })();
+
+function openGoogleLocation(lat, long){
+    console.log(lat, long);
+}
 
 /*
 (function (){ 
