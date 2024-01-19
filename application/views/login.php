@@ -96,15 +96,15 @@
                                         </div>
                                          <div id="mobileotpform" style="display:none;">
                                             <form id="otp_login">
-                                            <h5 class="text-start mb-2"><?php echo $page_name; ?></h5>
-                                            <div class="alert alert-danger otperror" style="display:none;">
-                                                User not found
-                                                 <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button">
-                <span aria-hidden="true">&times;</span>
-                </button>
-                                            </div>
-                                             <div class="alert alert-success otpsuccess" style="display:none;">
-                                                  <strong>Success!</strong> OTP sent to your mobile.
+                                                <h5 class="text-start mb-2"><?php echo $page_name; ?></h5>
+                                                <div class="alert alert-danger otperror" style="display:none;">
+                                                    User not found
+                                                    <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="alert alert-success otpsuccess" style="display:none;">
+                                                    <strong>Success!</strong> OTP sent to your mobile.
                                                 </div>
                                                 <!--<div class="form-group text-start">
                                                     <label>Username</label>
@@ -143,16 +143,21 @@
                                         <div class="mt-3 ms-0">
                                             <div class="row">
                                                 <div class="col-12 col-md-5 text-start">
-                                                <div class="mb-1"><button class="btn ripple btn-warning" type="button" id="usernameloginbutton" style="display:none">Login</button></div>
-                                                <div class="mb-1"><button class="btn ripple btn-secondary" type="button" id="otpbutton">Login With Mobile</button></div>
+                                                    <div class="mb-1">
+                                                        <button class="btn ripple btn-warning" type="button" id="usernameloginbutton" style="display:none">Login</button>
+                                                    </div>
+                                                    <div class="mb-1">
+                                                        <button class="btn ripple btn-secondary" type="button" id="otpbutton">Login With Mobile</button>
+                                                    </div>
                                                 </div>
                                                 <div class="col-12 col-md-7 ">
-                                                
-                                                <div class="mb-1 text-right"><a href="<?php echo base_url('Login/forgot'); ?>">Forgot password?</a></div>
-                                                <!-- <div class="text-right">Don't have an account? <a href="<?php echo base_url('Plan'); ?>">Register Here</a></div> -->
+                                                    <div class="mb-1 text-right">
+                                                        <a href="<?php echo base_url('Login/forgot'); ?>">Forgot password?</a>
+                                                    </div>
+                                                    <!-- <div class="text-right">Don't have an account? <a href="<?php echo base_url('Plan'); ?>">Register Here</a></div> -->
                                                 </div>
                                             </div>
-                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

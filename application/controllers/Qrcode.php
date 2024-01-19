@@ -129,7 +129,7 @@ class Qrcode extends CI_Controller {
 	}
 
 	public function get_qrcode_details($id){
-		if (!isset($this->username) && !isset($this->userid)) { 
+		if(!$this->session->userdata('userid')) { 
 			redirect('Login');
 		} 
 

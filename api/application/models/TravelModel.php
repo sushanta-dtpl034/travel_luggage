@@ -185,7 +185,7 @@ class TravelModel extends CI_Model {
 	function checkItineraryExistsOrNot($userId,$parentId){
 		$currentDate=date('Y-m-d');
 		// $this->db->where('StartDate >=',$currentDate);
-		$this->db->where('EndDate >',$currentDate);
+		$this->db->where('EndDate >=',$currentDate);
 		if($parentId > 0){
 			$this->db->where('UserID',$parentId);
 		}
@@ -278,7 +278,19 @@ class TravelModel extends CI_Model {
             return false;
         }
     }
-	
+	function get_qrcode_details($QrCodeNo,$userId){
+        $this->db->select("reg.AutoID as regId,CONCAT(reg.Suffix, reg.Name) as Name,reg.ProfileIMG,reg.Mobile,reg.CountryCode,tl.LuggageName,tl.LuggageImage,tl.QrCodeNo,tl.LuggageType,tl.LuggageColor,tl.BrandName,tl.AppleAirTag");
+        $this->db->from('TravelLuggage as tl');
+        $this->db->join('RegisterMST as reg', 'tl.UserID = reg.AutoID','left');
+        $this->db->where('tl.QrCodeNo',$QrCodeNo); 
+        $query = $this->db->get();
+        if($query){
+            $row =$query->row();
+			return $row;
+        }else{
+            return false;
+        }
+    }
 
 
 

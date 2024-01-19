@@ -428,7 +428,45 @@ class TravelLuggageController extends REST_Controller {
 		}
 	}
 
+	/**
+	 * Travel luggage Linking in itinary details table
+	 */
 
+	function LinkLuggage_post(){
+		$headers = apache_request_headers();
+        $input_data=$this->request->body;        
+		if (!empty($headers['Token'])) {
+            try {
+                $arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
+				$userid=$arrdata['AutoID'];
+				$dataHead = array(
+					'NotifyLuggage'	=>json_encode($input_data['qrcode']),
+				); 
+				$where = array(
+					'AutoID'    =>$input_data['schedularId'],
+				);
+				$this->Commonmodel->common_update('ItineraryHead',$where,$dataHead);
+				$result['message'] ="Luggage linked successfully.";
+				$result['status']=200;
+				$status = 200;
+
+				$this->output
+						->set_status_header($status)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode($result));
+
+			} catch (Exception $e) { 
+                $result['message'] = "Invalid Token";
+                $result['status']=false;
+                return $this->set_response($result, 401);
+            }
+        }else{
+			$result['message'] = "Token or oldpasswor / newpassword not Found";
+			$result['status']=false;
+			return $this->set_response($result, 400);
+
+		}
+	}
 
 
 
