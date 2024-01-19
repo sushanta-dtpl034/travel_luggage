@@ -13,6 +13,12 @@
 <script src="<?php echo base_url(); ?>assets/js/select2.js"></script>
 <!-- Internal Jquery-steps js-->
 <script src="<?php echo base_url(); ?>assets/plugins/jquery-steps/jquery.steps.min.js"></script>
+
+<!-- Add this in your HTML file -->
+<script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-auth.js"></script>
+
+
 <!-- 
 
 <script src="<?php echo base_url(); ?>assets/plugins/dist/js/dropify.min.js"></script>
@@ -280,6 +286,17 @@ $(document).ready(
 	}
 );
 
+var firebaseConfig = {
+	apiKey: "YOUR_API_KEY",
+	authDomain: "YOUR_AUTH_DOMAIN",
+	projectId: "YOUR_PROJECT_ID",
+	storageBucket: "YOUR_STORAGE_BUCKET",
+	messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+	appId: "YOUR_APP_ID"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 </script>
 
 

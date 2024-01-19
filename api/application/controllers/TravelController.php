@@ -321,11 +321,13 @@ class TravelController extends REST_Controller {
 						'EndDate'		=>date('Y-m-d', strtotime($input_data['EndDate'])),
 						'IsDelete'		=>0,
 					); 
-					$checkItineraryExistsOrNot = $this->TravelModel->checkItineraryExistsOrNot($userid,$parentId);
-					if($checkItineraryExistsOrNot > 0){
-						$result['message'] = "Already data exists.";
-						$result['status']=200;
-						return $this->set_response($result, 200);
+					if(empty($input_data['AutoID'])){	
+						$checkItineraryExistsOrNot = $this->TravelModel->checkItineraryExistsOrNot($userid,$parentId);
+						if($checkItineraryExistsOrNot > 0){
+							$result['message'] = "Already data exists.";
+							$result['status']=200;
+							return $this->set_response($result, 200);
+						}
 					}
 					if(empty($input_data['AutoID'])){	
 						$dataHead['CreatedBy']  =$userid;
