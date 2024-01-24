@@ -30,12 +30,14 @@ class QR extends CI_Controller {
 		$this->load->model('Assetmodel');
 		$this->load->model('Companymodel');
 		$this->load->model('Commonmodel');
+		$this->load->model('TravelerModel');
 		
 	}
     function index($url){
 		//$this->session->unset_userdata('redirect_url');
 		$qrcode = $this->uri->segment(2);
 		$data['luggage_details'] =$this->Qrcodemodel->get_qrcode_details_qrcode($qrcode);
+		$data['country_codes'] = $this->TravelerModel->getCountryCode();
 		$data['page_title'] = 'QR Code Details';
 		$data['page_name'] = "QR Code Details";
 		$this->load->view('include/admin-header',$data);

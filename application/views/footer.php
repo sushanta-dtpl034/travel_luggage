@@ -14,9 +14,15 @@
 <!-- Internal Jquery-steps js-->
 <script src="<?php echo base_url(); ?>assets/plugins/jquery-steps/jquery.steps.min.js"></script>
 
-<!-- Add this in your HTML file -->
-<script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-auth.js"></script>
+
+<!-- Add this to your HTML file -->
+<!-- Add this to your HTML file -->
+<!-- <link type="text/css" rel="stylesheet" href="http://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css" />
+
+<script src="http://www.gstatic.com/firebasejs/9.4.0/firebase-app.js"  type="module"></script>
+<script src="http://www.gstatic.com/firebasejs/9.4.0/firebase-auth.js"  type="module"></script> -->
+
+
 
 
 <!-- 
@@ -36,6 +42,7 @@
 <script src="<?php echo base_url(); ?>assets/js/form-wizard.js"></script>
 <!-- Custom js -->
 <script src="<?php echo base_url(); ?>assets/js/custom.js"></script>
+<!-- <script src="<?php echo base_url(); ?>assets/js/firebase.js" type="module"></script> -->
 <script>
 var status = '<?php echo $this->uri->segment('3'); ?>';
 
@@ -270,7 +277,7 @@ $(document).ready(function() {
 
 
 });
-console.log(sessionStorage.getItem('returnurl'));
+
 
 
 
@@ -286,17 +293,9 @@ $(document).ready(
 	}
 );
 
-var firebaseConfig = {
-	apiKey: "YOUR_API_KEY",
-	authDomain: "YOUR_AUTH_DOMAIN",
-	projectId: "YOUR_PROJECT_ID",
-	storageBucket: "YOUR_STORAGE_BUCKET",
-	messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-	appId: "YOUR_APP_ID"
-};
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+
+
 </script>
 
 

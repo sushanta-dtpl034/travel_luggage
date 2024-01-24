@@ -9,7 +9,8 @@ class Request extends REST_Controller {
 		$this->tokenHandler = new TokenHandler();
 		$this->load->model('master_model');
 		$this->load->model('requestmodel');
-		$this->load->library('authtoken');
+		$this->load->model('Commonmodel');
+		$this->load->library(array('form_validation', 'Authtoken'));
 		header('Content-Type: application/json');
 	}
 	public function requestlist_post(){
@@ -301,7 +302,76 @@ class Request extends REST_Controller {
 		}
 	}
 
-	
+	//push notification
+	public function pushNotificationRegistration_post() {
+		$data=$this->request->body;
+		$headers = apache_request_headers();
+		if (!empty($headers['Token'])) {
+			try {
+				$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
+				$userid=$arrdata['AutoID'];
+				$this->form_validation->set_data($data);
+				$this->form_validation->set_rules('fcm_token', 'Fcm Token', 'required|trim');
+				$this->form_validation->set_rules('device_token', 'Device Token', 'required|trim');
+				if ($this->form_validation->run() == FALSE){
+					$errors = $this->form_validation->error_array();
+					return $this->set_response(["status"=>406,"errors"=>$errors], 406);                
+				}else{
+					$userdata['message'] = "User device registered successfully";
+					$userdata['status']=201;
 
+					//push notification
+					$notification_data['FcmToken'] 		=$data['fcm_token'];
+					$notification_data['DeviceToken'] 	=$data['device_token'];
+					$notification_data['UserID'] 		=$arrdata['AutoID'];
+					// $notification_data['UserMobile'] 	=$arrdata['Mobile'];
+					$response =$this->Commonmodel->common_insert('NotificationMST',$notification_data);
+					if($response){
+						return $this->set_response($userdata, REST_Controller::HTTP_OK);			
+					}else{
+						return $this->set_response(["status"=>500,"message"=>"Something wents wrong. Try Again. "], 500);
+					}
+							
+				}
+
+
+			}catch (Exception $e) { 
+				$result['message'] = "Invalid Token";
+				$result['status']=false;
+				return $this->set_response($result, 401);
+			}
+		}else{
+			$result['message'] = "Token or old password / new password not Found";
+			$result['status']=false;
+			return $this->set_response($result, 400);
+		}
+		
+		
+
+	}
+	//logout API
+	public function logout_get(){
+		//delete all session
+		$headers = apache_request_headers();
+		if (!empty($headers['Token'])) {
+			try {
+				$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
+				$userid=$arrdata['AutoID'];
+				$query = $this->db->query("DELETE FROM NotificationMST WHERE UserID=$userid");
+        		if($query){
+					session_destroy();
+					$this->output->set_output(json_encode(array('status'=>true,'msg'=>'log Out successfully')));
+				}
+			}catch (Exception $e) { 
+				$result['message'] = "Invalid Token";
+				$result['status']=false;
+				return $this->set_response($result, 401);
+			}
+		}else{
+			$result['message'] = "Token or old password / new password not Found";
+			$result['status']=false;
+			return $this->set_response($result, 400);
+		}
+	}
 	
 }

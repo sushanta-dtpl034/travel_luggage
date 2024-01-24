@@ -138,22 +138,28 @@ $('.callMobileWhatsappModal').click(function(){
 	$('#qrcode').val(qrcode);
 	$('#regid').val(alertuserid);	
 	$('#callModal').modal('show');
+     
 })
+    
 $('.updateCallerInfo').click(function(){
 	const qrcode =$('#qrcode').val();
-	const mobileNo =$('#mobileNo').val();
+	const CountryCode =$('.uCountryCode').val();
+    const mobileNo =$('#mobileNo').val();
 	const status =$('#status').val();
 	const name =$('#name').val();
 	const alertuserid =$('#regid').val();
 	const latitude =$('#latitude').val();
 	const longitude =$('#longitude').val();
 	const ipaddress =$('#ipaddress').val();
+    
 	if(mobileNo !="" && mobileNo.length > 0){
+       
 		$.ajax({
 			url: base_url+'TravelLuggageController/updateCallerInfo',
 			type: 'post',
 			data: {
 				qrcode,
+                CountryCode,
 				mobileNo,
 				name,
                 alertuserid,
@@ -162,14 +168,22 @@ $('.updateCallerInfo').click(function(){
                 status,
                 ipaddress
 			},
+            beforeSend: function() {
+                $('#callModal').modal('hide'); 
+                $('.preloader-bg').show()
+            },
 			dataType: 'json',
 			success: function(response){
                 console.log(response);
 				if(response.status == 200){
 					$('#callModal').modal('hide'); 
-					alert('your request is sent to the owner of this luggage.once the request is accepted you can contact.') ;
+                    $('.preloader-bg').show()
+					//alert('your request is sent to the owner of this luggage.once the request is accepted you can contact.') ;
                     var form = document.getElementById("myForm");
                     form.reset();
+                    setTimeout(
+                        $('.preloader-bg').hide(), 10000
+                    );
 				}else{
 					alert("Error.");
 				}
