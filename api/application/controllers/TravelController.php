@@ -295,6 +295,7 @@ class TravelController extends REST_Controller {
 		$Airtravel = isset($input_data['Airtravel']) ? $input_data['Airtravel'] : []; 
 		$Landtravel = isset($input_data['Landtravel']) ? $input_data['Landtravel'] : [];
 		$Traintravel = isset($input_data['Traintravel']) ? $input_data['Traintravel'] : [];
+
 		if (!empty($headers['Token'])) {
 			try {
 				$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
@@ -307,6 +308,65 @@ class TravelController extends REST_Controller {
 
 				$this->form_validation->set_data($this->post());
 				$this->form_validation->set_rules('ItineraryName', 'Itinerary Name', 'required|trim');
+				$this->form_validation->set_rules('StartDate', 'Start Date', 'required|callback_startdate_check');
+				$this->form_validation->set_rules('EndDate', 'End Date', 'required|callback_enddate_check');
+				
+				if(isset($Hotel) && count($Hotel) > 0){
+					foreach($Hotel as $key => $val){
+						$this->form_validation->set_rules("Hotel[$key][Type]", 'Type', 'required|trim');
+						$this->form_validation->set_rules("Hotel[$key][HotelType]", 'Hotel Type', 'required|trim');
+						$this->form_validation->set_rules("Hotel[$key][HotelName]", 'Hotel Name', 'required|trim');
+						$this->form_validation->set_rules("Hotel[$key][HotelAddress]", 'Hotel Address', 'required|trim');
+						$this->form_validation->set_rules("Hotel[$key][CheckInDate]", 'Check In Date', 'required|callback_validate_date['.$input_data['StartDate'].','.$input_data['EndDate'].']');
+						$this->form_validation->set_rules("Hotel[$key][CheckOutDate]", 'Check Out Date', 'required|callback_validate_date['.$input_data['StartDate'].','.$input_data['EndDate'].']');
+						$this->form_validation->set_rules("Hotel[$key][NotifyScheduleInMin]", 'Notify Schedule In Min', 'required|greater_than[0]');
+						$this->form_validation->set_rules("Hotel[$key][NotifyType]", 'Notify Type', 'required|callback_notifytype_check');
+					}
+				}
+
+				if(isset($Airtravel) && count($Airtravel) > 0){
+					foreach($Airtravel as $akey => $aval){
+						$this->form_validation->set_rules("Airtravel[$akey][Type]", 'Type', 'required|trim');
+						$this->form_validation->set_rules("Airtravel[$akey][AirlineName]", 'Airline Name', 'required|trim');
+						$this->form_validation->set_rules("Airtravel[$akey][TravelType]", 'Travel Type', 'required|trim');
+						$this->form_validation->set_rules("Airtravel[$akey][TravelFrom]", 'Travel From', 'required|trim');
+						$this->form_validation->set_rules("Airtravel[$akey][TravelTo]", 'Travel To', 'required|trim');
+						$this->form_validation->set_rules("Airtravel[$akey][TravelStartDateTime]", 'Travel Start Date', 'required|callback_validate_date['.$input_data['StartDate'].','.$input_data['EndDate'].']');
+						$this->form_validation->set_rules("Airtravel[$akey][TravelEndDateTime]", 'Travel End Date', 'required|callback_validate_date['.$input_data['StartDate'].','.$input_data['EndDate'].']');
+						$this->form_validation->set_rules("Airtravel[$akey][NotifyScheduleInMin]", 'Notify Schedule In Min', 'required|greater_than[0]');
+						$this->form_validation->set_rules("Airtravel[$akey][NotifyType]", 'Notify Type', 'required|callback_notifytype_check');
+					}
+				}
+
+				if(isset($Landtravel) && count($Landtravel) > 0){
+					foreach($Landtravel as $lkey => $aval){
+						$this->form_validation->set_rules("Landtravel[$lkey][Type]", 'Type', 'required|trim');
+						$this->form_validation->set_rules("Landtravel[$lkey][VehicleNo]", 'Vehicle No', 'required|trim');
+						$this->form_validation->set_rules("Landtravel[$lkey][LandTransferType]", 'Land Transfer Type', 'required|trim');
+						$this->form_validation->set_rules("Landtravel[$lkey][TravelFrom]", 'Travel From', 'required|trim');
+						$this->form_validation->set_rules("Landtravel[$lkey][TravelTo]", 'Travel To', 'required|trim');
+						$this->form_validation->set_rules("Landtravel[$lkey][startDateTime]", 'Start Date', 'required|callback_validate_date['.$input_data['StartDate'].','.$input_data['EndDate'].']');
+						$this->form_validation->set_rules("Landtravel[$lkey][EndDateTime]", 'End Date', 'required|callback_validate_date['.$input_data['StartDate'].','.$input_data['EndDate'].']');
+						$this->form_validation->set_rules("Landtravel[$lkey][NotifyScheduleInMin]", 'Notify Schedule In Min', 'required|greater_than[0]');
+						$this->form_validation->set_rules("Landtravel[$lkey][NotifyType]", 'Notify Type', 'required|callback_notifytype_check');
+					}
+				}
+
+				if(isset($Traintravel) && count($Traintravel) > 0){
+					foreach($Traintravel as $tkey => $aval){
+						$this->form_validation->set_rules("Traintravel[$tkey][Type]", 'Type', 'required|trim');
+						$this->form_validation->set_rules("Traintravel[$tkey][TrainName]", 'Train Name', 'required|trim');
+						$this->form_validation->set_rules("Traintravel[$tkey][TrainNumber]", 'Train Number', 'required|trim');
+						$this->form_validation->set_rules("Traintravel[$tkey][TravelFrom]", 'Travel From', 'required|trim');
+						$this->form_validation->set_rules("Traintravel[$tkey][TravelTo]", 'Travel To', 'required|trim');
+						$this->form_validation->set_rules("Traintravel[$tkey][StartDate]", 'Start Date', 'required|callback_validate_date['.$input_data['StartDate'].','.$input_data['EndDate'].']');
+						$this->form_validation->set_rules("Traintravel[$tkey][EndDate]", 'End Date', 'required|callback_validate_date['.$input_data['StartDate'].','.$input_data['EndDate'].']');
+						$this->form_validation->set_rules("Traintravel[$tkey][NotifyScheduleInMin]", 'Notify Schedule In Min', 'required|greater_than[0]');
+						$this->form_validation->set_rules("Traintravel[$tkey][NotifyType]", 'Notify Type', 'required|callback_notifytype_check');
+					}
+				}
+				
+
 				if ($this->form_validation->run() == FALSE){
 					$errors = $this->form_validation->error_array();
 					$this->output
@@ -506,6 +566,104 @@ class TravelController extends REST_Controller {
 			return $this->set_response($result, 400);
 		}
 	}
+	/**
+	 * custom Validation
+	 */
+	function startdate_check($startDate){
+		$date_array = date_parse_from_format('Y-m-d', $startDate);
+        if ($date_array['error_count'] === 0 && checkdate($date_array['month'], $date_array['day'], $date_array['year'])) {
+			// Convert date strings to DateTime objects
+			$curDate = new DateTime(date('Y-m-d'));
+			$startDate = new DateTime($startDate);
+
+            if ($startDate >= $curDate){
+				return TRUE;
+			}else{
+				$this->form_validation->set_message('startdate_check', 'The {field} field  cannot be before the current date.');
+				return FALSE;
+			}
+        } else {
+            $this->form_validation->set_message('startdate_check', 'The {field} field must be a valid date.');
+            return FALSE;
+        }
+
+
+		
+	}
+	function enddate_check($endDate){
+		$date_array = date_parse_from_format('Y-m-d', $endDate);
+        if ($date_array['error_count'] === 0 && checkdate($date_array['month'], $date_array['day'], $date_array['year'])) {
+			// Convert date strings to DateTime objects
+			$curDate = new DateTime(date('Y-m-d'));
+			$endDate = new DateTime($endDate);
+
+            if ($endDate >= $curDate){
+				return TRUE;
+			}else{
+				$this->form_validation->set_message('enddate_check', 'The {field} field  cannot be before the current date.');
+				return FALSE;
+			}
+
+        } else {
+            $this->form_validation->set_message('enddate_check', 'The {field} field must be a valid date.');
+            return FALSE;
+        }
+
+
+		
+	}
+	// Callback function to validate date format
+    function validate_date($date, $field) {
+		if(!empty($date)){
+			$dateArry =explode(',',$field);
+			if($dateArry){
+				$startDate=new DateTime($dateArry[0]);
+				$endDate=new DateTime($dateArry[1]);
+			}
+			
+			$inputDate = new DateTime(date('Y-m-d', strtotime($date)));
+			if ($inputDate >= $startDate  && $inputDate <= $endDate){
+				return TRUE;
+			}else{
+				$this->form_validation->set_message('validate_date', 'The {field} field cannot be before the start date and cannot be after the end date');
+				return FALSE;
+			}
+		}else{
+			$this->form_validation->set_message('validate_date', 'The {field} field is required.');
+            return FALSE;
+		}
+    }
+	// Callback function to validate date format
+    function validate_date2($date, $field) {
+		if(!empty($date)){
+			$dateArry =explode(',',$field);
+			if($dateArry){
+				$startDate=new DateTime($dateArry[0]);
+				$endDate=new DateTime($dateArry[1]);
+			}
+			
+			$inputDate = new DateTime(date('Y-m-d', strtotime($date)));
+			if ($inputDate >= $startDate  && $inputDate <= $endDate){
+				return TRUE;
+			}else{
+				$this->form_validation->set_message('validate_date', 'The {field} field cannot be before the start date and cannot be after the end date');
+				return FALSE;
+			}
+		}else{
+			$this->form_validation->set_message('validate_date', 'The {field} field is required.');
+            return FALSE;
+		}
+    }
+	function notifytype_check($str) {
+		if(empty($str)){
+			$this->form_validation->set_message('notifytype_check', 'The {field} field is required.');
+			return FALSE;
+		}else{
+			return TRUE;
+		}
+    }
+
+
 	/**
 	 * Post : Itinerary List API => Date:27-12-2023
 	 */
