@@ -149,6 +149,11 @@
                                                     <div class="mb-1">
                                                         <button class="btn ripple btn-secondary" type="button" id="otpbutton">Login With Mobile</button>
                                                     </div>
+                                                    <div class="mb-1">
+                                                        <!-- Add this to your HTML file -->
+                                                        <div id="firebaseui-auth-container"></div>
+
+                                                    </div>
                                                 </div>
                                                 <div class="col-12 col-md-7 ">
                                                     <div class="mb-1 text-right">

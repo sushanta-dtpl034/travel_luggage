@@ -82,7 +82,10 @@ $(function () {
         dropdownParent: $("#traveller_modal"),
         width:'100%',
     });
-
+    $(".uCountryCode").select2({
+        dropdownParent: $("#callModal"),
+        width:'100%',
+    });
     /*
     $("#traveller_button").click(function () {
         if ($('#add-traveller-form').parsley().validate()) {

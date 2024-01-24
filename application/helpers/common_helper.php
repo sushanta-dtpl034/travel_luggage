@@ -823,15 +823,14 @@ function pushNotification($to, $title, $message, $img = "", $datapayload = ""){
 	$result = curl_exec($ch);
 	curl_close( $ch );
 	return $result;
-	}
+}
 
-	function sendNotification($params=[]){   
-
+function sendNotification($params=[]){   
 	//for test push-notificaction(firebase)
 	$SERVER_API_KEY='AAAAvq1M-T0:APA91bHRP2spXd3hFyh87Y13Y90_LX7r_SPOcKNqc2SMKHRauL2--hC4nnTaoGPJ9IeWOvVRdCLXT-jNhzyMtvrh8W-CKzeIBp3OJEaYwCYMhtP6FVnp-z5ihiX3c2ltI68PmQxyPLfE'; 
 
 	$data = [
-		"registration_ids" => $firebaseToken,
+		"registration_ids" =>$params['token'],
 		"notification" => [
 			"title"             => $params['title'],
 			"body"              => $params['body'],
@@ -866,4 +865,14 @@ function pushNotification($to, $title, $message, $img = "", $datapayload = ""){
 	// FCM response
 	return $status;
 	//dd($response);
+}
+
+function generate_otp(){
+	$OTP 	=	rand(1,9);
+	$OTP 	.=	rand(0,9);
+	$OTP 	.=	rand(0,9);
+	$OTP 	.=	rand(0,9);
+	$OTP 	.=	rand(0,9);
+	$OTP 	.=	rand(0,9);
+	return $OTP;
 }

@@ -78,6 +78,7 @@
 													<input class="form-control" placeholder="Enter your password" type="password">
 												</div>
 												<button class="btn ripple btn-main-primary btn-block">Sign In</button>
+												
 											</form>
 											<div class="text-start mt-5 ms-0">
 												<div class="mb-1"><a href="">Forgot password?</a></div>

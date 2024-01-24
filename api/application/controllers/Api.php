@@ -53,6 +53,7 @@ class Api extends REST_Controller {
 						$userdata['IsAdmin']=$result['IsAdmin'];
 						$userdata['message'] = "User authenticated successfully";
 						$userdata['status']=200;
+
 						return $this->set_response($userdata, REST_Controller::HTTP_OK);						
 					}else{
 						return $this->set_response(["status"=>401,"errors"=>"Username or Password are Wrong. Try Again. "], 401);
@@ -612,5 +613,8 @@ class Api extends REST_Controller {
             return TRUE;
         }
 	}
+
+
+	
 	
 }

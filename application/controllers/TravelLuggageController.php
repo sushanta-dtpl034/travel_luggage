@@ -9,11 +9,7 @@ class TravelLuggageController extends CI_Controller {
 		header("Pragma: no-cache");
 		header("Expires: 0");
         
-        $username = $this->session->userdata('username');
-		$userid = $this->session->userdata('userid');
-        if (!isset($username) && !isset($userid)) {
-			redirect('Login');
-		}
+        
         $this->load->library('form_validation');
 		$this->load->library('upload');
         $this->load->model('Commonmodel');
@@ -21,7 +17,11 @@ class TravelLuggageController extends CI_Controller {
         $this->load->model('Qrcodemodel');
     }
     function index(){
-       
+       $username = $this->session->userdata('username');
+		$userid = $this->session->userdata('userid');
+        if (!isset($username) && !isset($userid)) {
+			redirect('Login');
+		}
         $data['page_title'] = 'Travel Luggage  List';
 		$data['page_name'] = "Travel Luggage  List";
 		$this->load->view('include/admin-header',$data);
@@ -43,6 +43,7 @@ class TravelLuggageController extends CI_Controller {
         $alertuserid=$this->input->post('alertuserid');
         $status=$this->input->post('status');
         $name=$this->input->post('name');
+        $countryCode= $this->input->post('CountryCode');
         $mobileNo= $this->input->post('mobileNo');
         $latitude =$this->input->post('latitude');
         $longitude =$this->input->post('longitude');
@@ -57,7 +58,7 @@ class TravelLuggageController extends CI_Controller {
 			'TravelDetailID'    =>$alertuserid,
 			'QrcodeNo'          =>$qrcode,
 			'CallerName'        =>$name,
-			'CallerMobile'      =>$mobileNo,
+			'CallerMobile'      =>$countryCode.' '.$mobileNo,
 			'Status'            =>$status,
 			'ScanedBy'          =>0,
 			'Lattitude'         =>$latitude,

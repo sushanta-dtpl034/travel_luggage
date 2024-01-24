@@ -80,7 +80,51 @@
 
     }
 
+    .preloader-bg { 
+        background: rgba(22, 22, 22, 0.3); 
+    /*  display: none;  */
+        position: absolute; 
+        top: 0; 
+        right: 0; 
+        bottom: 0; 
+        left: 0; 
+        z-index: 10; 
+    }
+
+    #preloader { 
+        background-image: url(https://cdn.pixabay.com/animation/2022/11/04/09/42/09-42-03-510_512.gif); 
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 300px 300px;
+        position: fixed; 
+        display: block;
+        left: 0;
+        right:0;
+        top:0;
+        bottom: 0;
+        background-color: #808080e8;
+    }
+    #preloader p{
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 58%;
+        /* top:215px; */
+        display: inline-block;
+        text-align: center;
+        margin-bottom: -5em;
+        font-size:19px;
+        color:brown;
+    }
+
 </style>
+
+<div class="preloader-bg" style="display:none">
+    <div id="preloader">
+		<p>Waiting for owner response...</p>
+    </div>
+</div>
+
 
 <div class="main-content side-content pt-0">
     <div class="container-fluid">
@@ -247,7 +291,23 @@
                 <div class="modal-body">
                
                     <div class="row row-sm">
-                        <div class="col-md-12">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <p class="mg-b-10">Country Code </p>
+                                <div class="parsley-select" id="uCountryCode">
+                                    <select class="form-control select2 uCountryCode" required=""  name="CountryCode" data-parsley-class-handler="#uCountryCode" data-parsley-errors-container="#uCountryCodeErrorContainer"  data-parsley-required
+                                    data-parsley-required-message="Select Country Code">
+                                    <option value="">Select Country Code</option>
+                                        <?php foreach($country_codes as $country_code){ ?>
+                                        <option value="+<?= $country_code['Dialing'];?>">+ <?= $country_code['Dialing'];?> - <?= $country_code['Name'];?></option>
+                                        <?php } ?>
+                                    </select>
+
+                                    <div id="uCountryCodeErrorContainer"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
                             <div class="form-group">
                                 <p class="mg-b-10">Mobile No <span class="text-danger">*</span></p>
                                 <input type="tel" name="mobileNo" id="mobileNo" class="form-control" placeholder="Mobile no" required>
@@ -270,7 +330,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeModal('#callModal')">Close</button>
-                    <button type="submit" class="btn btn-primary updateCallerInfo">Update</button>
+                    <button type="submit" class="btn btn-primary updateCallerInfo">Submit</button>
                 </div>
             </form>
         </div>
@@ -381,6 +441,7 @@ function getLocation() {
 function openGoogleLocation(lat, long){
     console.log(lat, long);
 }
+
 
 /*
 (function (){ 
