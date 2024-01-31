@@ -18,6 +18,7 @@ class TravelModel extends CI_Model {
 			return false;
 		}
 	}
+	
 	public function travelerDetailsList($data,$parentId){
 		$this->db->select("*,(CASE WHEN ParentId=0 THEN 'Primary' ELSE 'Guest' END) AS TravellerType");
         $this->db->from('RegisterMST');
@@ -95,7 +96,7 @@ class TravelModel extends CI_Model {
 		}
 	}
 	public function travelerItineraryListDetails($data,$parentId){ 
-        $query=$this->db->select("rm.AutoID,rm.Name,rm.Mobile,rm.Suffix AS TitlePrefix,rm.ProfileIMG,ih.AutoID AS ItineraryHeadId,ih.UserID,ih.StartDate,ih.EndDate, ih.CreatedDate,ih.ModifiedDate,ih.ItineraryName");
+        $query=$this->db->select("rm.AutoID,rm.Name,rm.Mobile,rm.Suffix AS TitlePrefix,rm.ProfileIMG,ih.AutoID AS SchedulerHeadId,ih.UserID,ih.StartDate,ih.EndDate, ih.CreatedDate,ih.ModifiedDate,ih.SchedulerDescription");
         $this->db->from('ItineraryHead as ih');//ItineraryDetails
 		$this->db->join('RegisterMST as rm','ih.UserID = rm.AutoID','LEFT');
         $this->db->where('ih.IsDelete',0);
@@ -120,9 +121,9 @@ class TravelModel extends CI_Model {
 		$Requestlist = $query->result();
 		if($Requestlist){
 			foreach($Requestlist as $res){
-				$itineararyDetailsData = $this->getTravelItineraryDetails($res->ItineraryHeadId);
+				$itineararyDetailsData = $this->getTravelItineraryDetails($res->SchedulerHeadId);
 				$res->Itinerary=$itineararyDetailsData;
-				// $scan_history_data=$this->getQRScanHistory($res->ItineraryHeadId);
+				// $scan_history_data=$this->getQRScanHistory($res->SchedulerHeadId);
 				// $scan_history_data=$this->getQRScanHistory($res->AutoID);
 				// $res->scan_history_data=$scan_history_data;
 			}
@@ -144,9 +145,129 @@ class TravelModel extends CI_Model {
 			return false;
 		}       
     }
+	function SchedulerList($data,$parentId){
+		$this->db->select("AutoID,StartDate,EndDate,SchedulerDescription,NotifyLuggage");
+        $this->db->from('ItineraryHead');
+        $this->db->where('IsDelete',0);
+		if(isset($data['AutoID']) && !empty($data['AutoID'])){
+			$this->db->where('AutoID',$data['AutoID']);
+		}else{	
+			if($parentId > 0){
+				$this->db->where('UserID',$parentId);
+			}
+			if(!empty(trim($data['keyword']))) {
+				$this->db->group_start();
+				$this->db->like('SchedulerDescription', trim($data['keyword']));
+				$this->db->group_end();
+				$this->db->order_by('AutoID','desc');
+			}else{
+				$this->db->limit($data['length']);
+				$this->db->offset($data['start']);
+				$this->db->order_by('AutoID','desc');
+			}
+		}
+        $query=$this->db->get();
+		if(isset($data['AutoID']) && !empty($data['AutoID'])){
+			$Requestlist = $query->row();
+		}else{
+			$Requestlist = $query->result();
+		}
+		
+		if($Requestlist){
+			$draw = $this->input->post('draw');
+			$total = $this->db->where('IsDelete',0)->count_all_results('ItineraryHead');
+			$contents = array(
+				"status"		=>200,
+				"msg"			=>"data found",
+				"data"			=>$Requestlist,
+				"draw"			=>$draw,
+				"recordsTotal"	=>$total,
+				"recordsFiltered"=>$total
+			);			
+			return $contents;
+		}else{
+			return false;
+		} 
+	}
+	function ActivityListBySchedulerId($data,$parentId){
+		//$this->db->select("AutoID,StartDate,EndDate,SchedulerDescription,NotifyLuggage");
+        $this->db->from('ItineraryDetails');
+        $this->db->where('SchedulerHeadId',$data['SchedulerHeadId']);
+        $this->db->where('IsDelete',0);
+		if(isset($data['AutoID']) && !empty($data['AutoID'])){
+			$this->db->where('AutoID',$data['AutoID']);
+		}else{	
+			if(!empty(trim($data['keyword']))) {
+				$this->db->group_start();
+				$this->db->like('Type', trim($data['keyword']));
+				$this->db->group_end();
+				$this->db->order_by('AutoID','desc');
+			}else{
+				$this->db->limit($data['length']);
+				$this->db->offset($data['start']);
+				$this->db->order_by('AutoID','desc');
+			}
+		}
+        $query=$this->db->get();
+		if(isset($data['AutoID']) && !empty($data['AutoID'])){
+			$Requestlist = $query->row();
+		}else{
+			$Requestlist = $query->result();
+		}
+		
+		if($Requestlist){
+			$linkedLuggageListObj=$this->getLinkedLuggageList($data['SchedulerHeadId']);
+			$draw = $this->input->post('draw');
+			$total = $this->db->where('IsDelete',0)->count_all_results('ItineraryDetails');
+
+			$result_data['activity_data']=$Requestlist;
+			$result_data['linked_luggage_data']=$linkedLuggageListObj;
+			$contents = array(
+				"status"		=>200,
+				"msg"			=>"data found",
+				"data"			=>$result_data,
+				"draw"			=>$draw,
+				"recordsTotal"	=>$total,
+				"recordsFiltered"=>$total
+			);			
+			return $contents;
+		}else{
+			return false;
+		} 
+	}
+	function getLinkedLuggageList($SchedulerHeadId){
+		$this->db->from('ItineraryHead');
+		$this->db->where('AutoID',$SchedulerHeadId);
+        $this->db->where('IsDelete',0);
+		$query=$this->db->get();
+		if($query){
+			$schedulerObj = $query->row();
+			if($schedulerObj){
+				$NotifyLuggageArr =json_decode($schedulerObj->NotifyLuggage);
+				$NotifyLuggageStr="'".implode("','",$NotifyLuggageArr)."'";
+				$sql="SELECT * FROM TravelLuggage WHERE QrCodeNo IN($NotifyLuggageStr)";
+				$query=$this->db->query($sql);
+				if($query){
+					$result =$query->result();
+					if($result){
+						return $result;
+					}else{
+						return [];
+					}
+				}else{
+					return [];
+				}
+			}else{
+				return [];
+			}
+		}else{
+			return [];
+		}
+
+	}
 	function getTravelItineraryDetails($travelHeadId){
 		$query=$this->db->select("ItineraryDetails.*");
-		$this->db->where('ItineraryHeadId',$travelHeadId);
+		$this->db->where('SchedulerHeadId',$travelHeadId);
 		$this->db->from('ItineraryDetails');
 		$query=$this->db->get();
 		if($query){
@@ -198,8 +319,27 @@ class TravelModel extends CI_Model {
 			return false;
 		} 
 	}
-
-
+	function checkSchedulerExistsOrNot($id){
+		$this->db->where('AutoID',$id);
+		$this->db->from('ItineraryHead');
+		$query=$this->db->get();
+		if($query){
+			return $query->num_rows();
+		}else{
+			return false;
+		} 
+	}
+	function getSchedulerById($id){
+		$this->db->where('AutoID',$id);
+		$this->db->from('ItineraryHead');
+		$query=$this->db->get();
+		if($query){
+			return $query->row();
+		}else{
+			return false;
+		} 
+	}
+	
 	
 	function getid_from_qrdata($qrtext){
 		/* $query=$this->db->select("TravelDetails.*, th.QrCodeNo");

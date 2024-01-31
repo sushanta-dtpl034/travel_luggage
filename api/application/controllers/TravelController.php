@@ -282,6 +282,272 @@ class TravelController extends REST_Controller {
 		}
 		
     }
+	
+	/**
+	 * Post : Scheduler Add/Update => Date :21-01-2024
+	 */
+	function addUpdateScheduler_post(){
+		$headers = apache_request_headers();
+		$this->load->library('myLibrary');
+		$input_data=$this->request->body;
+
+		if (!empty($headers['Token'])) {
+			try {
+				$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
+				$userid=$arrdata['AutoID'];
+				if($arrdata['IsAdmin'] == 0){
+					$parentId =$userid;
+				}else{
+					$parentId =0;
+				}
+
+				$this->form_validation->set_data($this->post());
+				$this->form_validation->set_rules('SchedulerDescription', 'Scheduler Description', 'required|trim');
+				$this->form_validation->set_rules('StartDate', 'Start Date', 'required|callback_startdate_check');
+				$this->form_validation->set_rules('EndDate', 'End Date', 'required|callback_enddate_check');
+
+				if ($this->form_validation->run() == FALSE){
+					$errors = $this->form_validation->error_array();
+					$this->output
+					->set_status_header(406)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode(["status"=>406,"errors"=>$errors])); 
+				}else{
+					$dataHead = array(
+						'UserID'		=>$userid,
+						'SchedulerDescription'	=>trim($input_data['SchedulerDescription']),
+						'StartDate'		=>date('Y-m-d', strtotime($input_data['StartDate'])),
+						'EndDate'		=>date('Y-m-d', strtotime($input_data['EndDate'])),
+						'IsDelete'		=>0,
+					); 
+					if(empty($input_data['AutoID'])){	
+						$checkItineraryExistsOrNot = $this->TravelModel->checkItineraryExistsOrNot($userid,$parentId);
+						if($checkItineraryExistsOrNot > 0){
+							$result['message'] = "Already data exists.";
+							$result['status']=200;
+							return $this->set_response($result, 200);
+						}
+					}
+					if(empty($input_data['AutoID'])){	
+						$dataHead['CreatedBy']  =$userid;
+						$dataHead['CreatedDate'] =date('Y-m-d H:i:s');
+						$QrCodeID =$this->Commonmodel->common_insert('ItineraryHead',$dataHead);
+					}else{
+						$dataHead['ModifiedBy']  =$userid;
+						$dataHead['ModifiedDate'] =date('Y-m-d H:i:s');
+						$where = array(
+							'AutoID'    =>$input_data['AutoID'],
+						);
+						$QrCodeID =$input_data['AutoID'];
+						$this->Commonmodel->common_update('ItineraryHead',$where,$dataHead);	
+						
+						if(empty($input_data['AutoID'])){	
+							$result['message'] ="Created successfully.";
+							$result['status']=201;
+							$status = 201;
+						}else{
+							$result['message'] ="Updated successfully.";
+							$result['status']=200;
+							$status = 200;
+						}
+						$this->output
+						->set_status_header($status)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode($result));
+					}
+				}
+
+			}catch (Exception $e) { 
+				$result['message'] = "Invalid Token";
+				$result['status']=false;
+				return $this->set_response($result, 401);
+			}
+		}else{
+			$result['message'] = "Token or old password / new password not Found";
+			$result['status']=false;
+			return $this->set_response($result, 400);
+		}
+	
+	}
+	/**
+	 * Post : Activity Add/Update => Date :21-01-2024
+	 */
+	function addUpdateActivity_post(){
+		$headers = apache_request_headers();
+		$this->load->library('myLibrary');
+		$input_data=$this->request->body;
+
+		if (!empty($headers['Token'])) {
+			try {
+				$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
+				$userid=$arrdata['AutoID'];
+				if($arrdata['IsAdmin'] == 0){
+					$parentId =$userid;
+				}else{
+					$parentId =0;
+				}
+
+				$this->form_validation->set_data($this->post());
+				$this->form_validation->set_rules("SchedulerID", 'Scheduler ID', 'required|callback_scheduler_check');
+				$this->form_validation->set_rules("ActivityType", 'Activity Type', 'required');
+				$this->form_validation->set_rules("Type", 'Type', 'required|trim');
+				$this->form_validation->set_rules("NotifyScheduleInMin", 'Notify Schedule In Min', 'required|greater_than[0]');
+				$this->form_validation->set_rules("NotifyType[]", 'Notify Type', 'required|callback_notifytype_check');
+
+				$schedulerObj = $this->TravelModel->getSchedulerById($input_data['SchedulerID']);
+				if($schedulerObj){
+					$StartDate=$schedulerObj->StartDate;
+					$EndDate=$schedulerObj->EndDate;
+				}else{
+					$StartDate=date('Y-m-d');
+					$EndDate=date('Y-m-d');
+				}
+				
+				if($input_data['ActivityType'] == 1){ //Hotel
+					$this->form_validation->set_rules("HotelType", 'Hotel Type', 'required|trim');
+					$this->form_validation->set_rules("HotelName", 'Hotel Name', 'required|trim');
+					$this->form_validation->set_rules("HotelAddress", 'Hotel Address', 'required|trim');
+					$this->form_validation->set_rules("CheckInDate", 'Check In Date', 'required|callback_validate_date['.$StartDate.','.$EndDate.']');
+					$this->form_validation->set_rules("CheckOutDate", 'Check Out Date', 'required|callback_validate_date['.$StartDate.','.$EndDate.']');
+				}
+				if($input_data['ActivityType'] == 2){ //Airtravel
+					$this->form_validation->set_rules("AirlineName", 'Airline Name', 'required|trim');
+					$this->form_validation->set_rules("TravelType", 'Travel Type', 'required|trim');
+					$this->form_validation->set_rules("TravelFrom", 'Travel From', 'required|trim');
+					$this->form_validation->set_rules("TravelTo", 'Travel To', 'required|trim');
+					$this->form_validation->set_rules("TravelStartDateTime", 'Travel Start Date', 'required|callback_validate_date['.$StartDate.','.$EndDate.']');
+					$this->form_validation->set_rules("TravelEndDateTime", 'Travel End Date', 'required|callback_validate_date['.$StartDate.','.$EndDate.']');
+				}
+				if($input_data['ActivityType'] == 3){ //Landtravel
+					$this->form_validation->set_rules("VehicleNo", 'Vehicle No', 'required|trim');
+					$this->form_validation->set_rules("LandTransferType", 'Land Transfer Type', 'required|trim');
+					$this->form_validation->set_rules("TravelFrom", 'Travel From', 'required|trim');
+					$this->form_validation->set_rules("TravelTo", 'Travel To', 'required|trim');
+					$this->form_validation->set_rules("startDateTime", 'Start Date', 'required|callback_validate_date['.$StartDate.','.$EndDate.']');
+					$this->form_validation->set_rules("EndDateTime", 'End Date', 'required|callback_validate_date['.$StartDate.','.$EndDate.']');
+				}
+				if($input_data['ActivityType'] == 4){ //Traintravel
+					$this->form_validation->set_rules("TrainName", 'Train Name', 'required|trim');
+					$this->form_validation->set_rules("TrainNumber", 'Train Number', 'required|trim');
+					$this->form_validation->set_rules("TravelFrom", 'Travel From', 'required|trim');
+					$this->form_validation->set_rules("TravelTo", 'Travel To', 'required|trim');
+					$this->form_validation->set_rules("StartDate", 'Start Date', 'required|callback_validate_date['.$StartDate.','.$EndDate.']');
+					$this->form_validation->set_rules("EndDate", 'End Date', 'required|callback_validate_date['.$StartDate.','.$EndDate.']');
+				}
+				if ($this->form_validation->run() == FALSE){
+					$errors = $this->form_validation->error_array();
+					$this->output
+					->set_status_header(406)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode(["status"=>406,"errors"=>$errors])); 
+				}else{
+					if($input_data['ActivityType'] == 1){ //Hotel
+						$data= array(
+							'SchedulerHeadId'=>$input_data['SchedulerID'],
+							'Type'			=>$input_data['Type'],
+							'TravelType'	=>$input_data['HotelType'],
+							'HotelName'		=>$input_data['HotelName'],
+							'RoomNo'		=>$input_data['RoomNo'],
+							'HotelAddress'	=>$input_data['HotelAddress'],
+							'CheckInDate'	=>date('Y-m-d H:i:s', strtotime($input_data['CheckInDate'])),
+							'CheckOutDate'	=>date('Y-m-d H:i:s', strtotime($input_data['CheckOutDate'])),
+							'IsDelete'  	=> 0,
+							'NotifyScheduleInMin'=>$input_data['NotifyScheduleInMin'],
+							'NotifyType'	=>jsonEncodeIntArr($input_data['NotifyType']),//1-Email, 2-Whatsapp, 3-In App Nofication
+						);
+					}
+					if($input_data['ActivityType'] == 2){ //Airtravel
+						$data = array(
+							'SchedulerHeadId'=>$input_data['SchedulerID'],
+							'Type'			=>$input_data['Type'],
+							'AirlineName'	=>$input_data['AirlineName'],
+							'TravelType'	=>$input_data['TravelType'],
+							'TravelFrom'	=>$input_data['TravelFrom'],
+							'TravelTo'		=>$input_data['TravelTo'],
+							'PnrNo'			=>$input_data['PnrNo'],
+							'TravelStartDateTime'=>date('Y-m-d H:i:s', strtotime($input_data['TravelStartDateTime'])),
+							'TravelEndDateTime'	=>date('Y-m-d H:i:s', strtotime($input_data['TravelEndDateTime'])),
+							'IsDelete'  		=> 0,
+							'NotifyScheduleInMin'=>$input_data['NotifyScheduleInMin'],
+							'NotifyType'	=>jsonEncodeIntArr($input_data['NotifyType']),//1-Email, 2-Whatsapp, 3-In App Nofication
+						);
+					}
+					if($input_data['ActivityType'] == 3){ //Landtravel
+						$data = array(
+							'SchedulerHeadId'=>$input_data['SchedulerID'],
+							'Type'			=>$input_data['Type'],
+							'LandTransferType'=>$input_data['LandTransferType'],
+							'VehicleNo'		=>$input_data['VehicleNo'],
+							'startDateTime'	=>date('Y-m-d H:i:s', strtotime($input_data['startDateTime'])),
+							'EndDateTime'	=>date('Y-m-d H:i:s', strtotime($input_data['EndDateTime'])),
+							'TravelFrom'	=>$input_data['TravelFrom'],
+							'TravelTo'		=>$input_data['TravelTo'],
+							'IsDelete'  	=> 0,
+							'NotifyScheduleInMin'=>$input_data['NotifyScheduleInMin'],
+							'NotifyType'	=>jsonEncodeIntArr($input_data['NotifyType']),//1-Email, 2-Whatsapp, 3-In App Nofication
+						);
+					}
+					if($input_data['ActivityType'] == 4){ //Traintravel
+						$data = array(
+							'SchedulerHeadId'=>$input_data['SchedulerID'],
+							'Type'			=>$input_data['Type'],
+							'TrainName'		=>$input_data['TrainName'],
+							'TrainNumber'	=>$input_data['TrainNumber'],
+							'StartDate'		=>date('Y-m-d H:i:s', strtotime($input_data['StartDate'])),
+							'EndDate'		=>date('Y-m-d H:i:s', strtotime($input_data['EndDate'])),
+							'PnrNo'			=>$input_data['PnrNo'],
+							'TravelFrom'	=>$input_data['TravelFrom'],
+							'TravelTo'		=>$input_data['TravelTo'],
+							'IsDelete'  	=> 0,
+							'NotifyScheduleInMin'=>$input_data['NotifyScheduleInMin'],
+							'NotifyType'	=>jsonEncodeIntArr($input_data['NotifyType']),//1-Email, 2-Whatsapp, 3-In App Nofication
+						);
+					}
+
+					
+					if(empty($input_data['AutoID'])){	
+						$dataHead['CreatedBy']  =$userid;
+						$dataHead['CreatedDate'] =date('Y-m-d H:i:s');
+						$this->Commonmodel->common_insert('ItineraryDetails',$data);
+
+						$result['message'] ="Created successfully.";
+						$result['status']=201;
+						$status = 201;
+
+					}else{
+						$dataHead['ModifiedBy']  =$userid;
+						$dataHead['ModifiedDate'] =date('Y-m-d H:i:s');
+						$where = array(
+							'AutoID'    =>$input_data['AutoID'],
+						);
+						$this->Commonmodel->common_update('ItineraryDetails',$where,$data);
+						
+						$result['message'] ="Updated successfully.";
+						$result['status']=200;
+						$status = 200;
+					}
+					$this->output
+					->set_status_header($status)
+					->set_content_type('application/json', 'utf-8')
+					->set_output(json_encode($result));
+
+				}
+
+			}catch (Exception $e) { 
+				$result['message'] = "Invalid Token";
+				$result['status']=false;
+				return $this->set_response($result, 401);
+			}
+		}else{
+			$result['message'] = "Token or old password / new password not Found";
+			$result['status']=false;
+			return $this->set_response($result, 400);
+		}
+	
+	}
+
+
+
 	/**
 	 * Post : Itinerary add and update => Date:27-12-2023
 	 */
@@ -655,14 +921,31 @@ class TravelController extends REST_Controller {
 		}
     }
 	function notifytype_check($str) {
+		$notifyTypeArr=[1,2,3];
 		if(empty($str)){
 			$this->form_validation->set_message('notifytype_check', 'The {field} field is required.');
+			return FALSE;
+		}else if(!in_array($str,$notifyTypeArr)){
+			$this->form_validation->set_message('notifytype_check', 'The {field} field is invalid.');
 			return FALSE;
 		}else{
 			return TRUE;
 		}
     }
-
+	function scheduler_check($str){
+		if(empty($str)){
+			$this->form_validation->set_message('scheduler_check', 'The {field} field is required.');
+			return FALSE;
+		}else{
+			$checkItineraryExistsOrNot = $this->TravelModel->checkSchedulerExistsOrNot($str);
+			if($checkItineraryExistsOrNot == 0){
+				$this->form_validation->set_message('scheduler_check', 'The {field} does not exists.');
+				return FALSE;
+			}
+			return TRUE;
+		}
+	}
+	
 
 	/**
 	 * Post : Itinerary List API => Date:27-12-2023
@@ -700,6 +983,87 @@ class TravelController extends REST_Controller {
 			$result['message'] = "Token or oldpassword / newpassword not Found";
 			$result['status']=false;
 			return $this->set_response($result, 400);
+		}
+	}
+	/**
+	 * Post : Scheduler List => Date :21-01-2024
+	 */
+	function SchedulerList_post(){
+		$headers = apache_request_headers();
+        $input_data=$this->request->body;
+		if (!empty($headers['Token'])) {
+            try {
+                $arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
+				$userid=$arrdata['AutoID'];
+				if($arrdata['IsAdmin'] == 0){
+					$parentId =$userid;
+				}else{
+					$parentId =0;
+				}
+
+                $schedulerObj = $this->TravelModel->SchedulerList($input_data,$parentId);
+                if($schedulerObj){
+                    $this->output
+                    ->set_status_header(200)
+                    ->set_content_type('application/json', 'utf-8')
+                    ->set_output(json_encode($schedulerObj));
+                }else{
+                    $this->output
+                    ->set_status_header(404)
+                    ->set_content_type('application/json', 'utf-8')
+                    ->set_output(json_encode(["status"=>404,"message"=>"No Data Found."]));
+                }
+                
+               
+            } catch (Exception $e) { 
+                $result['message'] = "Invalid Token";
+                $result['status']=false;
+                return $this->set_response($result, 401);
+            }
+        }else{
+			$result['message'] = "Token or oldpassword / newpassword not Found";
+			$result['status']=false;
+			return $this->set_response($result, 400);
+
+		}
+	}
+	function ActivityListBySchedulerId_post(){
+		$headers = apache_request_headers();
+        $input_data=$this->request->body;
+		if (!empty($headers['Token'])) {
+            try {
+                $arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
+				$userid=$arrdata['AutoID'];
+				if($arrdata['IsAdmin'] == 0){
+					$parentId =$userid;
+				}else{
+					$parentId =0;
+				}
+
+                $schedulerObj = $this->TravelModel->ActivityListBySchedulerId($input_data,$parentId);
+                if($schedulerObj){
+                    $this->output
+                    ->set_status_header(200)
+                    ->set_content_type('application/json', 'utf-8')
+                    ->set_output(json_encode($schedulerObj));
+                }else{
+                    $this->output
+                    ->set_status_header(404)
+                    ->set_content_type('application/json', 'utf-8')
+                    ->set_output(json_encode(["status"=>404,"message"=>"No Data Found."]));
+                }
+                
+               
+            } catch (Exception $e) { 
+                $result['message'] = "Invalid Token";
+                $result['status']=false;
+                return $this->set_response($result, 401);
+            }
+        }else{
+			$result['message'] = "Token or oldpassword / newpassword not Found";
+			$result['status']=false;
+			return $this->set_response($result, 400);
+
 		}
 	}
 
