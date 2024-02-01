@@ -508,29 +508,40 @@ class TravelController extends REST_Controller {
 					if(empty($input_data['AutoID'])){	
 						$dataHead['CreatedBy']  =$userid;
 						$dataHead['CreatedDate'] =date('Y-m-d H:i:s');
-						$this->Commonmodel->common_insert('ItineraryDetails',$data);
-
-						$result['message'] ="Created successfully.";
-						$result['status']=201;
-						$status = 201;
-
+						$response =$this->Commonmodel->common_insert('ItineraryDetails',$data);
+						if($response){
+							$result['message'] ="Created successfully.";
+							$result['status']=201;
+							$status = 201;
+						}else{
+							$result['message'] ="Something went wrong!.";
+							$result['status']=500;
+							$status = 500;
+						}
 					}else{
 						$dataHead['ModifiedBy']  =$userid;
 						$dataHead['ModifiedDate'] =date('Y-m-d H:i:s');
 						$where = array(
 							'AutoID'    =>$input_data['AutoID'],
 						);
-						$this->Commonmodel->common_update('ItineraryDetails',$where,$data);
+						$response =$this->Commonmodel->common_update('ItineraryDetails',$where,$data);
+						if($response){
+							$result['message'] ="Updated successfully.";
+							$result['status']=200;
+							$status = 200;
+						}else{
+							$result['message'] ="Activity not found!.";
+							$result['status']=200;
+							$status = 200;
+						}
 						
-						$result['message'] ="Updated successfully.";
-						$result['status']=200;
-						$status = 200;
 					}
+					
 					$this->output
-					->set_status_header($status)
-					->set_content_type('application/json', 'utf-8')
-					->set_output(json_encode($result));
-
+						->set_status_header($status)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode($result));
+					
 				}
 
 			}catch (Exception $e) { 
@@ -1027,7 +1038,7 @@ class TravelController extends REST_Controller {
 
 		}
 	}
-	function ActivityListBySchedulerId_post(){
+	function ActivityListBySchedulerId_get($schedularId=""){
 		$headers = apache_request_headers();
         $input_data=$this->request->body;
 		if (!empty($headers['Token'])) {
@@ -1039,8 +1050,12 @@ class TravelController extends REST_Controller {
 				}else{
 					$parentId =0;
 				}
-
-                $schedulerObj = $this->TravelModel->ActivityListBySchedulerId($input_data,$parentId);
+				if(!empty($schedularId)){
+					$schedulerObj = $this->TravelModel->ActivityListBySchedulerId($schedularId);
+				}else{
+					$schedulerObj = $this->TravelModel->ActivityListByActiveScheduler();
+				}
+                
                 if($schedulerObj){
                     $this->output
                     ->set_status_header(200)

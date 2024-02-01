@@ -92,14 +92,18 @@ class TravelLuggageModel extends CI_Model {
 				"status"		=>200,
 				"msg"			=>"data found",
 				"data"			=>$Requestlist,
-				"draw"			=>$draw,
 				"recordsTotal"	=>$total,
 				"recordsFiltered"=>$total
 			);			
-			return $contents;
+			
 		}else{
-			return false;
-		}       
+			$contents = array(
+				"status"		=>200,
+				"msg"			=>"data not found",
+				"data"			=>[],
+			);	
+		}   
+		return $contents;    
     }
 	public function getTravelLuggageMoreImageList($TravelLuggageID){
 		$this->db->select('AutoID,ImageName');
