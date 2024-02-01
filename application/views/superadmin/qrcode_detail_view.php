@@ -58,7 +58,8 @@
                                             </th>
                                             <!-- <th>Date</th> -->
                                             <th>QR Code</th>
-                                             <th>Alloted User</th>
+                                            <th>Alloted User</th>
+                                            <th>Mask Email</th>
                                             <th>Status</th>
                                             <th>Action</th>
                                         </tr>
@@ -73,6 +74,7 @@
                                             <!-- <td><?= $data['create_date'];?></td> -->
                                             <td><?= $data['QRCodeText'];?> </td>
                                             <td><?= ($data['Name'])?$data['Name']:"-";?></td>
+                                            <td><?= ($data['MaskEmail'])?$data['MaskEmail']:"-";?></td>
                                             <td><?= $data['status'];?></td>
                                             <td>
                                               <!--   <a href="#"  onclick="printSingleQrcode(<?= $data['AutoID'];?>)" >
