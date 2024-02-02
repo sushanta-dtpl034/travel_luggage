@@ -39,7 +39,7 @@ class TravelLuggageModel extends CI_Model {
 	}
 
 	public function travelLuggageList($data,$arrdata){
-        $this->db->select('tl.*,ih.ItineraryName, rm.Name,rm.Suffix,rm.ProfileIMG');
+        $this->db->select('tl.*,ih.SchedulerDescription, rm.Name,rm.Suffix,rm.ProfileIMG');
         $this->db->from('TravelLuggage as tl');
         $this->db->where('tl.IsDelete',0);
 		if($arrdata['IsAdmin'] == 0 ){
@@ -54,7 +54,7 @@ class TravelLuggageModel extends CI_Model {
 		}else{	
 			if(!empty(trim($data['keyword']))) {
 				$this->db->group_start();
-				$this->db->like('tl.LuggageName', trim($data['keyword']));
+				$this->db->like('tl.SchedulerDescription', trim($data['keyword']));
 				$this->db->or_like('tl.QrCodeNo', trim($data['keyword']));
 				$this->db->group_end();
 			}else{
@@ -177,10 +177,27 @@ class TravelLuggageModel extends CI_Model {
 		}
 		return false;
 	}
+	public function checkQRCodeAlreadyAssigned($qrcode,$userid){
+		$this->db->where('QRCodeText',$qrcode);
+		// $this->db->where('IsUsed !=',0);
+		$this->db->where('IsUsed',2);
+		//$this->db->where('alertedUserId ==',$userid);
+		$query=$this->db->get('QRCodeDetailsMst');
+		if($query){
+			$count =$query->num_rows();
+			if($count > 0){
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public function getQRCodeListByUserId($userId){
-		$this->db->where('alertedUserId',$userId);
-		$query=$this->db->get('QRCodeDetailsMst');
+		$this->db->select('QRCodeDetailsMst.*, rm.Name,rm.Suffix,rm.ProfileIMG');
+		$this->db->from('QRCodeDetailsMst');
+		$this->db->where('QRCodeDetailsMst.alertedUserId',$userId);
+		$this->db->join('RegisterMST as rm','QRCodeDetailsMst.alertedUserId = rm.AutoID','LEFT');
+		$query=$this->db->get();
 		if(!$query){
 			return false;
 		}

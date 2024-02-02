@@ -150,7 +150,7 @@
                     </div>
                 </div>
             <?php }else{ ?>
-                <?php if($luggage_details){    ?>
+                <?php if($luggage_details){ ?>
                     <div class="card custom-card overflow-hidden">
                         <div class="card-body">
                             <div class="panel profile-cover">
@@ -205,7 +205,9 @@
                                     <div class="form-group">
                                         <!-- <p class="mg-b-10">Email </p> -->
                                         <p >
-                                            <a class="btn btn-sm btn-success email" href = "mailto: <?= $luggage_details->Email;?>">
+                                            <a class="btn btn-sm btn-success email" href = "mailto: <?= $luggage_details->MaskEmail;?>?subject=Hi I find your luggage - My Bag Tag&body=
+                                            I found your luggage. Please feel free to contact me by replying  this mail."
+                                            >
                                                 <i class="fa fa-envelope fa-lg" aria-hidden="true" style="transform: rotate(0deg);"></i>&nbsp; &nbsp;Send Email to Owner
                                             </a>
                                         </p>
