@@ -8,14 +8,21 @@
         
          $this->db->insert($table_name, $data);
          $this->db->last_query();
-         return $this->db->insert_id();
+          if ($this->db->insert_id() > 0) {
+          return $this->db->insert_id();
+        } else {
+           return false;
+        }
       }
-      public function common_update($table_name, $where, $data)
-      {
+      public function common_update($table_name, $where, $data){
 
         $this->db->where($where);
         $this->db->update($table_name, $data);
-        return true;
+        if ($this->db->affected_rows() > 0) {
+          return true;
+        } else {
+           return false;
+        }
       }
 
 

@@ -146,7 +146,7 @@ class TravelModel extends CI_Model {
 		}       
     }
 	function SchedulerList($data,$parentId){
-		$this->db->select("AutoID,StartDate,EndDate,SchedulerDescription,NotifyLuggage");
+		$this->db->select("AutoID,StartDate,EndDate,SchedulerDescription");
         $this->db->from('ItineraryHead');
         $this->db->where('IsDelete',0);
 		if(isset($data['AutoID']) && !empty($data['AutoID'])){
@@ -180,7 +180,6 @@ class TravelModel extends CI_Model {
 				"status"		=>200,
 				"msg"			=>"data found",
 				"data"			=>$Requestlist,
-				"draw"			=>$draw,
 				"recordsTotal"	=>$total,
 				"recordsFiltered"=>$total
 			);			
@@ -189,14 +188,18 @@ class TravelModel extends CI_Model {
 			return false;
 		} 
 	}
-	function ActivityListBySchedulerId($data,$parentId){
-		//$this->db->select("AutoID,StartDate,EndDate,SchedulerDescription,NotifyLuggage");
+	function ActivityListBySchedulerId($schedularId){
+		
+		//$this->db->select("ih.StartDate,ih.EndDate,ih.SchedulerDescription,ItineraryDetails.*");
         $this->db->from('ItineraryDetails');
-        $this->db->where('SchedulerHeadId',$data['SchedulerHeadId']);
-        $this->db->where('IsDelete',0);
+		//$this->db->join('ItineraryHead as ih','ih.AutoID = ItineraryDetails.SchedulerHeadId','LEFT');
+        $this->db->where('ItineraryDetails.SchedulerHeadId',$schedularId);
+        $this->db->where('ItineraryDetails.IsDelete',0);
+		/*
 		if(isset($data['AutoID']) && !empty($data['AutoID'])){
 			$this->db->where('AutoID',$data['AutoID']);
-		}else{	
+		}
+		else{	
 			if(!empty(trim($data['keyword']))) {
 				$this->db->group_start();
 				$this->db->like('Type', trim($data['keyword']));
@@ -208,32 +211,110 @@ class TravelModel extends CI_Model {
 				$this->db->order_by('AutoID','desc');
 			}
 		}
+		*/
+		$this->db->order_by('ItineraryDetails.AutoID','desc');
         $query=$this->db->get();
-		if(isset($data['AutoID']) && !empty($data['AutoID'])){
-			$Requestlist = $query->row();
-		}else{
-			$Requestlist = $query->result();
-		}
+		// if(isset($data['AutoID']) && !empty($data['AutoID'])){
+		// 	$Requestlist = $query->row();
+		// }else{
+		// 	$Requestlist = $query->result();
+		// }
 		
-		if($Requestlist){
-			$linkedLuggageListObj=$this->getLinkedLuggageList($data['SchedulerHeadId']);
-			$draw = $this->input->post('draw');
-			$total = $this->db->where('IsDelete',0)->count_all_results('ItineraryDetails');
+		if($query){
+			$Requestlist = $query->result();
+			$schedularObj=$this->getSchedulerData($schedularId);
+			if($schedularObj){
+				$result_data['StartDate']=$schedularObj->StartDate;
+				$result_data['EndDate']=$schedularObj->EndDate;
+				$result_data['SchedulerDescription']=$schedularObj->SchedulerDescription;
+				$linkedLuggageListObj=$this->getLinkedLuggageList($schedularId);
+				$result_data['activity_data']=$Requestlist;
+				$result_data['linked_luggage_data']=$linkedLuggageListObj;
 
-			$result_data['activity_data']=$Requestlist;
+				$contents = array(
+					"status"		=>200,
+					"msg"			=>"data found",
+					"data"			=>$result_data,
+				);	
+
+
+			}else{
+				$contents = array(
+					"status"		=>200,
+					"msg"			=>"data not found",
+					"data"			=>[],
+				);				
+			}
+				
+			return $contents;
+		}else{
+			$contents = array(
+				"status"		=>200,
+				"msg"			=>"data not found",
+				"data"			=>[],
+			);			
+			return $contents;
+		} 
+	}
+	function ActivityListByActiveScheduler(){
+		$this->db->select("AutoID,StartDate,EndDate,SchedulerDescription");
+        $this->db->from('ItineraryHead');
+        $this->db->where('IsDelete',0);
+		$this->db->order_by('AutoID','desc');
+		$this->db->limit(1);
+		$query=$this->db->get();
+		//echo $this->db->last_query();
+		if($query){
+			$schedularObj = $query->row();
+			$result_data['StartDate']=$schedularObj->StartDate;
+			$result_data['EndDate']=$schedularObj->EndDate;
+			$result_data['SchedulerDescription']=$schedularObj->SchedulerDescription;
+
+			$activitylist = $this->getActivityList($schedularObj->AutoID);
+			$linkedLuggageListObj=$this->getLinkedLuggageList($schedularObj->AutoID);
+			$result_data['activity_data']=$activitylist;
 			$result_data['linked_luggage_data']=$linkedLuggageListObj;
+
 			$contents = array(
 				"status"		=>200,
 				"msg"			=>"data found",
 				"data"			=>$result_data,
-				"draw"			=>$draw,
-				"recordsTotal"	=>$total,
-				"recordsFiltered"=>$total
 			);			
 			return $contents;
+
 		}else{
-			return false;
-		} 
+			$contents = array(
+				"status"		=>200,
+				"msg"			=>"data not found",
+				"data"			=>[],
+			);			
+			return $contents;
+		}
+	}
+	function getSchedulerData($schedularId){
+		$this->db->select("AutoID,StartDate,EndDate,SchedulerDescription");
+        $this->db->from('ItineraryHead');
+        $this->db->where('IsDelete',0);
+		$this->db->where('AutoID',$schedularId);
+		$query=$this->db->get();
+		if($query){
+			return $Requestlist = $query->row();
+		}else{
+			return [];
+		}
+		
+	}
+	function getActivityList($SchedulerHeadId){
+ 		$this->db->from('ItineraryDetails');
+        $this->db->where('SchedulerHeadId',$SchedulerHeadId);
+        $this->db->where('IsDelete',0);
+		$this->db->order_by('AutoID','desc');
+        $query=$this->db->get();
+		if($query){
+			return $query->result();
+		}else{
+			return [];
+		}
 	}
 	function getLinkedLuggageList($SchedulerHeadId){
 		$this->db->from('ItineraryHead');

@@ -40,7 +40,7 @@ class Qrcodemodel extends CI_Model{
     }
     function get_qrcode_details($id){
         $sql="CASE WHEN (qdt.IsUsed = 1) THEN 'Alloted to luggage' WHEN (qdt.IsUsed = 2) THEN 'Alloted to user' ELSE 'Not used' END as status, reg.Name";
-        $this->db->select("qdt.AutoID,qdt.QRCodeText,FORMAT(qr.CreatedDate, 'dd-MM-yyyy') as create_date,$sql");
+        $this->db->select("qdt.AutoID,qdt.QRCodeText,FORMAT(qr.CreatedDate, 'dd-MM-yyyy') as create_date,qdt.MaskEmail,$sql");
         $this->db->from('QRCodeDetailsMst as qdt');
         $this->db->join('QRCodeHeadMst as qr', 'qr.AutoID = qdt.QRCodeId','left');
         $this->db->join('RegisterMST as reg', 'qdt.alertedUserId = reg.AutoID','left');
