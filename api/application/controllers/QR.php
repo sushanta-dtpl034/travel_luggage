@@ -41,28 +41,32 @@ class QR extends REST_Controller {
 
 				//check qr code is used
 				//$isUsed=$this->TravelLuggageModel->checkQRCodeIsUsed($qrcode);
-				$isUsed=$this->TravelLuggageModel->checkQRCodeIsAssigned($qrcode, $userid);
-				if($isUsed){
+				$isUsedOther=$this->TravelLuggageModel->checkQRCodeIsAssigned($qrcode, $userid);
+				if($isUsedOther){
 					return $this->set_response(['status'=>401,'error' => 'This QR code is already alloted one of your luggage.'], 401);
 				}
 
 				//check qr code is assigned
-				$isAssigned=$this->TravelLuggageModel->checkQRCodeIsAssigned($qrcode,$userid);
-				if($isAssigned){
+				$isNotAssigned=$this->TravelLuggageModel->checkQRCodeIsAssigned($qrcode,$userid);
+				if($isNotAssigned){
 					return $this->set_response(['status'=>401,'error' => 'This QR code is not belongs to you.'], 401);
 				}
 
-				$this->Commonmodel->common_update('QRCodeDetailsMst',['QRCodeText' => $qrcode],['IsUsed'=>2,'alertedUserId' =>$userid,'alertedDateTime' =>date('Y-m-d H:i:s')]);
-				$result['message'] ="This QR code assigned successfully.";
-				$result['status']=200;
-				//$result['data']=$this->TravelLuggageModel->getQRCodeListByUserId($userid);
-				$status = 200;
-				$this->output
-					->set_status_header($status)
-					->set_content_type('application/json', 'utf-8')
-					->set_output(json_encode($result));
-				
+				$isUsed=$this->TravelLuggageModel->checkQRCodeAlreadyAssigned($qrcode, $userid);
+				if($isUsed){
+					return $this->set_response(['status'=>401,'error' => 'This QR code is already aassigned.'], 401);
+				}else{
+					$this->Commonmodel->common_update('QRCodeDetailsMst',['QRCodeText' => $qrcode],['IsUsed'=>2,'alertedUserId' =>$userid,'alertedDateTime' =>date('Y-m-d H:i:s')]);
+					$result['message'] ="This QR code assigned successfully.";
+					$result['status']=200;
+					//$result['data']=$this->TravelLuggageModel->getQRCodeListByUserId($userid);
+					$status = 200;
+					$this->output
+						->set_status_header($status)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode($result));
 
+				}
 			} catch (Exception $e) { 
 				$result['message'] = "Invalid Token";
 				$result['status']=false;

@@ -177,6 +177,20 @@ class TravelLuggageModel extends CI_Model {
 		}
 		return false;
 	}
+	public function checkQRCodeAlreadyAssigned($qrcode,$userid){
+		$this->db->where('QRCodeText',$qrcode);
+		// $this->db->where('IsUsed !=',0);
+		$this->db->where('IsUsed',2);
+		//$this->db->where('alertedUserId ==',$userid);
+		$query=$this->db->get('QRCodeDetailsMst');
+		if($query){
+			$count =$query->num_rows();
+			if($count > 0){
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public function getQRCodeListByUserId($userId){
 		$this->db->select('QRCodeDetailsMst.*, rm.Name,rm.Suffix,rm.ProfileIMG');
