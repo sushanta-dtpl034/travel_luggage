@@ -93,7 +93,7 @@ class Qrcodemodel extends CI_Model{
         }
     } */
 	function get_qrcode_details_qrcode($QrCodeNo){
-        $this->db->select("reg.AutoID as regId,reg.Suffix, reg.Name,reg.Mobile,reg.Email,reg.Address,reg.AdressTwo,reg.Landmark,reg.ProfileIMG,reg.CountryCode,reg.WhatsAppCountryCode,reg.WhatsappNumber,CONCAT(reg.WhatsAppCountryCode,' ',reg.WhatsappNumber) as WhatsappNo, QDM.QRCodeText,QDM.alertedDateTime, QDM.IsUsed,QDM.alertedUserId");
+        $this->db->select("reg.AutoID as regId,reg.Suffix, reg.Name,reg.Mobile,reg.Email,reg.Address,reg.AdressTwo,reg.Landmark,reg.ProfileIMG,reg.CountryCode,reg.WhatsAppCountryCode,reg.WhatsappNumber,CONCAT(reg.WhatsAppCountryCode,' ',reg.WhatsappNumber) as WhatsappNo, QDM.QRCodeText,QDM.alertedDateTime, QDM.IsUsed,QDM.alertedUserId,QDM.MaskEmail");
         $this->db->from('QRCodeDetailsMst as QDM');
         $this->db->join('RegisterMST as reg', 'QDM.alertedUserId = reg.AutoID','left');
         $this->db->where('QDM.QRCodeText',$QrCodeNo); 
