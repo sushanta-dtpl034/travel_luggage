@@ -11,7 +11,7 @@ class Api extends REST_Controller {
 		$this->load->library('Authtoken');
 		$this->load->model('Commonmodel');
 		$this->load->model('Login_model');
-		header('Content-Type: application/json');
+		header('Content-Type: application/json'); 
 		
 	}
 	public function test_get()
