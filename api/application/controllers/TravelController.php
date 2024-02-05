@@ -1050,10 +1050,10 @@ class TravelController extends REST_Controller {
 				}else{
 					$parentId =0;
 				}
-				if(!empty($schedularId)){
+				if(!empty($schedularId) && $schedularId > 0){
 					$schedulerObj = $this->TravelModel->ActivityListBySchedulerId($schedularId);
 				}else{
-					$schedulerObj = $this->TravelModel->ActivityListByActiveScheduler();
+					$schedulerObj = $this->TravelModel->ActivityListByActiveScheduler($userid);
 				}
                 
                 if($schedulerObj){

@@ -193,7 +193,10 @@ class TravelModel extends CI_Model {
 		//$this->db->select("ih.StartDate,ih.EndDate,ih.SchedulerDescription,ItineraryDetails.*");
         $this->db->from('ItineraryDetails');
 		//$this->db->join('ItineraryHead as ih','ih.AutoID = ItineraryDetails.SchedulerHeadId','LEFT');
-        $this->db->where('ItineraryDetails.SchedulerHeadId',$schedularId);
+		if($schedularId > 0){
+			$this->db->where('ItineraryDetails.SchedulerHeadId',$schedularId);
+		}
+        
         $this->db->where('ItineraryDetails.IsDelete',0);
 		/*
 		if(isset($data['AutoID']) && !empty($data['AutoID'])){
@@ -230,7 +233,6 @@ class TravelModel extends CI_Model {
 				$linkedLuggageListObj=$this->getLinkedLuggageList($schedularId);
 				$result_data['activity_data']=$Requestlist;
 				$result_data['linked_luggage_data']=$linkedLuggageListObj;
-
 				$contents = array(
 					"status"		=>200,
 					"msg"			=>"data found",
@@ -242,7 +244,7 @@ class TravelModel extends CI_Model {
 				$contents = array(
 					"status"		=>200,
 					"msg"			=>"data not found",
-					"data"			=>[],
+					"data"			=>new stdClass(),
 				);				
 			}
 				
@@ -251,15 +253,16 @@ class TravelModel extends CI_Model {
 			$contents = array(
 				"status"		=>200,
 				"msg"			=>"data not found",
-				"data"			=>[],
+				"data"			=>new stdClass(),
 			);			
 			return $contents;
 		} 
 	}
-	function ActivityListByActiveScheduler(){
+	function ActivityListByActiveScheduler($userid){
 		$this->db->select("AutoID,StartDate,EndDate,SchedulerDescription");
         $this->db->from('ItineraryHead');
         $this->db->where('IsDelete',0);
+        $this->db->where('UserID',$userid);
 		$this->db->order_by('AutoID','desc');
 		$this->db->limit(1);
 		$query=$this->db->get();
@@ -286,7 +289,7 @@ class TravelModel extends CI_Model {
 			$contents = array(
 				"status"		=>200,
 				"msg"			=>"data not found",
-				"data"			=>[],
+				"data"			=>new stdClass(),
 			);			
 			return $contents;
 		}

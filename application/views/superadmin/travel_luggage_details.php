@@ -1,3 +1,4 @@
+<?php error_reporting(0);?>
 <!-- Main Content-->
 <style>
     .sp-container.sp-hidden{z-index: 20000 !important;}
@@ -205,7 +206,7 @@
                                     <div class="form-group">
                                         <!-- <p class="mg-b-10">Email </p> -->
                                         <p >
-                                            <a class="btn btn-sm btn-success email" href = "mailto: <?= $luggage_details->MaskEmail;?>?subject=Hi I find your luggage - My Bag Tag&body=
+                                            <a class="btn btn-sm btn-success email" href = "mailto: <?= $luggage_details->MaskEmail;?>?subject=Hi I found your luggage - My Bag Tag&body=
                                             I found your luggage. Please feel free to contact me by replying  this mail."
                                             >
                                                 <i class="fa fa-envelope fa-lg" aria-hidden="true" style="transform: rotate(0deg);"></i>&nbsp; &nbsp;Send Email to Owner
@@ -295,7 +296,7 @@
                     <div class="row row-sm">
                         <div class="col-md-5">
                             <div class="form-group">
-                                <p class="mg-b-10">Country Code </p>
+                                <p class="mg-b-10">Country Code <span class="text-danger">*</span></p>
                                 <div class="parsley-select" id="uCountryCode">
                                     <select class="form-control select2 uCountryCode" required=""  name="CountryCode" data-parsley-class-handler="#uCountryCode" data-parsley-errors-container="#uCountryCodeErrorContainer"  data-parsley-required
                                     data-parsley-required-message="Select Country Code">
