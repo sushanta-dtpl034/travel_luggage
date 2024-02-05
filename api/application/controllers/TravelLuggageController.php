@@ -439,14 +439,59 @@ class TravelLuggageController extends REST_Controller {
             try {
                 $arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
 				$userid=$arrdata['AutoID'];
+
+				// Remove the prefix using str_replace
+				$qrcode = str_replace(QRCODE_URL, '', $input_data['qrcode']);
+
+				//check qr code is avaliable or not
+				$isValidQrcode=$this->TravelLuggageModel->checkIsValidQRCode($qrcode);
+				if(!$isValidQrcode){
+					return $this->set_response(['status'=>401,'error' => 'This QR code is Invalid.'], 401);
+				}
+				
+				//check qr code is belongs to primary user
+				$isAssigned=$this->TravelLuggageModel->checkQRCodeIsAssignedLuggage($qrcode,$userid);
+				if(!$isAssigned){
+					return $this->set_response(['status'=>401,'error' => 'This QR code is not belongs to you.'], 401);
+				}
+
+
+				//1-Alloted to Luggage, 2-Alloted to User
+
+				//check qr code linked with own luggage or not
+				$isLinkedOwnLuggage=$this->TravelLuggageModel->checkQRCodeIsLinkedOwnLuggage($qrcode, $userid);
+				if(!$isLinkedOwnLuggage){
+					return $this->set_response(['status'=>401,'error' => 'This QR code is not linked your luggage.'], 401);
+				}
+			
+				$schedulerObj = $this->TravelModel->getSchedulerById($input_data['schedularId']);
+				if(isset($schedulerObj) && isset($schedulerObj->NotifyLuggage) && !empty($schedulerObj->NotifyLuggage)){
+					$ExitNotifyLuggageArr=json_decode($schedulerObj->NotifyLuggage);
+					if(isset($ExitNotifyLuggageArr) && count($ExitNotifyLuggageArr) > 0){
+						if(in_array($qrcode, $ExitNotifyLuggageArr)){
+							return $this->set_response(['status'=>401,'error' => 'This QR code is already linked with this scheduler !'], 401);
+						}else{
+							array_push($ExitNotifyLuggageArr,$qrcode);
+							$NotifyLuggageArr=$ExitNotifyLuggageArr;
+						}
+						
+					}
+				}else{
+					$NotifyLuggageArr=$qrcode;
+				}
 				$dataHead = array(
-					'NotifyLuggage'	=>json_encode($input_data['qrcode']),
+					'NotifyLuggage'	=>json_encode($NotifyLuggageArr),
 				); 
 				$where = array(
 					'AutoID'    =>$input_data['schedularId'],
 				);
+
+					//1-Alloted to Luggage, 2-Alloted to User
+					//$this->Commonmodel->common_update('QRCodeDetailsMst',['QRCodeText' => $qrcode],['IsUsed'=>2,'alertedUserId' =>$userid,'alertedDateTime' =>date('Y-m-d H:i:s')]);
+
+
 				$this->Commonmodel->common_update('ItineraryHead',$where,$dataHead);
-				$result['message'] ="Luggage linked successfully.";
+				$result['message'] ="Luggage linked successfully ! ";
 				$result['status']=200;
 				$status = 200;
 
@@ -455,13 +500,55 @@ class TravelLuggageController extends REST_Controller {
 						->set_content_type('application/json', 'utf-8')
 						->set_output(json_encode($result));
 
+				/*
+				$isUsed=$this->TravelLuggageModel->checkQRCodeAlreadyAssigned($qrcode, $userid);
+				if($isUsed){
+					$schedulerObj = $this->TravelModel->getSchedulerById($input_data['schedularId']);
+					if(isset($schedulerObj) && isset($schedulerObj->NotifyLuggage) && !empty($schedulerObj->NotifyLuggage)){
+						$ExitNotifyLuggageArr=json_decode($schedulerObj->NotifyLuggage);
+						if(isset($ExitNotifyLuggageArr) && count($ExitNotifyLuggageArr) > 0){
+							if(in_array($qrcode, $ExitNotifyLuggageArr)){
+								return $this->set_response(['status'=>401,'error' => 'This QR code is already linked to you.'], 401);
+							}else{
+								array_push($ExitNotifyLuggageArr,$qrcode);
+								$NotifyLuggageArr=$ExitNotifyLuggageArr;
+							}
+							
+						}
+					}else{
+						$NotifyLuggageArr=$qrcode;
+					}
+					$dataHead = array(
+						'NotifyLuggage'	=>json_encode($NotifyLuggageArr),
+					); 
+					$where = array(
+						'AutoID'    =>$input_data['schedularId'],
+					);
+
+					//1-Alloted to Luggage, 2-Alloted to User
+					//$this->Commonmodel->common_update('QRCodeDetailsMst',['QRCodeText' => $qrcode],['IsUsed'=>2,'alertedUserId' =>$userid,'alertedDateTime' =>date('Y-m-d H:i:s')]);
+
+
+					$this->Commonmodel->common_update('ItineraryHead',$where,$dataHead);
+					$result['message'] ="Luggage linked successfully.";
+					$result['status']=200;
+					$status = 200;
+
+					$this->output
+							->set_status_header($status)
+							->set_content_type('application/json', 'utf-8')
+							->set_output(json_encode($result));
+				}else{
+					return $this->set_response(['status'=>401,'error' => 'This QR code is not belongs to you.'], 401);
+				}
+				*/
 			} catch (Exception $e) { 
                 $result['message'] = "Invalid Token";
                 $result['status']=false;
                 return $this->set_response($result, 401);
             }
         }else{
-			$result['message'] = "Token or oldpasswor / newpassword not Found";
+			$result['message'] = "Token not Found";
 			$result['status']=false;
 			return $this->set_response($result, 400);
 
