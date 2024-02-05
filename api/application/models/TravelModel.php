@@ -146,7 +146,7 @@ class TravelModel extends CI_Model {
 		}       
     }
 	function SchedulerList($data,$parentId){
-		$this->db->select("AutoID,StartDate,EndDate,SchedulerDescription");
+		$this->db->select("AutoID,StartDate,EndDate,SchedulerDescription,NotifyLuggage");
         $this->db->from('ItineraryHead');
         $this->db->where('IsDelete',0);
 		if(isset($data['AutoID']) && !empty($data['AutoID'])){

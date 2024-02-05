@@ -43,7 +43,7 @@ class TravelLuggageModel extends CI_Model {
         $this->db->from('TravelLuggage as tl');
         $this->db->where('tl.IsDelete',0);
 		if($arrdata['IsAdmin'] == 0 ){
-			$this->db->where('tl.UserID',$arrdata['AutoID']);
+			$this->db->where('tl.CreatedBy',$arrdata['AutoID']);
 		}
         
         $this->db->join('RegisterMST as rm','tl.UserID = rm.AutoID','LEFT');
@@ -177,6 +177,20 @@ class TravelLuggageModel extends CI_Model {
 		}
 		return false;
 	}
+	public function checkQRCodeIsAssignedLuggage($qrcode,$userid){
+		$this->db->where('QRCodeText',$qrcode);
+		// $this->db->where('IsUsed !=',0);
+		$this->db->where('IsUsed',1);
+		$this->db->where('alertedUserId',$userid);
+		$query=$this->db->get('QRCodeDetailsMst');
+		if($query){
+			$count =$query->num_rows();
+			if($count > 0){
+				return true;
+			}
+		}
+		return false;
+	}
 	public function checkQRCodeAlreadyAssigned($qrcode,$userid){
 		$this->db->where('QRCodeText',$qrcode);
 		// $this->db->where('IsUsed !=',0);
@@ -191,7 +205,18 @@ class TravelLuggageModel extends CI_Model {
 		}
 		return false;
 	}
-	
+	function checkQRCodeIsLinkedOwnLuggage($qrcode,$userid){
+		$this->db->where('QrCodeNo',$qrcode);
+		$this->db->where('CreatedBy',$userid);
+		$query=$this->db->get('TravelLuggage');
+		if($query){
+			$count =$query->num_rows();
+			if($count > 0){
+				return true;
+			}
+		}
+		return false;
+	}
 	public function getQRCodeListByUserId($userId){
 		$this->db->select('QRCodeDetailsMst.*, rm.Name,rm.Suffix,rm.ProfileIMG');
 		$this->db->from('QRCodeDetailsMst');
