@@ -290,7 +290,6 @@ class TravelController extends REST_Controller {
 		$headers = apache_request_headers();
 		$this->load->library('myLibrary');
 		$input_data=$this->request->body;
-
 		if (!empty($headers['Token'])) {
 			try {
 				$arrdata=$this->tokenHandler->DecodeToken($headers['Token']);
@@ -320,18 +319,24 @@ class TravelController extends REST_Controller {
 						'EndDate'		=>date('Y-m-d', strtotime($input_data['EndDate'])),
 						'IsDelete'		=>0,
 					); 
-					if(empty($input_data['AutoID'])){	
+					if(empty($input_data['AutoID'])){
 						$checkItineraryExistsOrNot = $this->TravelModel->checkItineraryExistsOrNot($userid,$parentId);
 						if($checkItineraryExistsOrNot > 0){
 							$result['message'] = "Already data exists.";
 							$result['status']=200;
 							return $this->set_response($result, 200);
 						}
-					}
-					if(empty($input_data['AutoID'])){	
 						$dataHead['CreatedBy']  =$userid;
 						$dataHead['CreatedDate'] =date('Y-m-d H:i:s');
 						$QrCodeID =$this->Commonmodel->common_insert('ItineraryHead',$dataHead);
+						
+						$result['message'] ="Created successfully.";
+						$result['status']=201;
+						$status = 201;
+						$this->output
+						->set_status_header($status)
+						->set_content_type('application/json', 'utf-8')
+						->set_output(json_encode($result));
 					}else{
 						$dataHead['ModifiedBy']  =$userid;
 						$dataHead['ModifiedDate'] =date('Y-m-d H:i:s');
@@ -340,16 +345,10 @@ class TravelController extends REST_Controller {
 						);
 						$QrCodeID =$input_data['AutoID'];
 						$this->Commonmodel->common_update('ItineraryHead',$where,$dataHead);	
+						$result['message'] ="Updated successfully.";
+						$result['status']=200;
+						$status = 200;
 						
-						if(empty($input_data['AutoID'])){	
-							$result['message'] ="Created successfully.";
-							$result['status']=201;
-							$status = 201;
-						}else{
-							$result['message'] ="Updated successfully.";
-							$result['status']=200;
-							$status = 200;
-						}
 						$this->output
 						->set_status_header($status)
 						->set_content_type('application/json', 'utf-8')
@@ -1067,8 +1066,6 @@ class TravelController extends REST_Controller {
                     ->set_content_type('application/json', 'utf-8')
                     ->set_output(json_encode(["status"=>404,"message"=>"No Data Found."]));
                 }
-                
-               
             } catch (Exception $e) { 
                 $result['message'] = "Invalid Token";
                 $result['status']=false;
@@ -1078,7 +1075,6 @@ class TravelController extends REST_Controller {
 			$result['message'] = "Token or oldpassword / newpassword not Found";
 			$result['status']=false;
 			return $this->set_response($result, 400);
-
 		}
 	}
 
@@ -1121,15 +1117,6 @@ class TravelController extends REST_Controller {
 			}
 		}
 	}
-
-
-
-
-
-
-
-
-	
 
     /**
 	 * Post : travel details list

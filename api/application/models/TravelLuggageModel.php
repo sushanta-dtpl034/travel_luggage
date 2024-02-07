@@ -165,8 +165,8 @@ class TravelLuggageModel extends CI_Model {
 
 	public function checkQRCodeIsAssigned($qrcode,$userid){
 		$this->db->where('QRCodeText',$qrcode);
-		// $this->db->where('IsUsed !=',0);
-		$this->db->where('IsUsed',2);
+		$this->db->where('IsUsed !=',0);
+		//$this->db->where('IsUsed',2);
 		$this->db->where('alertedUserId !=',$userid);
 		$query=$this->db->get('QRCodeDetailsMst');
 		if($query){
@@ -206,9 +206,13 @@ class TravelLuggageModel extends CI_Model {
 		return false;
 	}
 	function checkQRCodeIsLinkedOwnLuggage($qrcode,$userid){
-		$this->db->where('QrCodeNo',$qrcode);
-		$this->db->where('CreatedBy',$userid);
-		$query=$this->db->get('TravelLuggage');
+		$this->db->select('TravelLuggage.AutoID, TravelLuggage.QrCodeNo');
+		$this->db->from('TravelLuggage');
+		$this->db->join('RegisterMST','RegisterMST.AutoID = TravelLuggage.UserID','LEFT');
+		$this->db->where('TravelLuggage.QrCodeNo',$qrcode);
+		//$this->db->where('CreatedBy',$userid);
+		$this->db->where('( RegisterMST.AutoID = '.$userid.' OR RegisterMST.ParentId = '.$userid.' )');
+		$query=$this->db->get();
 		if($query){
 			$count =$query->num_rows();
 			if($count > 0){
@@ -222,6 +226,7 @@ class TravelLuggageModel extends CI_Model {
 		$this->db->from('QRCodeDetailsMst');
 		$this->db->where('QRCodeDetailsMst.alertedUserId',$userId);
 		$this->db->join('RegisterMST as rm','QRCodeDetailsMst.alertedUserId = rm.AutoID','LEFT');
+		$this->db->order_by('QRCodeDetailsMst.AutoID','desc');
 		$query=$this->db->get();
 		if(!$query){
 			return false;
@@ -241,6 +246,39 @@ class TravelLuggageModel extends CI_Model {
 			return false;
 		}		
 	}
-
 	
+	public function getQrCodeDetails($qrcode){
+		$this->db->select('QRCodeDetailsMst.*');
+		$this->db->from('QRCodeDetailsMst');
+		$this->db->where('QRCodeText',$qrcode);
+		$query=$this->db->get();
+		if($query){
+			return $query->row();
+		}
+		return false;
+	}
+	
+	public function getQrCodeIsLinked($qrcodeid, $userId, $schedularId){
+		$this->db->select('SchedulerLuggage.*');
+		$this->db->from('SchedulerLuggage');
+		$this->db->where('QrCodeID',$qrcodeid);
+		$this->db->where('SchedulerID',$schedularId);
+		$this->db->where('CreatedBy',$userId);
+		$query=$this->db->get();
+		if($query){
+			return $query->row();
+		}
+		return false;
+	}
+	
+	public function checkQrCodeLinkedWithTravelLuggage($qrcode){
+		$this->db->select('TravelLuggage.*');
+		$this->db->from('TravelLuggage');
+		$this->db->where('QrCodeNo',$qrcode);
+		$query=$this->db->get();
+		if($query){
+			return $query->row();
+		}
+		return false;
+	}
 }
