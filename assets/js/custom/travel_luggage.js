@@ -53,10 +53,10 @@ $(function () {
             { 
                 "data": "QrCodeNo",
             },
-            { 
+             /* { 
                 "data": "LuggageRemarks",
             },
-            /* {
+           {
                 "render": function (AutoID, type, row, meta) {
                     return '<button class="btn btn-sm update_travel_luggage bg-success mx-2" id="' + row.AutoID + '"  datatype="edit"><i class="si si-pencil"></i></button><button class="btn btn-sm ripple delete_travel_luggage btn-danger" id="' + row.AutoID + '"><i class="fe fe-trash"></i></button>';
                 }

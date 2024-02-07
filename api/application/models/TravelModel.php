@@ -146,7 +146,7 @@ class TravelModel extends CI_Model {
 		}       
     }
 	function SchedulerList($data,$parentId){
-		$this->db->select("AutoID,StartDate,EndDate,SchedulerDescription,NotifyLuggage");
+		$this->db->select("AutoID,StartDate,EndDate,SchedulerDescription");
         $this->db->from('ItineraryHead');
         $this->db->where('IsDelete',0);
 		if(isset($data['AutoID']) && !empty($data['AutoID'])){
@@ -238,8 +238,6 @@ class TravelModel extends CI_Model {
 					"msg"			=>"data found",
 					"data"			=>$result_data,
 				);	
-
-
 			}else{
 				$contents = array(
 					"status"		=>200,
@@ -247,7 +245,6 @@ class TravelModel extends CI_Model {
 					"data"			=>new stdClass(),
 				);				
 			}
-				
 			return $contents;
 		}else{
 			$contents = array(
@@ -269,21 +266,30 @@ class TravelModel extends CI_Model {
 		//echo $this->db->last_query();
 		if($query){
 			$schedularObj = $query->row();
-			$result_data['StartDate']=$schedularObj->StartDate;
-			$result_data['EndDate']=$schedularObj->EndDate;
-			$result_data['SchedulerDescription']=$schedularObj->SchedulerDescription;
+				if($schedularObj){
+				$result_data['StartDate']=$schedularObj->StartDate;
+				$result_data['EndDate']=$schedularObj->EndDate;
+				$result_data['SchedulerDescription']=$schedularObj->SchedulerDescription;
 
-			$activitylist = $this->getActivityList($schedularObj->AutoID);
-			$linkedLuggageListObj=$this->getLinkedLuggageList($schedularObj->AutoID);
-			$result_data['activity_data']=$activitylist;
-			$result_data['linked_luggage_data']=$linkedLuggageListObj;
+				$activitylist = $this->getActivityList($schedularObj->AutoID);
+				$linkedLuggageListObj=$this->getLinkedLuggageList($schedularObj->AutoID);
+				$result_data['activity_data']=$activitylist;
+				$result_data['linked_luggage_data']=$linkedLuggageListObj;
 
-			$contents = array(
-				"status"		=>200,
-				"msg"			=>"data found",
-				"data"			=>$result_data,
-			);			
-			return $contents;
+				$contents = array(
+					"status"		=>200,
+					"msg"			=>"data found",
+					"data"			=>$result_data,
+				);			
+				return $contents;
+			}else{
+				$contents = array(
+					"status"		=>200,
+					"msg"			=>"data not found",
+					"data"			=>new stdClass(),
+				);			
+				return $contents;
+			}
 
 		}else{
 			$contents = array(
@@ -320,12 +326,21 @@ class TravelModel extends CI_Model {
 		}
 	}
 	function getLinkedLuggageList($SchedulerHeadId){
-		$this->db->from('ItineraryHead');
-		$this->db->where('AutoID',$SchedulerHeadId);
-        $this->db->where('IsDelete',0);
+		$this->db->select("SL.AutoID,SL.QrCodeID,SL.CreatedBy, QRDM.QRCodeText, TL.AutoID, TL.LuggageName, TL.LuggageImage, TL.QrCodeNo, TL.LuggageType, TL.LuggageRemarks, TL.LuggageColor, TL.BrandName, TL.AppleAirTag");
+		$this->db->from('SchedulerLuggage AS SL');
+		$this->db->join('QRCodeDetailsMst as QRDM','SL.QrCodeID = QRDM.AutoID','LEFT');
+		$this->db->join('TravelLuggage as TL','TL.QrCodeNo = QRDM.QRCodeText','LEFT');
+		$this->db->where('SL.SchedulerID',$SchedulerHeadId);
+		$this->db->order_by('SL.AutoID','desc');
 		$query=$this->db->get();
-		if($query){
-			$schedulerObj = $query->row();
+		$schedulerObj = $query->result();
+		if($schedulerObj){
+			return $schedulerObj;
+		}else{
+			return [];
+		}	
+		/* if($query){
+			$schedulerObj = $query->result();
 			if($schedulerObj){
 				$NotifyLuggageArr =json_decode($schedulerObj->NotifyLuggage);
 				$NotifyLuggageStr="'".implode("','",$NotifyLuggageArr)."'";
@@ -346,8 +361,7 @@ class TravelModel extends CI_Model {
 			}
 		}else{
 			return [];
-		}
-
+		} */
 	}
 	function getTravelItineraryDetails($travelHeadId){
 		$query=$this->db->select("ItineraryDetails.*");

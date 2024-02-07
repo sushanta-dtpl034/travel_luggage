@@ -93,7 +93,7 @@
 
 
 <!-- insert Grid modal -->
-<div class="modal" id="travel_luggage_modal">
+<!--<div class="modal" id="travel_luggage_modal">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content modal-content-demo">
             <div class="modal-header">
@@ -102,11 +102,11 @@
             </div>
             <form id="add-travel-luggage-form" >
                 <div class="modal-body">
-                    <!-- Show PHP Validation ERRORS Start -->
+                    <!-- Show PHP Validation ERRORS Start 
                      <div class="alert alert-danger print-error-msg" style="display:none">
                         <ul id="form_errors"></ul>
                     </div>
-                    <!-- Show PHP Validation ERRORS End -->
+                    <!-- Show PHP Validation ERRORS End 
 
                     <div class="row row-sm">
                         <div class="col-md-6">
@@ -133,7 +133,7 @@
                             <div class="parsley-select" id="Suffix">
                                 <select class="form-control select2" data-parsley-class-handler="#Suffix" data-parsley-errors-container="#SuffixErrorContainer"  required=""  name="Suffix" data-parsley-required-message="Choose Title">
                                     <option label="Choose Title"></option>
-                                    <?php foreach($titles as $title){ ?>
+                                    <?php /*foreach($titles as $title){ ?>
                                     <option value="<?= $title['value'];?>">
                                        <?= $title['value'];?>
                                     </option>
@@ -245,9 +245,9 @@
         </div>
     </div>
 </div>
-<!--End Grid modal -->
+End Grid modal -->
 <!-- update Grid modal -->
-<div class="modal" id="update-travel-luggage-modal">
+<!--<div class="modal" id="update-travel-luggage-modal">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content modal-content-demo">
             <div class="modal-header">
@@ -255,12 +255,12 @@
             </div>
             <form id="update-travel-luggage-form">
                 <div class="modal-body">
-                    <!-- Show PHP Validation ERRORS Start -->
+                    <!-- Show PHP Validation ERRORS Start
                     <div class="alert alert-danger print-error-msg" style="display:none">
                         <ul id="form_errors"></ul>
                     </div>
                     
-                    <!-- Show PHP Validation ERRORS End -->
+                    <!-- Show PHP Validation ERRORS End 
                     <div class="row row-sm">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -342,7 +342,7 @@
                                     <option value="">Select Country Code</option>
                                     <?php foreach($country_codes as $country_code){ ?>
                                     <option value="+<?= $country_code['Dialing'];?>">+ <?= $country_code['Dialing'];?></option>
-                                    <?php } ?>
+                                    <?php }  */?>
                                 </select>
                             </div>
                         </div>
@@ -406,7 +406,7 @@
         </div>
     </div>
 </div>
-<!--End Grid modal -->
+End Grid modal -->
 
 
 
